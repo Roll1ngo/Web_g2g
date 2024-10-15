@@ -29,7 +29,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "main.apps.MainConfig"
+    "main.apps.MainConfig",
+    "users.apps.UsersConfig"
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,7 @@ WSGI_APPLICATION = "web_resource_g2g.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.abspath(os.getenv("DB_PATH"))
+        "NAME": os.path.abspath(r"C:\Users\RollPy\Desktop\Common_data_base_web_and_app\G2G.sqlite")
     }
 }
 
@@ -96,7 +97,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "uk"
 
 TIME_ZONE = "UTC"
 
@@ -115,3 +116,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_STARTTLS = os.getenv('EMAIL_STARTTLS')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+PASSWORD_RESET_CONFIRM_URL = 'password_reset_confirm'

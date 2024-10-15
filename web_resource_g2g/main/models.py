@@ -9,6 +9,9 @@ class Sellers(models.Model):
     id_discord = models.CharField(max_length=255)
     name_on_server = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = 'sellers'
+
     def __str__(self):
         return self.name_on_server
 
@@ -19,6 +22,9 @@ class ServerUrls(models.Model):
     server_url = models.URLField()
     region = models.CharField(max_length=255)
     fraction = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'server_urls'
 
     def __str__(self):
         return self.server_name
@@ -37,6 +43,9 @@ class TopPrices(models.Model):
     mean20_lot = models.IntegerField()
     double_minimal = models.IntegerField()
     created_time = models.TimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'top_prices'
 
     def __str__(self):
         return f"TopPrices for {self.server_name}"
@@ -60,6 +69,9 @@ class OffersForPlacement(models.Model):
     delivery_offline_hrs = models.IntegerField()
     is_created_lot = models.BooleanField(default=False)
     reserve_stock = models.IntegerField(default=0)
+
+    class Meta:
+        db_table = 'offers_for_placement'
 
     def __str__(self):
         return f"Offer by {self.sellers} on {self.server_urls}"
