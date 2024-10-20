@@ -1,10 +1,78 @@
 {% extends "users/base.html" %}
 {% block content %}
+<style>
+    .center-container {
+        text-align: center;
+    }
+    table {
+        margin: 0 auto;
+        width: 80%; /* Або встановіть фіксовану ширину, якщо потрібно */
+    }
+    .price-column {
+         width: 200px;
+}
+</style>
+  <div class="center-container">
 
-<h2>Top Prices</h2>
-    <ul>
-        {% for bet in bets_list %}
-            <li>{{ bet.price }}</li>
-        {% endfor %}
-    </ul>
+    <table>
+      <thead>
+          <tr>
+              <th></th>
+              <th>Гра</th>
+              <th>Сервер</th>
+              <th>Ціна</th>
+              <th>Запас</th>
+              <th>Стратегія</th>
+              <th>Відсоткове корегування</th>
+              <th> Збереження</th>
+          </tr>
+      </thead>
+      <tbody>
+      {% for row in bets_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td> <!-- Row number -->
+          <td style="width: 200px;"><input type="text" value="{{ row.game_name }}" readonly></td>
+          <td><input type="text" value="{{ row.server_name }}" readonly></td>
+          <td><input type="text" value="{{ row.price }}" readonly></td>
+          <td style="width: 200px;"><input type="text" value="{{ row.stock}}"></td>
+          <td>
+            <select class="strategy-select">
+              <option value="{{ row.strategy_price }}">{{ row.strategy_price }}</option>
+              <option value="strategy one">Дорожче</option>
+              <option value="strategy two">Баланс</option>
+              <option value="strategy two">Швидко</option>
+            </select>
+          </td>
+          <td><input type="number" value="{{ row.percent_offset }}"></td>
+          <td><button class="save-button">Зберегти</button></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+      <script>
+        $(document).ready(function() {
+            $('.save-button').click(function() {
+                // Отримуємо дані з рядка
+                var row = $(this).closest('tr');
+                var name = row.find('input:eq(0)').val();
+                var surname = row.find('input:eq(1)').val();
+                var age = row.find('input:eq(2)').val();
+
+                // Відправляємо дані на сервер
+                $.ajax({
+                    url: '/save_data/', // Замініть на ваш URL
+                    type: 'POST',
+                    data: {
+                        name: name,
+                        surname: surname,
+                        age: age
+                    },
+                    success: function(response) {
+                        alert(response);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
