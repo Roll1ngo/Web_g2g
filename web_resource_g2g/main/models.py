@@ -54,9 +54,9 @@ class TopPrices(models.Model):
 class OffersForPlacement(models.Model):
     sellers = models.ForeignKey(Sellers, on_delete=models.CASCADE)
     server_urls = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
-    currency = models.IntegerField()
+    currency = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.CharField(max_length=255)
+    price = models.TextField(max_length=255)
     stock = models.IntegerField()
     min_units_per_order = models.IntegerField()
     active_rate = models.BooleanField(default=False)

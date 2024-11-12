@@ -2,14 +2,9 @@ from pathlib import Path
 import os
 from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices
 from django.db.models import F
-from . utils.logger_config import logger
+from .utils.logger_config import logger
 
-MAP_STRATEGIES = {
-    "mean20_lot": "Дорого",
-    "mean10_lot": "Баланс",
-    "minimal": "Швидко",
-    "double_minimal": "Подвійний"
-}
+
 
 def get_main_data_from_table():
     main_data = (
@@ -49,7 +44,8 @@ def get_main_data_from_table():
     main_data_float_price = []
     for row in main_data:
         try:
-            row['strategy_price'] = get_map_strategy(row)
+            row['strategy_price'] = row['price']
+            logger.info(row['strategy_price'])
             if row['price']:
                 new_price, new_min_stack = get_float_price(row)
                 row['price'] = new_price
@@ -84,7 +80,8 @@ def get_float_price(row):
     return None
 
 
-def get_map_strategy(row):
-    current_strategy = row['price'] if row['price'] else 'nan'
-    return MAP_STRATEGIES[f'{current_strategy}']
+def update_data(data):
+    offer = OffersForPlacement.objects.get(id=data['row_id'])
+    setattr(offer, data['field_name'], data['new_value'])
+    offer.save()
 

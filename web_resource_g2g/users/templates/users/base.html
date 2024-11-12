@@ -10,8 +10,7 @@
   <!-- Mobile Metas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
   <!-- Site Metas -->
-  <link rel="icon" href={% static
-  "images/fevicon.png" %} type="image/gif" />
+  <link rel="icon" href={% static "images/favicon.png" %} type="image/gif" />
   <meta name="keywords" content=""/>
   <meta name="description" content=""/>
   <meta name="author" content=""/>
@@ -30,33 +29,15 @@
   <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
   <!-- responsive style -->
   <link href="{% static 'css/responsive.css' %}" rel="stylesheet"/>
-  <style>
-	  body {
-		  background: {% static 'images/background.jpg' %} no-repeat center center fixed;
-		  background-size: cover;
-	  }
-	  table {
-		  border-collapse: collapse;
-		  width: 100%;
-	  }
-	  th, td {
-		  border: 1px solid #ddd;
-		  padding: 8px;
-	  }
-	  tr:nth-child(even){background-color: #f2f2f2;}
-
-	  th {
-		  text-align:left;
-	  }
-	</style>
 </head>
-
 <body>
+<body style="background-image: url('{% static 'images/background.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
+  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.5);"></div>
 
 <div class="hero_area">
   <!-- header section strats -->
   <header class="header_section long_section px-0">
-	<nav class="navbar navbar-expand-lg custom_nav-container ">
+	<nav class="navbar navbar-expand-lg custom_nav-container">
 
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 		{% if user.is_authenticated %}

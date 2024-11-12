@@ -1,20 +1,32 @@
 {% extends "users/base.html" %}
 {% block content %}
+{% if user.is_authenticated %}
+
 <style>
     .center-container {
         text-align: center;
     }
     table {
         margin: 0 auto;
-        width: 80%; /* Або встановіть фіксовану ширину, якщо потрібно */
+        width: 80%; /* Or set a fixed width if desired */
+        border-collapse: collapse; /* Ensures borders between cells */
+        background-color: rgba(255, 255, 255, 0);
+
+    }
+    th, td {
+        border: 1px solid #ddd; /* Border style and color for cells */
+        padding: 5px; /* Spacing between cell content and borders */
+        background-color: transparent;
+
     }
     .price-column {
          width: 200px;
-}
+    }
+
 </style>
   <div class="center-container">
 
-    <table>
+    <table >
       <thead>
           <tr>
               <th></th>
@@ -24,55 +36,77 @@
               <th>Запас</th>
               <th>Стратегія</th>
               <th>Відсоткове корегування</th>
-              <th> Збереження</th>
           </tr>
       </thead>
       <tbody>
-      {% for row in bets_list %}
-        <tr>
-          <td>{{ forloop.counter }}</td> <!-- Row number -->
-          <td style="width: 200px;"><input type="text" value="{{ row.game_name }}" readonly></td>
-          <td><input type="text" value="{{ row.server_name }}" readonly></td>
-          <td><input type="text" value="{{ row.price }}" readonly></td>
-          <td style="width: 200px;"><input type="text" value="{{ row.stock}}"></td>
-          <td>
-            <select class="strategy-select">
-              <option value="{{ row.strategy_price }}">{{ row.strategy_price }}</option>
-              <option value="strategy one">Дорожче</option>
-              <option value="strategy two">Баланс</option>
-              <option value="strategy two">Швидко</option>
-            </select>
-          </td>
-          <td><input type="number" value="{{ row.percent_offset }}"></td>
-          <td><button class="save-button">Зберегти</button></td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-  </div>
-      <script>
-        $(document).ready(function() {
-            $('.save-button').click(function() {
-                // Отримуємо дані з рядка
-                var row = $(this).closest('tr');
-                var name = row.find('input:eq(0)').val();
-                var surname = row.find('input:eq(1)').val();
-                var age = row.find('input:eq(2)').val();
+        {% for row in bets_list %}
+          <tr id="{{row.id}}">
+            <td>{{ forloop.counter }}</td>
+            <form method="post" id="bet-form-{{ row.id }}" action="{% url 'main:update_table_data' %}" >
+              {% csrf_token %}
+              <td><input type="text" value="{{ row.server_name }}" readonly></td>
+              <td style="width: 200px;"><input type="text" value="{{ row.game_name }}" readonly></td>
+              <td><input type="text" value="{{ row.price }}" readonly></td>
+              <td style="width: 200px;"><input type="text" value="{{ row.stock}}" name="stock"></td>
+              <td>
+                <select class="strategy-select" name="price" id="strategySelect_{{ row.id }}">
+                  <option value="mean20_lot" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
+                  <option value="mean10_lot" {% if row.strategy_price == "mean10_lot" %}selected{% endif %}>Баланс</option>
+                  <option value="minimal" {% if row.strategy_price == "minimal" %}selected{% endif %}>Швидко</option>
+                </select>
+              </td>
 
-                // Відправляємо дані на сервер
-                $.ajax({
-                    url: '/save_data/', // Замініть на ваш URL
-                    type: 'POST',
-                    data: {
-                        name: name,
-                        surname: surname,
-                        age: age
-                    },
-                    success: function(response) {
-                        alert(response);
-                    }
-                });
-            });
-        });
-    </script>
+              <td><input type="number" value="{{ row.percent_offset }}" name="percent_offset"></td>
+            </form>
+          </tr>
+        {% endfor %}
+
+      </tbody>
+      </table>
+      <span><button class="save-button">Розмістити пропозиції</button></span>
+
+
+  </div>
+
+<script>
+ const tableRows = document.querySelectorAll('tr');
+ const csrftoken = document.cookie.split(';').map(c => c.trim()).filter(c => c.startsWith('csrftoken=')).pop().split('=')[1];
+
+tableRows.forEach(row => {
+  const inputs = row.querySelectorAll('input, select');
+  inputs.forEach(input => {
+    input.addEventListener('change', () => {
+      const rowId = row.id; // Assuming each row has a unique ID
+      const fieldName = input.name;
+      const newValue = input.value;
+
+      const data = {
+        row_id: rowId,
+        field_name: fieldName,
+        new_value: newValue
+      };
+
+      fetch('{% url "main:update_table_data" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the server response, e.g., display success/error messages
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  });
+});
+</script>
+
+{% endif %}
 {% endblock %}
