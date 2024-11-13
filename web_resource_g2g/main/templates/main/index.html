@@ -46,7 +46,7 @@
               {% csrf_token %}
               <td><input type="text" value="{{ row.server_name }}" readonly></td>
               <td style="width: 200px;"><input type="text" value="{{ row.game_name }}" readonly></td>
-              <td><input type="text" value="{{ row.price }}" readonly></td>
+              <td><input type="text" value="{{ row.price }}" id="price-field-{{row.id}}" readonly></td>
               <td style="width: 200px;"><input type="text" value="{{ row.stock}}" name="stock"></td>
               <td>
                 <select class="strategy-select" name="price" id="strategySelect_{{ row.id }}">
@@ -67,46 +67,71 @@
 
 
   </div>
-
 <script>
- const tableRows = document.querySelectorAll('tr');
- const csrftoken = document.cookie.split(';').map(c => c.trim()).filter(c => c.startsWith('csrftoken=')).pop().split('=')[1];
+  const tableRows = document.querySelectorAll('tr');
+  const csrftoken = document.cookie.split(';')
+    .map(c => c.trim())
+    .find(c => c.startsWith('csrftoken='))
+    ?.split('=')[1];
 
-tableRows.forEach(row => {
-  const inputs = row.querySelectorAll('input, select');
-  inputs.forEach(input => {
-    input.addEventListener('change', () => {
-      const rowId = row.id; // Assuming each row has a unique ID
-      const fieldName = input.name;
-      const newValue = input.value;
+  if (!csrftoken) {
+    console.error('CSRF token not found!');
+  }
 
-      const data = {
-        row_id: rowId,
-        field_name: fieldName,
-        new_value: newValue
-      };
+  tableRows.forEach(row => {
+    const inputs = row.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
+        const rowId = row.id;
+        const fieldName = input.name;
+        const newValue = input.value;
 
-      fetch('{% url "main:update_table_data" %}', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken
+        console.log(`Detected change - Row ID: ${rowId}, Field: ${fieldName}, New Value: ${newValue}`);
 
-        },
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the server response, e.g., display success/error messages
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
+        const data = {
+          row_id: rowId,
+          field_name: fieldName,
+          new_value: newValue
+        };
+
+        fetch({% url "main:update_table_data" %}, {  // Replace this with actual URL if needed
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+          },
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+  .then(data => {
+    console.log('Server response:', data); // Логування відповіді сервера
+
+    if (data.success) {
+      // Знаходимо поле ціни в поточному рядку за допомогою класу чи іншого атрибута
+      const rowId = row.id;
+      const priceInputId = `price-field-${rowId}`;
+      const priceInput = document.querySelector(`#${priceInputId}`);
+      if (priceInput) {
+        console.log(`Оновлюємо поле ціни в рядку ID ${rowId} з новим значенням: ${data.new_price}`);
+        priceInput.value = data.new_price;
+      } else {
+        console.warn(`Поле ціни не знайдено у рядку ID: ${rowId}`);
+      }
+    } else {
+      console.error('Не вдалося оновити дані:', data);
+    }
+})
+.catch(error => {
+  console.error('Помилка під час fetch запиту:', error); // Логування помилок запиту
+});
+
       });
     });
   });
-});
 </script>
+
+
+
 
 {% endif %}
 {% endblock %}

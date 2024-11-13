@@ -81,7 +81,18 @@ def get_float_price(row):
 
 
 def update_data(data):
+
     offer = OffersForPlacement.objects.get(id=data['row_id'])
     setattr(offer, data['field_name'], data['new_value'])
     offer.save()
+
+    new_strategy = offer.price
+    top_prices_row = TopPrices.objects.get(server_name=offer.server_urls_id)
+    new_price = getattr(top_prices_row, new_strategy)
+
+    return new_price
+
+
+
+
 
