@@ -5,7 +5,6 @@ from django.db.models import F
 from .utils.logger_config import logger
 
 
-
 def get_main_data_from_table():
     main_data = (
         OffersForPlacement.objects
@@ -70,14 +69,14 @@ def get_float_price(row):
 
     float_price = (TopPrices.objects.filter(server_name=server_urls_id).
                    values_list(currently_strategy, flat=True).first())
-    if float_price:
-        # Коригуємо відсоток
-        if percent_offset and percent_offset != 'nan' and float_price and stock:
-            calculate_float_price = float_price * \
-                                    (1 + percent_offset / 100) * stock
-            float_price = round(calculate_float_price, 2)
-        return float_price, min_stack
-    return None
+    # if float_price:
+    #     # Коригуємо відсоток
+    #     if percent_offset and percent_offset != 'nan' and float_price and stock:
+    #         calculate_float_price = float_price * \
+    #                                 (1 + percent_offset / 100) * stock
+    #         float_price = round(calculate_float_price, 2)
+    return float_price, min_stack
+
 
 
 def update_data(data):
@@ -93,6 +92,12 @@ def update_data(data):
     return new_price
 
 
+def get_servers_for_add():
+    servers = ServerUrls.objects.values('game_name', 'region', 'fraction')
+    return servers
 
 
+def query_servers():
+    servers = ServerUrls.objects.all()
+    return servers
 

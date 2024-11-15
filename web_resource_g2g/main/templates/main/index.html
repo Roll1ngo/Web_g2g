@@ -25,7 +25,6 @@
 
 </style>
   <div class="center-container">
-
     <table >
       <thead>
           <tr>
@@ -35,7 +34,6 @@
               <th>Ціна</th>
               <th>Запас</th>
               <th>Стратегія</th>
-              <th>Відсоткове корегування</th>
           </tr>
       </thead>
       <tbody>
@@ -55,20 +53,135 @@
                   <option value="minimal" {% if row.strategy_price == "minimal" %}selected{% endif %}>Швидко</option>
                 </select>
               </td>
-
-              <td><input type="number" value="{{ row.percent_offset }}" name="percent_offset"></td>
             </form>
           </tr>
         {% endfor %}
 
       </tbody>
       </table>
-      <span><button class="save-button">Розмістити пропозиції</button></span>
-
-
   </div>
+  <div class="center-container" style="justify-content: space-between;">
+    <span><button class="save-button">Додати сервер</button></span>
+    <span><button class="save-button">Розмістити пропозиції</button></span>
+  </div>
+
+<div id="add-server-form" style="display: none;">
+    <table>
+      <thead>
+        <tr id="add-server-head">
+          <th>Гра</th>
+          <th>Регіон</th>
+          <th>Сервер</th>
+        </tr>
+      </thead>
+      <tbody>
+        <form method="post" action="{% url 'main:add_server' %}">
+          {% csrf_token %}
+          <tr id="add-server-body">
+            <td>
+              <select class="game-select" id="game-name-select">
+                {% for game in games %}
+                  <option value="{{ game }}">{{ game }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+              <select class="game-select" id="region-select">
+                {% for region in regions %}
+                  <option value="{{ region }}">{{ region }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td>
+              <select class="game-select" id="server-select">
+                </select>
+            </td>
+          </tr>
+        </form>
+       </tbody>
+      </table>
+         <div class="center-container" style="justify-content: space-between;">
+           <span><button class="save-button" id="add-server-button">Готово</button></span>
+           <span><button class="save-button">Скасувати</button></span>
+         </div>
+</div>
+
 <script>
-  const tableRows = document.querySelectorAll('tr');
+  // Глобальні змінні для форми додавання сервера
+  const addServerButton = document.getElementById('add-server-button');
+  const gameSelect = document.getElementById('game-name-select');
+  const regionSelect = document.getElementById('region-select');
+  const serverSelect = document.getElementById('server-select');
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  // Обробник кнопки "Готово"
+  addServerButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const formData = {
+      game: gameSelect.value,
+      region: regionSelect.value,
+      server: serverSelect.value,
+    };
+
+    fetch("{% url 'main:add_server' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+</script>
+
+<script>
+  // Локальні змінні для роботи із серверами
+  const serversData = {{ servers_json | safe }};
+
+  function updateServers(game, region) {
+    const selectedServers = serversData[game]?.[region] || [];
+    serverSelect.innerHTML = '';
+
+    selectedServers.forEach((server) => {
+      const option = document.createElement('option');
+      option.value = server;
+      option.textContent = server;
+      serverSelect.appendChild(option);
+    });
+  }
+
+  gameSelect.addEventListener('change', () => {
+    updateServers(gameSelect.value, regionSelect.value);
+  });
+
+  regionSelect.addEventListener('change', () => {
+    updateServers(gameSelect.value, regionSelect.value);
+  });
+
+  // Ініціалізація
+  updateServers(gameSelect.value, regionSelect.value);
+</script>
+
+<script>
+  // Унікальна функція для управління відображенням форми
+  const toggleAddServerForm = document.querySelector('.save-button:first-child');
+  const addServerForm = document.getElementById('add-server-form');
+
+  toggleAddServerForm.addEventListener('click', () => {
+    addServerForm.style.display = addServerForm.style.display === 'none' ? 'block' : 'none';
+  });
+</script>
+
+<script>
+  const tableRows = document.querySelectorAll('tr:not(#add-server-body):not(#add-server-head)');
   const csrftoken = document.cookie.split(';')
     .map(c => c.trim())
     .find(c => c.startsWith('csrftoken='))
@@ -129,8 +242,6 @@
     });
   });
 </script>
-
-
 
 
 {% endif %}

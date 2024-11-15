@@ -1,4 +1,5 @@
 /*!
+/*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
  * Copyright 2011-2019 Twitter, Inc.
@@ -11141,5 +11142,8 @@ a.text-dark:focus {
     border-color: #dee2e6;
   }
 }
-
+.center-container {
+  display: flex;
+  justify-content: space-around; /* або space-around, або space-evenly */
+}
 /*# sourceMappingURL=bootstrap.css.map */
