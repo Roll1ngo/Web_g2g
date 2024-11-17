@@ -115,7 +115,7 @@
 </div>
 
 <script>
-  //Обробник кнопки Готово для відправки даних по додаванню сервера до списку та закриття форми
+  //Обробник кнопки Готово для відправки даних по додаванню сервера та double add check
   // Глобальні змінні для форми додавання сервера
   const addServerButton = document.getElementById('add-server-button');
   const gameSelect = document.getElementById('game-name-select');
@@ -124,6 +124,7 @@
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const form = document.getElementById('close-add-server-form');
 
+  //Функція перевірки існування сервера в таблиці
   function isServerExists(formData, existingServers) {
   return existingServers.some(existingServer =>
     existingServer.server_name === formData.server &&
