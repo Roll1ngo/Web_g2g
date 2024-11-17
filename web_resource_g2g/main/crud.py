@@ -171,3 +171,15 @@ def add_server_to_db(data):
 def delete_server_from_list(offer_id):
     offer = OffersForPlacement.objects.get(id=offer_id)
     offer.delete()
+
+
+def pause_offer(offer_id, action):
+    offer = OffersForPlacement.objects.get(id=offer_id)
+
+    if action == 'pause':
+        setattr(offer, 'active_rate', 0)
+    elif action == 'resume':
+        setattr(offer, 'active_rate', 1)
+
+    offer.save()
+

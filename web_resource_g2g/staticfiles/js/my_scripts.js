@@ -1,141 +1,4 @@
-{% extends "users/base.html" %}
-{% block content %}
-{% if user.is_authenticated %}
 
-<style>
-    .center-container {
-        text-align: center;
-    }
-    table {
-        margin: 0 auto;
-        width: 80%; /* Or set a fixed width if desired */
-        border-collapse: collapse; /* Ensures borders between cells */
-        background-color: rgba(255, 255, 255, 0);
-
-    }
-    th, td {
-        border: 1px solid #ddd; /* Border style and color for cells */
-        padding: 5px; /* Spacing between cell content and borders */
-        background-color: transparent;
-
-    }
-    .price-column {
-         width: 200px;
-    }
-    .status-circle {
-      display: inline-block;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-}
-</style>
-
-  <div class="center-container">
-    <table >
-      <thead>
-          <tr>
-              <th></th>
-              <th>Гра</th>
-              <th>Сервер</th>
-              <th>Ціна</th>
-              <th>Запас</th>
-              <th>Стратегія</th>
-              <th>Опції</th>
-              <th>Статус</th>
-          </tr>
-      </thead>
-      <tbody>
-        {% for row in bets_list %}
-          <tr id="{{row.id}}">
-            <td>{{ forloop.counter }}</td>
-            <form method="post" id="bet-form-{{ row.id }}" action="{% url 'main:update_table_data' %}" >
-              {% csrf_token %}
-              <td><input type="text" value="{{ row.server_name }}" readonly></td>
-              <td style="width: 200px;"><input type="text" value="{{ row.game_name }}" readonly></td>
-              <td><input type="text" value="{{ row.price }}" id="price-field-{{row.id}}" readonly></td>
-              <td style="width: 200px;"><input type="text" value="{{ row.stock}}" name="stock" onkeypress="return isNumberKey(event)"></td>
-              <td>
-                <select class="strategy-select" name="price" id="strategySelect_{{ row.id }}">
-                  <option value="mean20_lot" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
-                  <option value="mean10_lot" {% if row.strategy_price == "mean10_lot" %}selected{% endif %}>Баланс</option>
-                  <option value="minimal" {% if row.strategy_price == "minimal" %}selected{% endif %}>Швидко</option>
-                </select>
-              </td>
-              <td>
-                <select  id="options-select-{{ row.id }}" class="select-options">
-                  <option value="emtpy-field"></option>
-                  {% if row.active_rate == 1 %}
-                  <option value="pause" name="pause-server">Зупинити продаж</option>
-                  {% endif%}
-
-                  {% if row.active_rate == 0 %}
-                  <option value="resume" name="resume-server">Відновити продаж</option>
-                  {% endif %}
-                  <option value="delete" >Видалити сервер</option>
-                </select>
-              </td>
-              <td>
-                {% if row.active_rate == 0 %}
-                <span class="status-circle" style="background-color: red"></span>
-                {% else %}
-                <span class="status-circle" style="background-color: green"></span>
-                {% endif %}
-
-              </td>
-            </form>
-          </tr>
-        {% endfor %}
-
-      </tbody>
-      </table>
-  </div>
-  <div class="center-container" style="justify-content: space-between;">
-    <span><button class="save-button">Додати сервер</button></span>
-    <span><button class="save-button">Розмістити пропозиції</button></span>
-  </div>
-
-<div id="add-server-form" style="display: none;">
-    <table>
-      <thead>
-        <tr id="add-server-head">
-          <th>Гра</th>
-          <th>Регіон</th>
-          <th>Сервер</th>
-        </tr>
-      </thead>
-      <tbody>
-        <form method="post" action="{% url 'main:add_server' %}" id="form-add-server" class="addserver-form">
-          {% csrf_token %}
-          <tr id="add-server-body">
-            <td>
-              <select class="game-select" id="game-name-select">
-                {% for game in games %}
-                  <option value="{{ game }}">{{ game }}</option>
-                {% endfor %}
-              </select>
-            </td>
-            <td>
-              <select class="game-select" id="region-select">
-                {% for region in regions %}
-                  <option value="{{ region }}">{{ region }}</option>
-                {% endfor %}
-              </select>
-            </td>
-            <td>
-              <select class="game-select" id="server-select">
-                </select>
-            </td>
-          </tr>
-        </form>
-       </tbody>
-      </table>
-         <div class="center-container" style="justify-content: space-between;">
-           <span><button class="save-button" id="add-server-button">Готово</button></span>
-           <span><button class="save-button" id="close-add-server-form">Скасувати</button></span>
-         </div>
-  </div>
-{% endif %}
-<script>
   //Обробник кнопки Готово для відправки даних по додаванню сервера та double add check
   // Глобальні змінні для форми додавання сервера
   const addServerButton = document.getElementById('add-server-button');
@@ -195,9 +58,9 @@
       alert('Сталася несподівана помилка. Будь ласка, спробуйте пізніше.');
     });
   });
-</script>
 
-<script>
+
+
   // Динамічна зміна списку серверів в залежності від вибору гри та регіону
   const gameSelectAdd = document.getElementById('game-name-select');
   const regionSelectAdd = document.getElementById('region-select');
@@ -225,9 +88,9 @@
 
   // Ініціалізація
   updateServers(gameSelect.value, regionSelectAdd.value);
-</script>
 
-<script>
+
+
   // Обробник кнопки Додати сервер для появи форми
   // Унікальна функція для управління відображенням форми
   const toggleAddServerForm = document.querySelector('.save-button:first-child');
@@ -236,9 +99,8 @@
   toggleAddServerForm.addEventListener('click', () => {
     addServerForm.style.display = addServerForm.style.display === 'none' ? 'block' : 'none';
   });
-</script>
 
-<script>
+
   // Динамічна зміна ціни та перевірка зміни значення "stock"
   const tableRows = document.querySelectorAll('tr:not(#add-server-body):not(#add-server-head)');
   const csrftoken = document.cookie.split(';')
@@ -330,12 +192,9 @@
       });
     });
   });
-</script>
 
 
-<script>
-    // Обробник кнопки Скасувати
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Отримуємо посилання на елементи форми та кнопки
     const addServerFormForClose = document.getElementById('add-server-form');
     const closeAddServerFormButton = document.getElementById('close-add-server-form');
@@ -347,8 +206,6 @@
     });
 
 });
-</script>
-<script>
   //Призупинення та видалення лотів
   document.addEventListener('DOMContentLoaded', () => {
   // Відслідковуємо зміну в select
@@ -476,6 +333,3 @@
     document.head.appendChild(style);
   }
 });
-</script>
-{% endblock %}
-

@@ -20,7 +20,6 @@ def start_page(request):
 
         double_add = json.dumps([{'server_name': server['server_name'],
                                   'game_name': server['game_name']} for server in all_bets])
-        logger.info(double_add)
 
         return render(request, 'main/index.html', context={"bets_list": all_bets,
                                                            'games': games,
@@ -56,10 +55,11 @@ def handle_option_change(request):
     payload = json.loads(request.body)
     offer_id = payload["row_id"]
     action = payload["action"]
-    logger.info(f'row_id_for delete{offer_id}, action__{action}')
-
-    crud.delete_server_from_list(offer_id)
-
+    logger.info(f'Change option__{action} for__{ offer_id},')
+    if action == 'delete':
+        crud.delete_server_from_list(offer_id)
+    else:
+        crud.pause_offer(offer_id, action)
     return JsonResponse({'success': True})
 
 
