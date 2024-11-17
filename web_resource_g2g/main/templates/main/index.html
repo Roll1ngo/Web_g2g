@@ -22,8 +22,8 @@
     .price-column {
          width: 200px;
     }
-
 </style>
+
   <div class="center-container">
     <table >
       <thead>
@@ -34,6 +34,7 @@
               <th>Ціна</th>
               <th>Запас</th>
               <th>Стратегія</th>
+              <th>Опції</th>
           </tr>
       </thead>
       <tbody>
@@ -51,6 +52,13 @@
                   <option value="mean20_lot" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
                   <option value="mean10_lot" {% if row.strategy_price == "mean10_lot" %}selected{% endif %}>Баланс</option>
                   <option value="minimal" {% if row.strategy_price == "minimal" %}selected{% endif %}>Швидко</option>
+                </select>
+              </td>
+              <td>
+                <select  id="options-select-{{ row.id }}" class="select-options">
+                  <option value="emtpy-field"></option>
+                  <option value="pause" name="pause-server">Зупинити продаж</option>
+                  <option value="delete" >Видалити сервер</option>
                 </select>
               </td>
             </form>
@@ -75,7 +83,7 @@
         </tr>
       </thead>
       <tbody>
-        <form method="post" action="{% url 'main:add_server' %}">
+        <form method="post" action="{% url 'main:add_server' %}" id="form-add-server" class="addserver-form">
           {% csrf_token %}
           <tr id="add-server-body">
             <td>
@@ -102,49 +110,58 @@
       </table>
          <div class="center-container" style="justify-content: space-between;">
            <span><button class="save-button" id="add-server-button">Готово</button></span>
-           <span><button class="save-button">Скасувати</button></span>
+           <span><button class="save-button" id="close-add-server-form">Скасувати</button></span>
          </div>
 </div>
 
 <script>
-  // Глобальні змінні для форми додавання сервера
-  const addServerButton = document.getElementById('add-server-button');
-  const gameSelect = document.getElementById('game-name-select');
-  const regionSelect = document.getElementById('region-select');
-  const serverSelect = document.getElementById('server-select');
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+ //Обробник кнопки Готово для відправки даних по додаванню сервера до списку та закриття форми
+// Глобальні змінні для форми додавання сервера
+const addServerButton = document.getElementById('add-server-button');
+const gameSelect = document.getElementById('game-name-select');
+const regionSelect = document.getElementById('region-select');
+const serverSelect = document.getElementById('server-select');
+const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const form = document.getElementById('close-add-server-form');
 
-  // Обробник кнопки "Готово"
-  addServerButton.addEventListener('click', (event) => {
-    event.preventDefault();
+// Обробник кнопки "Готово"
+addServerButton.addEventListener('click', (event) => {
+  event.preventDefault();
 
-    const formData = {
-      game: gameSelect.value,
-      region: regionSelect.value,
-      server: serverSelect.value,
-    };
+  const formData = {
+    game: gameSelect.value,
+    region: regionSelect.value,
+    server: serverSelect.value,
+  };
 
-    fetch("{% url 'main:add_server' %}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+  fetch("{% url 'main:add_server' %}", {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrfToken
+  },
+  body: JSON.stringify(formData)
+})
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      // Відображаємо модальне вікно
+      // Перезавантажуємо сторінку
+      window.location.reload();
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+    alert('Сталася несподівана помилка. Будь ласка, спробуйте пізніше.');
   });
+});
 </script>
 
 <script>
+  // Динамічна зміна списку серверів в залежності від вибору гри та регіону
   // Локальні змінні для роботи із серверами
   const serversData = {{ servers_json | safe }};
+
 
   function updateServers(game, region) {
     const selectedServers = serversData[game]?.[region] || [];
@@ -171,6 +188,7 @@
 </script>
 
 <script>
+  // Обробник нопки Додати сервер для появи форми
   // Унікальна функція для управління відображенням форми
   const toggleAddServerForm = document.querySelector('.save-button:first-child');
   const addServerForm = document.getElementById('add-server-form');
@@ -181,6 +199,7 @@
 </script>
 
 <script>
+  // Динимічна зміна ціни в залежності від стратегії
   const tableRows = document.querySelectorAll('tr:not(#add-server-body):not(#add-server-head)');
   const csrftoken = document.cookie.split(';')
     .map(c => c.trim())
@@ -192,7 +211,7 @@
   }
 
   tableRows.forEach(row => {
-    const inputs = row.querySelectorAll('input, select');
+    const inputs = row.querySelectorAll('input, select.strategy-select');
     inputs.forEach(input => {
       input.addEventListener('change', () => {
         const rowId = row.id;
@@ -234,7 +253,7 @@
       console.error('Не вдалося оновити дані:', data);
     }
 })
-.catch(error => {
+  .catch(error => {
   console.error('Помилка під час fetch запиту:', error); // Логування помилок запиту
 });
 
@@ -242,7 +261,145 @@
     });
   });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Отримуємо посилання на елементи форми та кнопки
+    const addServerFormForClose = document.getElementById('add-server-form');
+    const closeAddServerFormButton = document.getElementById('close-add-server-form');
 
+    // Додаємо обробник події для кнопки "Скасувати"
+    closeAddServerFormButton.addEventListener('click', function() {
+        // Приховуємо форму
+        addServerFormForClose.style.display = 'none';
+    });
+
+});
+</script>
+<script>
+  //Призупинення та видалення лотів
+  document.addEventListener('DOMContentLoaded', () => {
+  // Відслідковуємо зміну в select
+  const selectElements = document.querySelectorAll('.select-options');
+
+  selectElements.forEach((selectElement) => {
+    selectElement.addEventListener('change', (event) => {
+      const selectedOption = event.target.value; // Отримуємо вибраний варіант
+      const rowId = event.target.id.split('-').pop(); // Отримуємо ID рядка з ID елемента
+
+      // Якщо вибраний варіант не порожній
+      if (selectedOption !== 'emtpy-field') {
+        // Створюємо модальне вікно підтвердження
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
+        modal.innerHTML = `
+          <div class="modal-overlay"></div>
+          <div class="modal-content">
+            <p>Ви дійсно хочете ${
+              selectedOption === 'pause' ? 'зупинити продаж' : 'видалити сервер'
+            }?</p>
+            <button id="confirm-button" class="btn">Так</button>
+            <button id="cancel-button" class="btn btn-cancel">Ні</button>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Додаємо стилі для модального вікна
+        addModalStyles();
+
+        // Обробка натискання кнопки "Так"
+        const confirmButton = document.getElementById('confirm-button');
+        confirmButton.addEventListener('click', () => {
+          modal.remove(); // Закриваємо модальне вікно
+
+          // Надсилаємо дані на сервер
+          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          fetch("{% url 'main:handle_option_change' %}", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken,
+            },
+            body: JSON.stringify({ row_id: rowId, action: selectedOption }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                // Перезавантажуємо сторінку
+                window.location.reload();
+                console.log('Операцію успішно виконано:', data.message);
+              } else {
+                console.error('Помилка:', data.error);
+              }
+            })
+            .catch((error) => console.error('Помилка запиту:', error));
+        });
+
+        // Обробка натискання кнопки "Ні"
+        const cancelButton = document.getElementById('cancel-button');
+        cancelButton.addEventListener('click', () => {
+          modal.remove(); // Закриваємо модальне вікно
+          event.target.value = 'emtpy-field'; // Скидаємо вибір
+        });
+      }
+    });
+  });
+
+  // Функція для додавання стилів модального вікна
+  function addModalStyles() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+      .modal-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        position: relative;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 1001;
+      }
+      .modal-content .btn {
+        margin: 10px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .modal-content .btn-cancel {
+        background-color: #dc3545;
+      }
+      .modal-content .btn:hover {
+        background-color: #0056b3;
+      }
+      .modal-content .btn-cancel:hover {
+        background-color: #c82333;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+});
+</script>
 
 {% endif %}
 {% endblock %}

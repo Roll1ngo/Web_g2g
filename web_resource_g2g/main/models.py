@@ -1,5 +1,7 @@
 # models.py
 from django.db import models
+from django.contrib.auth.models import User
+
 from datetime import datetime
 
 from django.utils import timezone
@@ -8,6 +10,7 @@ from django.utils import timezone
 class Sellers(models.Model):
     id_discord = models.CharField(max_length=255)
     name_on_server = models.CharField(max_length=255)
+    auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'sellers'

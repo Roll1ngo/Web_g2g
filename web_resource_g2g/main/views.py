@@ -14,29 +14,13 @@ def start_page(request):
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
         regions = set(server.region for server in servers)
-        server_data = []
-        for server in servers:
-            server_data.append({
-                'game_name': server.game_name,
-                'region': server.region,
-                'server_name': server.server_name
-            })
-
-        # Групуємо дані за грою та регіоном
-        grouped_data = {}
-        for data in server_data:
-            game = data['game_name']
-            region = data['region']
-            if game not in grouped_data:
-                grouped_data[game] = {}
-            if region not in grouped_data[game]:
-                grouped_data[game][region] = []
-            grouped_data[game][region].append(data['server_name'])
+        grouped_data = crud.get_grouped_data(servers)
+        grouped_data = json.dumps(grouped_data)
 
         return render(request, 'main/index.html', context={"bets_list": all_bets,
                                                            'games': games,
                                                            'regions': regions,
-                                                           'servers_json': json.dumps(grouped_data)})
+                                                           'servers_json': grouped_data})
 
 
 def update_table_data(request):
@@ -52,9 +36,23 @@ def update_table_data(request):
 def add_server(request):
     if request.method == 'POST':
         add_server_info = json.loads(request.body)
+
+        add_server_info['auth_user_id'] = request.user.id
         logger.info(f"add_server_info__{add_server_info}")
-        return JsonResponse({'success': True})
+        crud.add_server_to_db(add_server_info)
+
+    return JsonResponse({'success': True})
 
 
-def about(request):
-    return render(request, "main/about.html")
+def handle_option_change(request):
+    logger.info("inside handle_option_change")
+    payload = json.loads(request.body)
+    offer_id = payload["row_id"]
+    action = payload["action"]
+    logger.info(f'row_id_for delete{offer_id}, action__{action}')
+
+    crud.delete_server_from_list(offer_id)
+
+    return JsonResponse({'success': True})
+
+

@@ -44,7 +44,6 @@ def get_main_data_from_table():
     for row in main_data:
         try:
             row['strategy_price'] = row['price']
-            logger.info(row['strategy_price'])
             if row['price']:
                 new_price, new_min_stack = get_float_price(row)
                 row['price'] = new_price
@@ -78,16 +77,29 @@ def get_float_price(row):
     return float_price, min_stack
 
 
-
 def update_data(data):
+    try:
+        # Retrieve the OffersForPlacement object
+        offer = OffersForPlacement.objects.get(id=data['row_id'])
 
-    offer = OffersForPlacement.objects.get(id=data['row_id'])
-    setattr(offer, data['field_name'], data['new_value'])
-    offer.save()
+        # Update the specified field with the new value
+        setattr(offer, data['field_name'], data['new_value'])
+        offer.save()
 
-    new_strategy = offer.price
-    top_prices_row = TopPrices.objects.get(server_name=offer.server_urls_id)
-    new_price = getattr(top_prices_row, new_strategy)
+        # Get the new strategy (price)
+        new_strategy = offer.price
+
+        try:
+            # Retrieve the TopPrices object
+            top_prices_row = TopPrices.objects.get(server_name=offer.server_urls_id)
+            new_price = getattr(top_prices_row, new_strategy)
+        except TopPrices.DoesNotExist:
+            # Handle the case where the TopPrices object does not exist
+            new_price = 0
+
+    except OffersForPlacement.DoesNotExist:
+        # Handle the case where the OffersForPlacement object does not exist
+        raise ValueError(f"OffersForPlacement with id {data['row_id']} does not exist.")
 
     return new_price
 
@@ -101,3 +113,59 @@ def query_servers():
     servers = ServerUrls.objects.all()
     return servers
 
+
+def get_grouped_data(servers):
+    server_data = []
+    for server in servers:
+        server_data.append({
+            'game_name': server.game_name,
+            'region': server.region,
+            'server_name': server.server_name
+        })
+    # Групуємо дані за грою та регіоном
+    grouped_data = {}
+    for data in server_data:
+        game = data['game_name']
+        region = data['region']
+        if game not in grouped_data:
+            grouped_data[game] = {}
+        if region not in grouped_data[game]:
+            grouped_data[game][region] = []
+        grouped_data[game][region].append(data['server_name'])
+    return grouped_data
+
+
+def add_server_to_db(data):
+    auth_user_id = data['auth_user_id']
+    server_name = data['server']
+    game_name = data['game']
+
+    seller_id = Sellers.objects.get(auth_user_id=auth_user_id)
+    server_id = ServerUrls.objects.get(server_name=server_name,
+                                       game_name=game_name)
+
+    logger.info(f'seller_id__{seller_id.id}, server_id__{server_id.id}')
+    new_offer = OffersForPlacement(sellers=seller_id,
+                                   server_urls=server_id,
+                                   currency='USD',
+                                   description='gold',
+                                   price='mean20_lot',
+                                   stock=0,
+                                   min_units_per_order=0,
+                                   active_rate=False,
+                                   percent_offset=0,
+                                   duration=3,
+                                   face_to_face_trade=True,
+                                   mail_delivery=True,
+                                   auction_house=True,
+                                   delivery_online_hrs=1,
+                                   delivery_offline_hrs=6,
+                                   is_created_lot=True,
+                                   reserve_stock=0
+                                   )
+    new_offer.save()
+
+
+def delete_server_from_list(offer_id):
+    offer = OffersForPlacement.objects.get(id=offer_id)
+    offer.delete()
