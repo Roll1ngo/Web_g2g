@@ -115,18 +115,26 @@
 </div>
 
 <script>
- //Обробник кнопки Готово для відправки даних по додаванню сервера до списку та закриття форми
-// Глобальні змінні для форми додавання сервера
-const addServerButton = document.getElementById('add-server-button');
-const gameSelect = document.getElementById('game-name-select');
-const regionSelect = document.getElementById('region-select');
-const serverSelect = document.getElementById('server-select');
-const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-const form = document.getElementById('close-add-server-form');
+  //Обробник кнопки Готово для відправки даних по додаванню сервера до списку та закриття форми
+  // Глобальні змінні для форми додавання сервера
+  const addServerButton = document.getElementById('add-server-button');
+  const gameSelect = document.getElementById('game-name-select');
+  const regionSelect = document.getElementById('region-select');
+  const serverSelect = document.getElementById('server-select');
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const form = document.getElementById('close-add-server-form');
 
-// Обробник кнопки "Готово"
-addServerButton.addEventListener('click', (event) => {
-  event.preventDefault();
+  function isServerExists(formData, existingServers) {
+  return existingServers.some(existingServer =>
+    existingServer.server_name === formData.server &&
+    existingServer.game_name === formData.game
+  );
+  }
+
+  // Обробник кнопки "Готово"
+  addServerButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
 
   const formData = {
     game: gameSelect.value,
@@ -134,36 +142,45 @@ addServerButton.addEventListener('click', (event) => {
     server: serverSelect.value,
   };
 
-  fetch("{% url 'main:add_server' %}", {
+  // Список існуючих серверів
+  const existingServers = {{ double_add | safe }};
+
+      // Перевіряємо, чи сервер уже доданий
+  if (isServerExists(formData, existingServers)) {
+    alert('Цей сервер вже існує в таблиці.');
+    return;
+  }
+
+   fetch("{% url 'main:add_server' %}", {
     method: 'POST',
     headers: {
     'Content-Type': 'application/json',
     'X-CSRFToken': csrfToken
   },
   body: JSON.stringify(formData)
-})
-  .then((response) => response.json())
-  .then((data) => {
-    if (data.success) {
-      // Відображаємо модальне вікно
-      // Перезавантажуємо сторінку
-      window.location.reload();
-    }
   })
-  .catch((error) => {
-    console.error('Error:', error);
-    alert('Сталася несподівана помилка. Будь ласка, спробуйте пізніше.');
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // Відображаємо модальне вікно
+        // Перезавантажуємо сторінку
+        window.location.reload();
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Сталася несподівана помилка. Будь ласка, спробуйте пізніше.');
+    });
   });
-});
 </script>
 
 <script>
   // Динамічна зміна списку серверів в залежності від вибору гри та регіону
-  // Локальні змінні для роботи із серверами
-  const serversData = {{ servers_json | safe }};
-
+  const gameSelectAdd = document.getElementById('game-name-select');
+  const regionSelectAdd = document.getElementById('region-select');
 
   function updateServers(game, region) {
+    const serversData = {{ servers_json | safe }};
     const selectedServers = serversData[game]?.[region] || [];
     serverSelect.innerHTML = '';
 
@@ -175,16 +192,16 @@ addServerButton.addEventListener('click', (event) => {
     });
   }
 
-  gameSelect.addEventListener('change', () => {
-    updateServers(gameSelect.value, regionSelect.value);
+  gameSelectAdd.addEventListener('change', () => {
+    updateServers(gameSelectAdd.value, regionSelect.value);
   });
 
-  regionSelect.addEventListener('change', () => {
-    updateServers(gameSelect.value, regionSelect.value);
+  regionSelectAdd.addEventListener('change', () => {
+    updateServers(gameSelectAdd.value, regionSelectAdd.value);
   });
 
   // Ініціалізація
-  updateServers(gameSelect.value, regionSelect.value);
+  updateServers(gameSelect.value, regionSelectAdd.value);
 </script>
 
 <script>

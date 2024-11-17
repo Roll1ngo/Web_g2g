@@ -14,13 +14,20 @@ def start_page(request):
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
         regions = set(server.region for server in servers)
-        grouped_data = crud.get_grouped_data(servers)
-        grouped_data = json.dumps(grouped_data)
+
+        grouped_data_db = crud.get_grouped_data(servers)
+        grouped_data = json.dumps(grouped_data_db)
+
+        double_add = json.dumps([{'server_name': server.server_name,
+                                  'game_name': server.game_name} for server in servers])
+        logger.info(double_add)
 
         return render(request, 'main/index.html', context={"bets_list": all_bets,
                                                            'games': games,
                                                            'regions': regions,
-                                                           'servers_json': grouped_data})
+                                                           'servers_json': grouped_data,
+                                                           'double_add': double_add
+                                                           })
 
 
 def update_table_data(request):
