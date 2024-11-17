@@ -122,7 +122,7 @@ def get_grouped_data(servers):
             'region': server.region,
             'server_name': server.server_name
         })
-    # Групуємо дані за грою та регіоном
+    # Групуємо дані за грою та регіоном і сортуємо сервери
     grouped_data = {}
     for data in server_data:
         game = data['game_name']
@@ -132,6 +132,8 @@ def get_grouped_data(servers):
         if region not in grouped_data[game]:
             grouped_data[game][region] = []
         grouped_data[game][region].append(data['server_name'])
+        # Сортуємо список серверів за алфавітом
+        grouped_data[game][region].sort()
     return grouped_data
 
 

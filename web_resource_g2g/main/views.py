@@ -16,11 +16,11 @@ def start_page(request):
         regions = set(server.region for server in servers)
 
         grouped_data_db = crud.get_grouped_data(servers)
+        logger.info(grouped_data_db)
         grouped_data = json.dumps(grouped_data_db)
 
         double_add = json.dumps([{'server_name': server.server_name,
                                   'game_name': server.game_name} for server in servers])
-        logger.info(double_add)
 
         return render(request, 'main/index.html', context={"bets_list": all_bets,
                                                            'games': games,
