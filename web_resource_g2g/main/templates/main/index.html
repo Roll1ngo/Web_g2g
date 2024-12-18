@@ -2,34 +2,6 @@
 {% block content %}
 {% if user.is_authenticated %}
 
-<style>
-    .center-container {
-        text-align: center;
-    }
-    table {
-        margin: 0 auto;
-        width: 80%; /* Or set a fixed width if desired */
-        border-collapse: collapse; /* Ensures borders between cells */
-        background-color: rgba(255, 255, 255, 0);
-
-    }
-    th, td {
-        border: 1px solid #ddd; /* Border style and color for cells */
-        padding: 5px; /* Spacing between cell content and borders */
-        background-color: transparent;
-
-    }
-    .price-column {
-         width: 200px;
-    }
-    .status-circle {
-      display: inline-block;
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-}
-</style>
-
   <div class="center-container">
     <table >
       <thead>
@@ -77,8 +49,15 @@
               <td>
                 {% if row.active_rate == 0 %}
                 <span class="status-circle" style="background-color: red"></span>
-                {% else %}
+
+                {% elif row.active_rate == 1 and row.order_status != 1 %}
                 <span class="status-circle" style="background-color: green"></span>
+
+                {% elif row.order_status == 1 %}
+                 <a href="{% url 'main:show_order_info' row.server_urls %}" class="status-link" target="_blank">
+                    <span class="status-circle blinking"></span>
+                </a>
+
                 {% endif %}
 
               </td>

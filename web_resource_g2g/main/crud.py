@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices
+from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders
 from django.db.models import F
 from .utils.logger_config import logger
 
@@ -36,7 +36,7 @@ def get_main_data_from_table():
             'game_name',
             'region',
             'server_name',
-
+            'order_status'
         )
     )
     # Оновлюємо ціни та створюємо новий список
@@ -163,7 +163,8 @@ def add_server_to_db(data):
                                    delivery_online_hrs=1,
                                    delivery_offline_hrs=6,
                                    is_created_lot=True,
-                                   reserve_stock=0
+                                   reserve_stock=0,
+                                   order_status=False
                                    )
     new_offer.save()
 
@@ -183,3 +184,9 @@ def pause_offer(offer_id, action):
 
     offer.save()
 
+
+def get_order_info(server_id):
+
+    order_info = SoldOrders.objects.filter(server_id=server_id).select_related('server')
+
+    return order_info

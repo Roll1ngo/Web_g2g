@@ -8,8 +8,7 @@ from django.utils import timezone
 
 
 class Sellers(models.Model):
-    id_discord = models.CharField(max_length=255)
-    name_on_server = models.CharField(max_length=255)
+    id_telegram = models.CharField(max_length=255)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
@@ -29,9 +28,6 @@ class ServerUrls(models.Model):
     class Meta:
         db_table = 'server_urls'
 
-    def __str__(self):
-        return self.server_name
-
 
 class TopPrices(models.Model):
     server_name = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
@@ -49,9 +45,6 @@ class TopPrices(models.Model):
 
     class Meta:
         db_table = 'top_prices'
-
-    def __str__(self):
-        return f"TopPrices for {self.server_name}"
 
 
 class OffersForPlacement(models.Model):
@@ -72,9 +65,31 @@ class OffersForPlacement(models.Model):
     delivery_offline_hrs = models.IntegerField()
     is_created_lot = models.BooleanField(default=False)
     reserve_stock = models.IntegerField(default=0)
+    order_status = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'offers_for_placement'
 
-    def __str__(self):
-        return f"Offer by {self.sellers} on {self.server_urls}"
+
+class SoldOrders(models.Model):
+    server = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
+    status = models.CharField(max_length=255)
+    bought_by = models.CharField(max_length=255)
+    character_name = models.CharField(max_length=255)
+    sold_order_number = models.IntegerField()
+    quantity = models.IntegerField()
+    price_unit = models.IntegerField()
+    total_amount = models.IntegerField()
+    comission_fee = models.IntegerField()
+    to_be_earned = models.IntegerField()
+    trade_mode = models.CharField(max_length=255)
+    created_time = models.DateTimeField(default=timezone.now)
+    send_message = models.BooleanField(default=False)
+    path_to_video = models.CharField(max_length=255, blank=True)
+    download_video_status = models.BooleanField(default=False)
+    send_video_status = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'sold_orders'
+

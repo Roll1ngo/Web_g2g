@@ -10,6 +10,7 @@ from .utils.logger_config import logger
 def start_page(request):
     if request.method == 'GET':
         all_bets = crud.get_main_data_from_table()
+        logger.info(all_bets)
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
@@ -62,4 +63,8 @@ def handle_option_change(request):
         crud.pause_offer(offer_id, action)
     return JsonResponse({'success': True})
 
+
+def show_order_info(request, server_id):
+    order_info = crud.get_order_info(server_id)
+    return render(request, 'main/show_order_info.html', context={"order_info": order_info})
 

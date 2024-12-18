@@ -15,6 +15,56 @@
   <meta name="description" content=""/>
   <meta name="author" content=""/>
 
+  <style>
+    .center-container {
+        text-align: center;
+    }
+    table {
+        margin: 0 auto;
+        width: 80%; /* Or set a fixed width if desired */
+        border-collapse: collapse; /* Ensures borders between cells */
+        background-color: rgba(255, 255, 255, 0);
+
+    }
+    th, td {
+        border: 1px solid #ddd; /* Border style and color for cells */
+        padding: 5px; /* Spacing between cell content and borders */
+        background-color: transparent;
+
+    }
+    .price-column {
+         width: 200px;
+    }
+
+    @keyframes pulse-blink {
+    0% {
+      background-color: green;
+      transform: scale(1);
+    }
+    50% {
+      background-color: yellow;
+      transform: scale(2);
+    }
+    100% {
+      background-color: green;
+      transform: scale(1);
+    }
+  }
+
+  .status-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+  }
+
+  .status-circle.blinking {
+    animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
+  }
+}
+</style>
+
+
   <title>Bets</title>
 
   <!-- bootstrap core css -->
