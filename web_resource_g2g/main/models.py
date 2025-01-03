@@ -15,7 +15,7 @@ class Sellers(models.Model):
         db_table = 'sellers'
 
     def __str__(self):
-        return self.name_on_server
+        return self.auth_user
 
 
 class ServerUrls(models.Model):
@@ -65,7 +65,7 @@ class OffersForPlacement(models.Model):
     delivery_offline_hrs = models.IntegerField()
     is_created_lot = models.BooleanField(default=False)
     reserve_stock = models.IntegerField(default=0)
-    order_status = models.BooleanField(default=False)
+    order_status = models.BooleanField(default=False, null=True)
 
     class Meta:
         db_table = 'offers_for_placement'
@@ -87,8 +87,8 @@ class SoldOrders(models.Model):
     created_time = models.DateTimeField(default=timezone.now)
     send_message = models.BooleanField(default=False)
     path_to_video = models.CharField(max_length=255, blank=True)
-    download_video_status = models.BooleanField(default=False)
-    send_video_status = models.BooleanField(default=False)
+    download_video_status = models.BooleanField(default=False, null=True)
+    send_video_status = models.BooleanField(default=False, null=True)
 
     class Meta:
         db_table = 'sold_orders'

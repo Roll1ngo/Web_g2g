@@ -9,5 +9,5 @@ urlpatterns = [
     path('add_server/', views.add_server, name='add_server'),
     path('handle_option_change/', views.handle_option_change, name='handle_option_change'),
     path('show_order_info/<int:server_id>/', views.show_order_info, name='show_order_info'),
-
-]
+    path('upload_video/<int:server_id>/', views.upload_video, name='upload_video')
+    ]

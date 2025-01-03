@@ -1,6 +1,9 @@
 import json
+import os
 import time
 
+from django.conf import settings
+from django.contrib import messages
 from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect
 from . import crud
@@ -9,8 +12,8 @@ from .utils.logger_config import logger
 
 def start_page(request):
     if request.method == 'GET':
-        all_bets = crud.get_main_data_from_table()
-        logger.info(all_bets)
+        user_id = request.user.id
+        all_bets = crud.get_main_data_from_table(user_id)
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
@@ -56,7 +59,7 @@ def handle_option_change(request):
     payload = json.loads(request.body)
     offer_id = payload["row_id"]
     action = payload["action"]
-    logger.info(f'Change option__{action} for__{ offer_id},')
+    logger.info(f'Change option__{action} for__{offer_id},')
     if action == 'delete':
         crud.delete_server_from_list(offer_id)
     else:
@@ -66,5 +69,33 @@ def handle_option_change(request):
 
 def show_order_info(request, server_id):
     order_info = crud.get_order_info(server_id)
-    return render(request, 'main/show_order_info.html', context={"order_info": order_info})
+    return render(request, 'main/show_order_info.html', context={"order_info": order_info,
+                                                                 "server_id": server_id})
 
+
+def upload_video(request, server_id):
+    logger.info(f"server_id__{server_id}")
+    if request.method == 'POST':
+        if 'video' in request.FILES:
+            video_file = request.FILES['video']
+            try:
+                # Збереження файлу
+                filename = video_file.name
+                filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
+                with open(filepath, 'wb+') as destination:
+                    for chunk in video_file.chunks():
+                        destination.write(chunk)
+                logger.info(f"filepath__{filepath}")
+                crud.update_sold_order_when_video_download(server_id, filepath)
+
+                # # Створення запису в базі даних
+                # video = Video(title=filename, video_file=os.path.join('videos', filename))
+                # video.save()
+
+                # messages.success(request, 'Відео успішно завантажено!')
+                logger.info('before redirect')
+                return redirect('main:start_page')
+            except Exception as e:
+                messages.success(request, 'Error saving video')
+        else:
+            messages.error(request, 'Будь ласка, виберіть файл.')

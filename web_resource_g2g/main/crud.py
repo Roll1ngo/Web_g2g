@@ -1,11 +1,15 @@
 from pathlib import Path
 import os
+
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+
 from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders
 from django.db.models import F
 from .utils.logger_config import logger
 
 
-def get_main_data_from_table():
+def get_main_data_from_table(auth_user_id: int):
     main_data = (
         OffersForPlacement.objects
         .select_related('server_urls')
@@ -13,7 +17,7 @@ def get_main_data_from_table():
             game_name=F('server_urls__game_name'),
             region=F('server_urls__region'),
             server_name=F('server_urls__server_name'),
-        )
+        ).filter(sellers__auth_user__id=auth_user_id)
         .values(
             'id',
             'sellers',
@@ -190,3 +194,31 @@ def get_order_info(server_id):
     order_info = SoldOrders.objects.filter(server_id=server_id).select_related('server')
 
     return order_info
+
+
+def update_sold_order_when_video_download(server_id, path_to_video):
+    try:
+        with transaction.atomic():  # Забезпечує цілісність транзакції
+            # Оновлюємо запис у SoldOrders
+            sold_order = SoldOrders.objects.get(server_id=server_id)
+            sold_order.path_to_video = path_to_video
+            sold_order.download_video_status = True
+            sold_order.save()
+
+            # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
+            offer = OffersForPlacement.objects.filter(
+                sellers=sold_order.seller,
+                server_urls=sold_order.server
+            ).first()
+
+            if offer:
+                offer.order_status = False
+                offer.save()
+        logger.info('посилання на відео додано до бази даних та статус змінено')
+        return "Статус оновлено успішно."
+    except SoldOrders.DoesNotExist:
+        return f"Замовлення не знайдено"
+    except Exception as e:
+        return f"Помилка: {e}"
+
+
