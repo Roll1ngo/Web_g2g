@@ -168,7 +168,7 @@ def add_server_to_db(data):
                                    delivery_offline_hrs=6,
                                    is_created_lot=True,
                                    reserve_stock=0,
-                                   order_status=False
+                                   order_status=False,
                                    )
     new_offer.save()
 
@@ -189,26 +189,30 @@ def pause_offer(offer_id, action):
     offer.save()
 
 
-def get_order_info(server_id):
+def get_order_info(server_id, user_id):
 
-    order_info = SoldOrders.objects.filter(server_id=server_id).select_related('server')
-
+    order_info = (SoldOrders.objects.filter(server_id=server_id, seller_id=user_id, download_video_status=False).
+                  select_related('server').first())
+    logger.info(f"order_number__{order_info.sold_order_number}")
     return order_info
 
 
-def update_sold_order_when_video_download(server_id, path_to_video):
+def update_sold_order_when_video_download(order_number, path_to_video, sent_gold):
+    logger.info(f"sold_order_number__{order_number}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
     try:
         with transaction.atomic():  # Забезпечує цілісність транзакції
             # Оновлюємо запис у SoldOrders
-            sold_order = SoldOrders.objects.get(server_id=server_id)
+            sold_order = SoldOrders.objects.get(sold_order_number=order_number)
             sold_order.path_to_video = path_to_video
+            sold_order.sent_gold = sent_gold
             sold_order.download_video_status = True
             sold_order.save()
 
             # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
             offer = OffersForPlacement.objects.filter(
                 sellers=sold_order.seller,
-                server_urls=sold_order.server
+                server_urls=sold_order.server,
+                order_status=True
             ).first()
 
             if offer:
@@ -220,5 +224,22 @@ def update_sold_order_when_video_download(server_id, path_to_video):
         return f"Замовлення не знайдено"
     except Exception as e:
         return f"Помилка: {e}"
+
+
+def get_orders_history(user_id):
+    orders_history = SoldOrders.objects.filter(seller_id=user_id).select_related('server')
+    return orders_history
+
+
+def get_server_id(user_id):
+    try:
+        order_info = SoldOrders.objects.get(seller_id=user_id, download_video_status=False)
+        server_id = order_info.server_id
+    except SoldOrders.DoesNotExist:
+        return f"Замовлення не знайдено"
+    except Exception as e:
+        return f"Помилка: {e}"
+    return server_id
+
 
 

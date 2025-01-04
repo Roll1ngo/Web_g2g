@@ -19,24 +19,22 @@
           </tr>
       </thead>
       <tbody>
-          {% for order in order_info %}
-              <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ order.server.server_name }}</td>
-                  <td>{{ order.server.game_name}}</td>
-                  <td>{{ order.server.fraction }}</td>
-                  <td>{{ order.quantity }}</td>
-                  <td>{{ order.character_name }}</td>
-                  <td>{{ order.trade_mode }}</td>
-                  <td>{{ order.price_unit }}</td>
-                  <td>{{ order.to_be_earned }}</td>
-                  {% if not order.download_video_status %}
-                  <td>Очикується завантаження відео</td>
-                  {% else %}
-                  <td>Завершено</td>
-                  {% endif %}
-              </tr>
-          {% endfor %}
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ order.server.server_name }}</td>
+              <td>{{ order.server.game_name}}</td>
+              <td>{{ order.server.fraction }}</td>
+              <td>{{ order.quantity }}</td>
+              <td>{{ order.character_name }}</td>
+              <td>{{ order.trade_mode }}</td>
+              <td>{{ order.price_unit }}</td>
+              <td>{{ order.to_be_earned }}</td>
+              {% if not order.download_video_status %}
+              <td>Очикується завантаження відео</td>
+              {% else %}
+              <td>Завершено</td>
+              {% endif %}
+          </tr>
       </tbody>
     </table>
     <button id="uploadButton">Завантажити відео</button>
@@ -44,65 +42,80 @@
     <div id="uploadForm" style="display: none;">  <form method="post" enctype="multipart/form-data" id="videoForm">
         {% csrf_token %}
         <input type="file" name="video" id="videoFile" accept="video/*">
+        <label for="sent_gold">Введіть кількість відправленого золота:</label>
+        <input type="number" id="sent_gold" name="sent_gold" required>
         <button type="button" id="submitButton">Відправити</button>
         <button type="button" id="cancelUpload">Скасувати</button>
-    </form>
+      </form>
 </div>
 </div>
 
 <script>
     // Отримуємо посилання на елементи DOM
-    const uploadButton = document.getElementById('uploadButton'); // Кнопка для відкриття форми завантаження
-    const uploadForm = document.getElementById('uploadForm'); // Форма завантаження файлу
-    const videoFile = document.getElementById('videoFile'); // Поле вибору файлу
-    const submitButton = document.getElementById('submitButton'); // Кнопка для відправки файлу
-    const progressDiv = document.getElementById('progress'); // Елемент для відображення прогресу завантаження
+    const uploadButton = document.getElementById('uploadButton');
+    const uploadForm = document.getElementById('uploadForm');
+    const videoFile = document.getElementById('videoFile');
+    const submitButton = document.getElementById('submitButton');
+    const progressDiv = document.getElementById('progress');
+    const sent_goldInput = document.getElementById('sent_gold');
 
-    // Додаємо обробник події для кнопки "Завантажити"
     uploadButton.addEventListener('click', () => {
-        uploadForm.style.display = 'block'; // Показуємо форму завантаження
-        uploadButton.style.display = 'none'; // Ховаємо кнопку "Завантажити"
+        uploadForm.style.display = 'block';
+        uploadButton.style.display = 'none';
     });
 
-    // Додаємо обробник події для кнопки "Відправити"
     submitButton.addEventListener('click', () => {
-        const file = videoFile.files[0]; // Отримуємо вибраний файл
-        if (file) {
-            uploadFile(file); // Якщо файл вибрано, починаємо завантаження
-        } else {
-            alert("Будь ласка, оберіть файл."); // Якщо файл не вибрано, показуємо повідомлення
+        const file = videoFile.files[0];
+        const sent_gold = sent_goldInput.value;
+
+        if (!sent_gold) {
+            alert("Будь ласка, введіть кількість відправленого золота.");
+            return;
         }
+        if (isNaN(sent_gold)) {
+            alert("кількість відправленого золота має містити тільки цифри.");
+            return;
+        }
+
+        if (!file) {
+            alert("Будь ласка, оберіть файл.");
+            return;
+        }
+
+        uploadFile(file, sent_gold); // Передаємо sent_gold у функцію uploadFile
     });
 
-    // Функція для завантаження файлу на сервер
-    function uploadFile(file) {
-        const formData = new FormData(); // Створюємо об'єкт FormData для відправки файлу
-        formData.append('video', file); // Додаємо файл до об'єкта FormData
+    function uploadFile(file, sent_gold) { // sent_gold тепер аргумент функції
+        const formData = new FormData();
+        formData.append('video', file);
+        formData.append('sent_gold', sent_gold);
+
 
         const xhr = new XMLHttpRequest(); // Створюємо новий XMLHttpRequest
-        xhr.open('POST', '{% url 'main:upload_video' server_id=server_id %}', true); // Налаштовуємо запит: метод POST, URL '/upload', асинхронний режим
+        xhr.open('POST', '{% url 'main:upload_video' sold_order_number=sold_order_number %}', true); // Налаштовуємо запит: метод POST, URL '/upload', асинхронний режим
         xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
 
-        // Обробник події для відстеження прогресу завантаження
         xhr.upload.onprogress = function(event) {
-            if (event.lengthComputable) { // Перевіряємо, чи можна обчислити загальний розмір файлу
-                const percentComplete = (event.loaded / event.total) * 100; // Обчислюємо відсоток завантаження
-                progressDiv.textContent = `Завантажено: ${percentComplete.toFixed(2)}%`; // Оновлюємо текст прогресу
+            if (event.lengthComputable) {
+                const percentComplete = (event.loaded / event.total) * 100;
+                progressDiv.textContent = `Завантажено: ${percentComplete.toFixed(2)}%`;
             }
         };
 
-        // Обробник події для завершення завантаження
         xhr.onload = function() {
-            if (xhr.status === 200) { // Якщо статус відповіді 200 (OK)
-                alert('Відео успішно завантажено!'); // Показуємо повідомлення про успішне завантаження
-                uploadForm.style.display = 'none'; // Ховаємо форму завантаження
+            if (xhr.status === 200) {
+                alert('Відео успішно завантажено!');
+                uploadForm.style.display = 'none';
                 window.location.href = '{% url 'main:start_page' %}'
             } else {
-                alert('Помилка завантаження.'); // Якщо статус відповіді не 200, показуємо повідомлення про помилку
+                alert('Помилка завантаження. ' + xhr.responseText); // Виводимо текст помилки з сервера
             }
         };
+                xhr.onerror = function() {
+          alert('Помилка з\'єднання з сервером.');
+        };
 
-        xhr.send(formData); // Відправляємо запит на сервер
+        xhr.send(formData);
     }
 </script>
 {% endblock %}

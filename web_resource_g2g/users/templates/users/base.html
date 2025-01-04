@@ -10,59 +10,59 @@
   <!-- Mobile Metas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
   <!-- Site Metas -->
-  <link rel="icon" href={% static "images/favicon.png" %} type="image/gif" />
+  <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/gif" />
   <meta name="keywords" content=""/>
   <meta name="description" content=""/>
   <meta name="author" content=""/>
 
   <style>
-    .center-container {
-        text-align: center;
-    }
-    table {
-        margin: 0 auto;
-        width: 80%; /* Or set a fixed width if desired */
-        border-collapse: collapse; /* Ensures borders between cells */
-        background-color: rgba(255, 255, 255, 0);
+	.center-container {
+		text-align: center;
+	}
+	table {
+		margin: 0 auto;
+		width: 80%; /* Or set a fixed width if desired */
+		border-collapse: collapse; /* Ensures borders between cells */
+		background-color: rgba(255, 255, 255, 0);
 
-    }
-    th, td {
-        border: 1px solid #ddd; /* Border style and color for cells */
-        padding: 5px; /* Spacing between cell content and borders */
-        background-color: transparent;
+	}
+	th, td {
+		border: 1px solid #ddd; /* Border style and color for cells */
+		padding: 5px; /* Spacing between cell content and borders */
+		background-color: transparent;
 
-    }
-    .price-column {
-         width: 200px;
-    }
+	}
+	.price-column {
+		 width: 200px;
+	}
 
-    @keyframes pulse-blink {
-    0% {
-      background-color: green;
-      transform: scale(1);
-    }
-    50% {
-      background-color: yellow;
-      transform: scale(2);
-    }
-    100% {
-      background-color: green;
-      transform: scale(1);
-    }
+	@keyframes pulse-blink {
+	0% {
+	  background-color: green;
+	  transform: scale(1);
+	}
+	50% {
+	  background-color: yellow;
+	  transform: scale(2);
+	}
+	100% {
+	  background-color: green;
+	  transform: scale(1);
+	}
   }
 
   .status-circle {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
   }
 
   .status-circle.blinking {
-    animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
+	animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
   }
 }
-</style>
+  </style>
 
 
   <title>Bets</title>
@@ -79,42 +79,47 @@
   <link href="{% static 'css/style.css' %}" rel="stylesheet"/>
   <!-- responsive style -->
   <link href="{% static 'css/responsive.css' %}" rel="stylesheet"/>
-<!--  <link href="{% static 'css/bootstrap.css.map' %}" rel="stylesheet"/>-->
-<!--  <link href="{% static 'css/js/bootstrap.js.map' %}" rel="stylesheet"/>-->
+  <!--  <link href="{% static 'css/bootstrap.css.map' %}" rel="stylesheet"/>-->
+  <!--  <link href="{% static 'css/js/bootstrap.js.map' %}" rel="stylesheet"/>-->
 </head>
-<body>
 <body style="background-image: url('{% static 'images/background.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
-  <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.5);"></div>
+<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.5);"></div>
 
 <div class="hero_area">
   <!-- header section strats -->
   <header class="header_section long_section px-0">
-	<nav class="navbar navbar-expand-lg custom_nav-container">
+    <nav class="navbar navbar-expand-lg custom_nav-container">
+        <div class="container-fluid">  {# Додано контейнер для кращого контролю ширини #}
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div> {# Контейнер для "Головна" зліва #}
+                        <a class="navbar-brand" href="{% url 'main:start_page' %}">Головна</a> {# Посилання "Головна" #}
+                    </div>
+                    <div> {# Контейнер для елементів користувача справа #}
+                        {% if user.is_authenticated %}
+                            <div class="d-flex align-items-center">
+                                <a href="{% url 'main:show_order_info' 0 %}" class="nav-link me-3">Активні замовлення</a>
 
-	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-		{% if user.is_authenticated %}
-		<div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
-		  <ul class="navbar-nav  ">
-		  </ul>
-		</div>
-
-		<form action="logout/" method="post">
-		  {% csrf_token %}
-		  <a href="/" class="quote_btn-container" style="margin-right: 50px;">{{ user.username }}</a>
-		  <a href="logout/" class="quote_btn-container">Log Out</a>
-		</form>
-		{% else %}
-		<div class="quote_btn-container">
-		  <a href="/login">
-              <span>
-                Login
-              </span>
-			<i class="fa fa-user" aria-hidden="true"></i>
-		  </a>
-		</div>
-		{% endif %}
-	  </div>
-	</nav>
+                                <a href="{% url 'main:history_orders' %}" class="nav-link me-3">Історія замовлень</a>
+                                <a href="/" class="nav-link me-3">{{user.username}}</a>
+                                <form action="logout/" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link nav-link">Log Out</button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="quote_btn-container">
+                                <a href="/login">
+                                    <span>Login</span>
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
   </header>
 
   {% block content %}

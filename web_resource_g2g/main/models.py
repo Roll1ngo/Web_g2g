@@ -79,6 +79,7 @@ class SoldOrders(models.Model):
     character_name = models.CharField(max_length=255)
     sold_order_number = models.IntegerField()
     quantity = models.IntegerField()
+    sent_gold = models.IntegerField(null=True, db_default=0)
     price_unit = models.IntegerField()
     total_amount = models.IntegerField()
     comission_fee = models.IntegerField()

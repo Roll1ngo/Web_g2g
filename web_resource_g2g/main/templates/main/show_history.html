@@ -1,0 +1,45 @@
+{% extends "users/base.html" %}
+{% block content %}
+<div class="center-container">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Сервер</th>
+                <th>Гра</th>
+                <th>Фракція</th>
+                <th>Кількість</th>
+                <th>Нік персонажа</th>
+                <th>Метод доставки</th>
+                <th>Ціна за одиницю</th>
+                <th>Зараховано на баланс</th>
+                <th>Баланс</th>
+                <th>Час замовлення</th>
+                <th>Статус замовлення</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in orders_history %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.order.server.server_name }}</td>
+                    <td>{{ item.order.server.game_name}}</td>
+                    <td>{{ item.order.server.fraction }}</td>
+                    <td>{{ item.order.quantity }}</td>
+                    <td>{{ item.order.character_name }}</td>
+                    <td>{{ item.order.trade_mode }}</td>
+                    <td>{{ item.order.price_unit }}</td>
+                    <td>{{ item.order.to_be_earned }}</td>
+                    <td>{{ item.current_balance }}</td>
+                    <td>{{ item.order.created_time }}</td>
+                    {% if not item.order.download_video_status %}
+                    <td>Очикується завантаження відео</td>
+                    {% else %}
+                    <td>Завершено</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

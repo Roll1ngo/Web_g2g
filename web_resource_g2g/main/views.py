@@ -68,16 +68,29 @@ def handle_option_change(request):
 
 
 def show_order_info(request, server_id):
-    order_info = crud.get_order_info(server_id)
-    return render(request, 'main/show_order_info.html', context={"order_info": order_info,
-                                                                 "server_id": server_id})
+    user_id = request.user.id
+
+    if server_id == 0:
+        server_id = crud.get_server_id(user_id)
+        if server_id == 'Замовлення не знайдено':
+            return render(request, 'main/not_active_orders.html')
+        logger.info(f"{server_id}")
+
+    order_info = crud.get_order_info(server_id, user_id)
+    sold_order_number = order_info.sold_order_number
+    return render(request, 'main/show_order_info.html', context={"order": order_info,
+                                                                 "sold_order_number": sold_order_number})
 
 
-def upload_video(request, server_id):
-    logger.info(f"server_id__{server_id}")
+def upload_video(request, sold_order_number):
+    logger.info(f"sold_order_number__{sold_order_number}")
     if request.method == 'POST':
         if 'video' in request.FILES:
+            logger.info(f"request.FILES__{request.FILES}")
+            logger.info(f"request.POST__{request.POST}")
             video_file = request.FILES['video']
+            sent_gold = request.POST.get('sent_gold')
+            logger.info(sent_gold)
             try:
                 # Збереження файлу
                 filename = video_file.name
@@ -86,7 +99,8 @@ def upload_video(request, server_id):
                     for chunk in video_file.chunks():
                         destination.write(chunk)
                 logger.info(f"filepath__{filepath}")
-                crud.update_sold_order_when_video_download(server_id, filepath)
+                response = crud.update_sold_order_when_video_download(sold_order_number, filepath, sent_gold)
+                logger.info(f"response__{response}")
 
                 # # Створення запису в базі даних
                 # video = Video(title=filename, video_file=os.path.join('videos', filename))
@@ -99,3 +113,22 @@ def upload_video(request, server_id):
                 messages.success(request, 'Error saving video')
         else:
             messages.error(request, 'Будь ласка, виберіть файл.')
+
+
+def show_history_orders(request):
+    user_id = request.user.id
+    orders_history = crud.get_orders_history(user_id)
+
+    total_earned = 0  # Ініціалізуємо загальну суму
+    orders_with_balance = []
+
+    for order in orders_history:
+        total_earned += order.to_be_earned  # Додаємо значення до загальної суми
+        orders_with_balance.append({
+            'order': order,
+            'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення
+        })
+    logger.info(orders_with_balance)
+    return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
+
+
