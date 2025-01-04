@@ -193,7 +193,7 @@ def get_order_info(server_id, user_id):
 
     order_info = (SoldOrders.objects.filter(server_id=server_id, seller_id=user_id, download_video_status=False).
                   select_related('server').first())
-    logger.info(f"order_number__{order_info.sold_order_number}")
+
     return order_info
 
 

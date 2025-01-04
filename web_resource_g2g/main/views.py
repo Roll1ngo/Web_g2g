@@ -77,6 +77,9 @@ def show_order_info(request, server_id):
         logger.info(f"{server_id}")
 
     order_info = crud.get_order_info(server_id, user_id)
+    if order_info is None:
+        return render(request, 'main/not_found_order.html')
+
     sold_order_number = order_info.sold_order_number
     return render(request, 'main/show_order_info.html', context={"order": order_info,
                                                                  "sold_order_number": sold_order_number})

@@ -1,6 +1,6 @@
 {% extends "users/base.html" %}
 {% block content %}
-<div class="center-container">
+<div class="center-container d-flex justify-content-center align-items-center flex-column"> {# Додано класи flexbox #}
     <table >
       <thead>
           <tr>
@@ -42,12 +42,12 @@
     <div id="uploadForm" style="display: none;">  <form method="post" enctype="multipart/form-data" id="videoForm">
         {% csrf_token %}
         <input type="file" name="video" id="videoFile" accept="video/*">
-        <label for="sent_gold">Введіть кількість відправленого золота:</label>
-        <input type="number" id="sent_gold" name="sent_gold" required>
+        <label for="sent_gold">Введіть кількість надісланого золота:</label>
+        <input type="number" id="sent_gold" name="sent_gold" style="width: 8ch;" required>
         <button type="button" id="submitButton">Відправити</button>
         <button type="button" id="cancelUpload">Скасувати</button>
       </form>
-</div>
+    </div>
 </div>
 
 <script>
@@ -57,11 +57,20 @@
     const videoFile = document.getElementById('videoFile');
     const submitButton = document.getElementById('submitButton');
     const progressDiv = document.getElementById('progress');
+    const cancelUpload = document.getElementById('cancelUpload'); // Отримуємо кнопку "Скасувати"
     const sent_goldInput = document.getElementById('sent_gold');
 
     uploadButton.addEventListener('click', () => {
         uploadForm.style.display = 'block';
         uploadButton.style.display = 'none';
+    });
+
+    // Додаємо обробник події для кнопки "Скасувати"
+    cancelUpload.addEventListener('click', () => {
+    uploadForm.style.display = 'none'; // Ховаємо форму
+    uploadButton.style.display = 'block'; // Показуємо кнопку "Завантажити відео"
+    videoFile.value = ''; // Очищаємо вибраний файл
+    sent_goldInput.value = ''; // Очищаємо поле вводу кількості золота
     });
 
     submitButton.addEventListener('click', () => {
