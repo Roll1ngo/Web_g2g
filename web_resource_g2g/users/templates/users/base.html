@@ -61,6 +61,7 @@
   .status-circle.blinking {
 	animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
   }
+
 }
   </style>
 
@@ -89,33 +90,33 @@
   <!-- header section strats -->
   <header class="header_section long_section px-0">
     <nav class="navbar navbar-expand-lg custom_nav-container">
-        <div class="container-fluid">  {# Додано контейнер для кращого контролю ширини #}
+        <div class="container-fluid">
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="d-flex justify-content-between align-items-center w-100">
-                    <div> {# Контейнер для "Головна" зліва #}
-                        <a class="navbar-brand" href="{% url 'main:start_page' %}">Головна</a> {# Посилання "Головна" #}
-                    </div>
-                    <div> {# Контейнер для елементів користувача справа #}
-                        {% if user.is_authenticated %}
+                    {% if user.is_authenticated %} {# Перевірка авторизації тут #}
+                        <div>
+                            <a class="navbar-brand" href="{% url 'main:start_page' %}">Головна</a>
+                        </div>
+                        <div>
                             <div class="d-flex align-items-center">
                                 <a href="{% url 'main:show_order_info' 0 %}" class="nav-link me-3">Активні замовлення</a>
-
                                 <a href="{% url 'main:history_orders' %}" class="nav-link me-3">Історія замовлень</a>
-                                <a href="/" class="nav-link me-3">{{user.username}}</a>
+                                <a href="/" class="nav-link me-3">{{ user.username }}</a>
                                 <form action="logout/" method="post">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-link nav-link">Log Out</button>
                                 </form>
                             </div>
-                        {% else %}
-                            <div class="quote_btn-container">
-                                <a href="/login">
-                                    <span>Login</span>
-                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
+                        </div>
+                    {% else %} {# Блок для неавторизованих користувачів #}
+                        <div></div> {# Пустий div, щоб зберегти структуру розмітки #}
+                        <div class="quote_btn-container">
+                            <a href="/login">
+                                <span>Login</span>
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -73,10 +73,6 @@ body {
   min-height: auto;
 }
 
-.header_section {
-  background-color: #ffffff;
-}
-
 .header_section .container-fluid {
   padding-right: 25px;
   padding-left: 25px;
