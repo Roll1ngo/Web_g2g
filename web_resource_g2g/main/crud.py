@@ -206,6 +206,7 @@ def update_sold_order_when_video_download(order_number, path_to_video, sent_gold
             sold_order.path_to_video = path_to_video
             sold_order.sent_gold = sent_gold
             sold_order.download_video_status = True
+            sold_order.charged_to_payment = True
             sold_order.save()
 
             # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
@@ -227,7 +228,7 @@ def update_sold_order_when_video_download(order_number, path_to_video, sent_gold
 
 
 def get_orders_history(user_id):
-    orders_history = SoldOrders.objects.filter(seller_id=user_id).select_related('server')
+    orders_history = SoldOrders.objects.filter(seller_id=user_id,).select_related('server')
     return orders_history
 
 

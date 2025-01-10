@@ -10,12 +10,23 @@ from django.utils import timezone
 class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     class Meta:
         db_table = 'sellers'
 
     def __str__(self):
-        return self.auth_user
+        return f"seller: {self.auth_user}, telegram: {self.id_telegram}, balance: {self.balance}"
+
+
+class PaymentHistory(models.Model):
+    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Сума виплати
+    created_time = models.DateTimeField(default=timezone.now)  # Час виплати
+    description = models.TextField(blank=True, null=True)  # Коментар до виплати (необов'язково)
+
+    class Meta:
+        db_table = 'payment_history'
 
 
 class ServerUrls(models.Model):
@@ -90,7 +101,17 @@ class SoldOrders(models.Model):
     path_to_video = models.CharField(max_length=255, blank=True)
     download_video_status = models.BooleanField(default=False, null=True)
     send_video_status = models.BooleanField(default=False, null=True)
+    charged_to_payment = models.BooleanField(default=False)
+    paid_in_salary = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'sold_orders'
+
+    # def save(self, *args, **kwargs):
+    #     # Якщо статус змінюється на 'completed', оновлюємо баланс продавця
+    #     if self.status == 'completed':
+    #         seller = self.seller
+    #         seller.balance += self.to_be_earned
+    #         seller.save()
+    #     super().save(*args, **kwargs)
 

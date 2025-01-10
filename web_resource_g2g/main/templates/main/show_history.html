@@ -15,7 +15,10 @@
                 <th>Зараховано на баланс</th>
                 <th>Баланс</th>
                 <th>Час замовлення</th>
-                <th>Статус замовлення</th>
+                <th>Номер замовлення</th>
+                <th>Статус виконання замовлення</th>
+                <th>Статус виплати</th>
+
             </tr>
         </thead>
         <tbody>
@@ -32,11 +35,21 @@
                     <td>{{ item.order.to_be_earned }}</td>
                     <td>{{ item.current_balance }}</td>
                     <td>{{ item.order.created_time }}</td>
+                    <td>{{ item.order.sold_order_number }}</td>
                     {% if not item.order.download_video_status %}
                     <td>Очикується завантаження відео</td>
                     {% else %}
                     <td>Завершено</td>
                     {% endif %}
+
+                    {% if item.order.charged_to_payment and not item.order.paid_in_salary %}
+                    <td>Зараховано до оплати</td>
+                    {% elif item.order.charged_to_payment and item.order.paid_in_salary %}
+                    <td>Виплачено</td>
+                    {% else %}
+                    <td>Інформація відсутня</td>
+                    {% endif %}
+
                 </tr>
             {% endfor %}
         </tbody>

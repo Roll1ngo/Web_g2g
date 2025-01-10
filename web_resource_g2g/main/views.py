@@ -126,7 +126,8 @@ def show_history_orders(request):
     orders_with_balance = []
 
     for order in orders_history:
-        total_earned += order.to_be_earned  # Додаємо значення до загальної суми
+
+        total_earned += order.to_be_earned if not order.paid_in_salary else 0  # Додаємо значення до загальної суми
         orders_with_balance.append({
             'order': order,
             'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення
