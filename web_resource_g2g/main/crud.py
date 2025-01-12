@@ -204,12 +204,17 @@ def update_sold_order_when_video_download(order_number, path_to_video, sent_gold
         with transaction.atomic():  # Забезпечує цілісність транзакції
             # Оновлюємо запис у SoldOrders
             sold_order = SoldOrders.objects.get(sold_order_number=order_number)
+            seller_id = sold_order.seller_id
+            pay_to_completed_order = sold_order.to_be_earned
             sold_order.path_to_video = path_to_video
             sold_order.sent_gold = sent_gold
             sold_order.download_video_status = True
             sold_order.charged_to_payment = True
             sold_order.save()
 
+            seller_info = Sellers.objects.get(auth_user_id=seller_id)
+            seller_info.balance += pay_to_completed_order
+            seller_info.save()
             # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
             offer = OffersForPlacement.objects.filter(
                 sellers=sold_order.seller,
