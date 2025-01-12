@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 import os
 
@@ -241,6 +242,21 @@ def get_server_id(user_id):
     except Exception as e:
         return f"Помилка: {e}"
     return server_id
+
+
+def create_video_filename(request, sold_order_number):
+    logger.info('inside')
+    sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number,).select_related('server').first()
+    sent_gold = request.POST.get('sent_gold')
+    seller = request.user
+
+    server = sold_order.server.server_name
+    game = sold_order.server.game_name
+    current_time = datetime.now().strftime("%Y-%m-%d___%H-%M")
+
+    filename = f"{seller}__{sent_gold}__{server}__{game}__{sold_order_number}__{current_time}.mp4"
+    logger.info(filename)
+    return filename
 
 
 

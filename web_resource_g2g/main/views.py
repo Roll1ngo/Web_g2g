@@ -89,14 +89,13 @@ def upload_video(request, sold_order_number):
     logger.info(f"sold_order_number__{sold_order_number}")
     if request.method == 'POST':
         if 'video' in request.FILES:
-            logger.info(f"request.FILES__{request.FILES}")
-            logger.info(f"request.POST__{request.POST}")
             video_file = request.FILES['video']
             sent_gold = request.POST.get('sent_gold')
             logger.info(sent_gold)
             try:
                 # Збереження файлу
-                filename = video_file.name
+                filename = crud.create_video_filename(request,sold_order_number)
+                # filename = 'some_name_for_video_file.mp4'
                 filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
                 with open(filepath, 'wb+') as destination:
                     for chunk in video_file.chunks():
@@ -105,15 +104,11 @@ def upload_video(request, sold_order_number):
                 response = crud.update_sold_order_when_video_download(sold_order_number, filepath, sent_gold)
                 logger.info(f"response__{response}")
 
-                # # Створення запису в базі даних
-                # video = Video(title=filename, video_file=os.path.join('videos', filename))
-                # video.save()
-
-                # messages.success(request, 'Відео успішно завантажено!')
-                logger.info('before redirect')
                 return redirect('main:start_page')
-            except Exception as e:
-                messages.success(request, 'Error saving video')
+            # except Exception as e:
+            #     messages.success(request, 'Error saving video')
+            finally:
+                'error'
         else:
             messages.error(request, 'Будь ласка, виберіть файл.')
 
