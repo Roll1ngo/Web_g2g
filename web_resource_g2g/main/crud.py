@@ -264,4 +264,7 @@ def create_video_filename(request, sold_order_number):
     return filename
 
 
+def get_balance(user_id):
+    seller = Sellers.objects.filter(auth_user_id=user_id).first()
+    return seller.balance
 

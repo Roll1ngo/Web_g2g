@@ -131,3 +131,7 @@ def show_history_orders(request):
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
 
+def show_balance(request):
+    balance = crud.get_balance(request.user.id)
+    logger.info(f"balance__{balance}")
+    return render(request, 'users/base.html', context={'user_balance': balance})

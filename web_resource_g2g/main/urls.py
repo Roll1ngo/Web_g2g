@@ -11,4 +11,5 @@ urlpatterns = [
     path('show_order_info/<int:server_id>/', views.show_order_info, name='show_order_info'),
     path('upload_video/<int:sold_order_number>/', views.upload_video, name='upload_video'),
     path('history_orders/', views.show_history_orders, name='history_orders'),
+    path('balance/', views.show_balance, name='balance'),
 ]

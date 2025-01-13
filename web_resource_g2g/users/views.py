@@ -14,6 +14,7 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, 
 def profile(request):
     return render(request, 'users/profile.html')
 
+
 class RegisterView(View):
     template_name = 'users/register.html'
     form_class = RegisterForm
@@ -109,4 +110,6 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
 
 def index(request):
     return render(request, 'users/index.html')
+
+
 
