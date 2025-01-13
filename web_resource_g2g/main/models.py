@@ -10,7 +10,7 @@ from django.utils import timezone
 class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    balance = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'sellers'
@@ -21,7 +21,7 @@ class Sellers(models.Model):
 
 class PaymentHistory(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)  # Сума виплати
+    amount = models.IntegerField(default=0)  # Сума виплати
     created_time = models.DateTimeField(default=timezone.now)  # Час виплати
     description = models.TextField(blank=True, null=True)  # Коментар до виплати (необов'язково)
 
