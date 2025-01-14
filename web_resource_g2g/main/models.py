@@ -7,10 +7,16 @@ from datetime import datetime
 from django.utils import timezone
 
 
+class Commission(models.Model):
+    commission = models.IntegerField(default=0)
+    created_time = models.DateTimeField(default=timezone.now)
+
+
 class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.IntegerField(default=0)
+    interest_rate = models.IntegerField(default=75)
 
     class Meta:
         db_table = 'sellers'
@@ -23,7 +29,7 @@ class PaymentHistory(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
     amount = models.IntegerField(default=0)  # Сума виплати
     created_time = models.DateTimeField(default=timezone.now)  # Час виплати
-    description = models.TextField(blank=True, null=True)  # Коментар до виплати (необов'язково)
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'payment_history'

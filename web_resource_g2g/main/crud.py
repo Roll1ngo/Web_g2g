@@ -5,7 +5,7 @@ import os
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 
-from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders
+from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders, Commission
 from django.db.models import F
 from .utils.logger_config import logger
 
@@ -41,7 +41,7 @@ def get_main_data_from_table(auth_user_id: int):
             'game_name',
             'region',
             'server_name',
-            'order_status'
+            'order_status',
         )
     )
     # Оновлюємо ціни та створюємо новий список
@@ -50,9 +50,8 @@ def get_main_data_from_table(auth_user_id: int):
         try:
             row['strategy_price'] = row['price']
             if row['price']:
-                new_price, new_min_stack = get_float_price(row)
+                new_price = get_float_price(row, auth_user_id)
                 row['price'] = new_price
-                row['Min_units_per_order'] = new_min_stack
             else:
                 row['price'] = None
 
@@ -64,22 +63,58 @@ def get_main_data_from_table(auth_user_id: int):
     return main_data_float_price
 
 
-def get_float_price(row):
-    currently_strategy = row['price']
-    min_stack = row['min_units_per_order']
-    percent_offset = row['percent_offset']
-    server_urls_id = row['server_urls']
-    stock = row['stock']
+import logging
+from django.core.exceptions import ObjectDoesNotExist
 
-    float_price = (TopPrices.objects.filter(server_name=server_urls_id).
-                   values_list(currently_strategy, flat=True).first())
-    # if float_price:
-    #     # Коригуємо відсоток
-    #     if percent_offset and percent_offset != 'nan' and float_price and stock:
-    #         calculate_float_price = float_price * \
-    #                                 (1 + percent_offset / 100) * stock
-    #         float_price = round(calculate_float_price, 2)
-    return float_price, min_stack
+logger = logging.getLogger(__name__)
+
+def get_float_price(row, auth_user_id):
+    try:
+        # Перевірка наявності ключів у `row`
+        currently_strategy = row.get('price')
+        server_urls_id = row.get('server_urls')
+
+        if not currently_strategy or not server_urls_id:
+            logger.error("Missing 'price' or 'server_urls' in row.")
+            return None
+
+        # Отримання останнього запису з `Commission`
+        try:
+            rang_exchange = Commission.objects.latest('created_time').commission
+        except ObjectDoesNotExist:
+            logger.error("No Commission records found.")
+            return None
+
+        # Отримання `interest_rate` з `Sellers`
+        try:
+            interest_rate = Sellers.objects.get(auth_user_id=auth_user_id).interest_rate
+        except Sellers.DoesNotExist:
+            logger.error(f"No Sellers record found for auth_user_id={auth_user_id}.")
+            return None
+
+        # Отримання `float_price` з `TopPrices`
+        float_price = TopPrices.objects.filter(server_name=server_urls_id).values_list(
+            currently_strategy, flat=True
+        ).first()
+
+        total_percent = interest_rate - rang_exchange
+        float_price_without_exchange = float_price * (total_percent / 100)
+
+        if float_price is None:
+            logger.error(f"No TopPrices record found for server_name={server_urls_id}.")
+            return None
+
+        # Логування результатів
+        logger.info(f"float_price__{float_price}")
+        logger.info(f"rang_exchange__{rang_exchange}, interest_rate__{interest_rate}")
+        logger.info(f"float_price_without_exchange__{float_price_without_exchange}, total_percent__{total_percent}")
+
+        return round(float_price_without_exchange, 3)
+
+    except Exception as e:
+        # Логування будь-якої несподіваної помилки
+        logger.error(f"Unexpected error in get_float_price: {e}", exc_info=True)
+        return None
 
 
 def update_data(data):

@@ -17,7 +17,11 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', 'able-above-monitor.ngrok-free.app']
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://able-above-monitor.ngrok-free.app'
+]
 
 
 # Application definition
