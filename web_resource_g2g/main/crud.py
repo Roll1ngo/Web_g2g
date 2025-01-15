@@ -49,9 +49,12 @@ def get_main_data_from_table(auth_user_id: int):
     for row in main_data:
         try:
             row['strategy_price'] = row['price']
+            stock = row['stock']
             if row['price']:
                 new_price = get_float_price(row, auth_user_id)
                 row['price'] = new_price
+                row['full_cost'] =round(new_price * stock, 3)
+
             else:
                 row['price'] = None
 

@@ -11,6 +11,7 @@
               <th>Гра</th>
               <th>Ціна</th>
               <th>Запас</th>
+              <th>Загалом</th>
               <th>Стратегія</th>
               <th>Опції</th>
               <th>Статус</th>
@@ -23,9 +24,11 @@
             <form method="post" id="bet-form-{{ row.id }}" action="{% url 'main:update_table_data' %}" >
               {% csrf_token %}
               <td><input type="text" value="{{ row.server_name }}" readonly></td>
-              <td style="width: 200px;"><input type="text" value="{{ row.game_name }}" readonly></td>
-              <td><input type="text" value="{{ row.price }}" id="price-field-{{row.id}}" readonly></td>
-              <td style="width: 200px;"><input type="text" value="{{ row.stock}}" name="stock" onkeypress="return isNumberKey(event)"></td>
+              <td ><input type="text" style="width: 200px" value="{{ row.game_name }}" readonly></td>
+              <td><input type="text" style="width: 100px" value="{{ row.price }}" id="price-field-{{row.id}}" readonly></td>
+              <td ><input type="text" style="width: 100px" value="{{ row.stock}}" id="stock-field-{{row.id}}" name="stock" onkeypress="return isNumberKey(event)"></td>
+              <td><input type="text" style="width: 100px" value="{{ row.full_cost }}" id="full-cost-{{row.id}}" readonly></td>
+
               <td>
                 <select class="strategy-select" name="price" id="strategySelect_{{ row.id }}">
                   <option value="mean20_lot" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
@@ -217,7 +220,7 @@
 </script>
 
 <script>
-  // Динамічна зміна ціни та перевірка зміни значення "stock"
+  // Динамічна зміна ціни, поля "Загалом" та перевірка зміни значення "stock"
   const tableRows = document.querySelectorAll('tr:not(#add-server-body):not(#add-server-head)');
   const csrftoken = document.cookie.split(';')
     .map(c => c.trim())
@@ -250,6 +253,24 @@
     if (!regex.test(stockValue)) {
       alert('Please enter a valid number (e.g., 10, 10.5)');
       input.value = ''; // Clear invalid input
+    }
+  }
+
+  // Функція для оновлення поля "Загалом"
+  function updateTotal(rowId, price) {
+    const stockInputId = `stock-field-${rowId}`;
+    const totalInputId = `full-cost-${rowId}`;
+
+    const stockInput = document.querySelector(`#${stockInputId}`);
+    const totalInput = document.querySelector(`#${totalInputId}`);
+
+    if (stockInput && totalInput) {
+      const stock = parseFloat(stockInput.value) || 0;
+      const total = (stock * price).toFixed(2); // Округлення до двох знаків після коми
+      totalInput.value = total;
+      console.log(`Updated Total in row ID ${rowId}: ${total}`);
+    } else {
+      console.warn(`Stock or Total field not found in row ID: ${rowId}`);
     }
   }
 
@@ -295,6 +316,10 @@
               if (priceInput) {
                 console.log(`Updating price in row ID ${rowId} with new value: ${data.new_price}`);
                 priceInput.value = data.new_price;
+
+                // Оновлення "Загалом" після отримання нової ціни
+                updateTotal(rowId, parseFloat(data.new_price));
+
               } else {
                 console.warn(`Price field not found in row ID: ${rowId}`);
               }
@@ -309,6 +334,7 @@
     });
   });
 </script>
+
 
 
 <script>
