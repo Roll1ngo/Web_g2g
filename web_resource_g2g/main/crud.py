@@ -303,6 +303,10 @@ def create_video_filename(request, sold_order_number):
 
 
 def get_balance(user_id):
-    seller = Sellers.objects.filter(auth_user_id=user_id).first()
+    try:
+        seller = Sellers.objects.filter(auth_user_id=user_id).first()
+    except Sellers.DoesNotExist:
+        logger.warning(f"Продавець не знайдено")
+        return None
     return seller.balance
 

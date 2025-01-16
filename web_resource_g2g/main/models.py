@@ -16,7 +16,7 @@ class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255, blank=True, null=True)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.IntegerField(default=0)
-    interest_rate = models.IntegerField(default=75, blank=True, null=True)
+    interest_rate = models.IntegerField(default=75)
 
     class Meta:
         db_table = 'sellers'
