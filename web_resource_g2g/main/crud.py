@@ -53,7 +53,7 @@ def get_main_data_from_table(auth_user_id: int):
             if row['price']:
                 new_price = get_float_price(row, auth_user_id)
                 row['price'] = new_price
-                row['full_cost'] =round(new_price * stock, 3)
+                row['full_cost'] = round(new_price * stock, 3)
 
             else:
                 row['price'] = None

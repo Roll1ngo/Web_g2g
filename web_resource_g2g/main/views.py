@@ -1,6 +1,5 @@
 import json
 import os
-import time
 
 from django.conf import settings
 from django.contrib import messages

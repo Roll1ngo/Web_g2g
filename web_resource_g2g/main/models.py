@@ -13,10 +13,10 @@ class Commission(models.Model):
 
 
 class Sellers(models.Model):
-    id_telegram = models.CharField(max_length=255)
+    id_telegram = models.CharField(max_length=255, blank=True, null=True)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.IntegerField(default=0)
-    interest_rate = models.IntegerField(default=75)
+    interest_rate = models.IntegerField(default=75, blank=True, null=True)
 
     class Meta:
         db_table = 'sellers'
@@ -100,6 +100,9 @@ class SoldOrders(models.Model):
     price_unit = models.IntegerField()
     total_amount = models.IntegerField()
     comission_fee = models.IntegerField()
+    earned_without_admins_commission = models.IntegerField(default=0)
+    owner_commission = models.IntegerField(default=0)
+    technical_commission = models.IntegerField(default=0)
     to_be_earned = models.IntegerField()
     trade_mode = models.CharField(max_length=255)
     created_time = models.DateTimeField(default=timezone.now)
