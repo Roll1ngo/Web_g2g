@@ -86,14 +86,16 @@ def show_order_info(request, server_id):
 
 def upload_video(request, sold_order_number):
     logger.info(f"sold_order_number__{sold_order_number}")
+
+
     if request.method == 'POST':
         if 'video' in request.FILES:
             video_file = request.FILES['video']
-            sent_gold = request.POST.get('sent_gold')
-            logger.info(sent_gold)
+            sent_gold = int(request.POST.get('sent_gold'))
+
             try:
                 # Збереження файлу
-                filename = crud.create_video_filename(request,sold_order_number)
+                filename = crud.create_video_filename(request, sold_order_number)
                 # filename = 'some_name_for_video_file.mp4'
                 filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
                 with open(filepath, 'wb+') as destination:
@@ -121,7 +123,7 @@ def show_history_orders(request):
 
     for order in orders_history:
 
-        total_earned += order.to_be_earned if not order.paid_in_salary else 0  # Додаємо значення до загальної суми
+        total_earned += order.earned_without_admins_commission if not order.paid_in_salary else 0  # Додаємо значення до загальної суми
         orders_with_balance.append({
             'order': order,
             'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення

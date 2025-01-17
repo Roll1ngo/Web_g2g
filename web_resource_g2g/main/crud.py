@@ -3,10 +3,10 @@ from pathlib import Path
 import os
 
 from django.db import transaction
-from django.shortcuts import get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders, Commission
-from django.db.models import F
+from django.db.models import F, Sum, DecimalField
 from .utils.logger_config import logger
 
 
@@ -66,33 +66,16 @@ def get_main_data_from_table(auth_user_id: int):
     return main_data_float_price
 
 
-import logging
-from django.core.exceptions import ObjectDoesNotExist
-
-logger = logging.getLogger(__name__)
-
 def get_float_price(row, auth_user_id):
     try:
         # Перевірка наявності ключів у `row`
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
+        rang_exchange = get_exchange_commission()
+        interest_rate = get_interest_rate_by_user_id(auth_user_id)
 
         if not currently_strategy or not server_urls_id:
             logger.error("Missing 'price' or 'server_urls' in row.")
-            return None
-
-        # Отримання останнього запису з `Commission`
-        try:
-            rang_exchange = Commission.objects.latest('created_time').commission
-        except ObjectDoesNotExist:
-            logger.error("No Commission records found.")
-            return None
-
-        # Отримання `interest_rate` з `Sellers`
-        try:
-            interest_rate = Sellers.objects.get(auth_user_id=auth_user_id).interest_rate
-        except Sellers.DoesNotExist:
-            logger.error(f"No Sellers record found for auth_user_id={auth_user_id}.")
             return None
 
         # Отримання `float_price` з `TopPrices`
@@ -229,8 +212,9 @@ def pause_offer(offer_id, action):
 
 
 def get_order_info(server_id, user_id):
-
-    order_info = (SoldOrders.objects.filter(server_id=server_id, seller_id=user_id, download_video_status=False).
+    logger.info(f"server_id__{server_id}, user_id__{user_id}")
+    seller_id = Sellers.objects.get(auth_user_id=user_id)
+    order_info = (SoldOrders.objects.filter(server_id=server_id, seller_id=seller_id, download_video_status=False).
                   select_related('server').first())
 
     return order_info
@@ -243,16 +227,18 @@ def update_sold_order_when_video_download(order_number, path_to_video, sent_gold
             # Оновлюємо запис у SoldOrders
             sold_order = SoldOrders.objects.get(sold_order_number=order_number)
             seller_id = sold_order.seller_id
-            pay_to_completed_order = sold_order.to_be_earned
             sold_order.path_to_video = path_to_video
             sold_order.sent_gold = sent_gold
             sold_order.download_video_status = True
             sold_order.charged_to_payment = True
             sold_order.save()
 
-            seller_info = Sellers.objects.get(auth_user_id=seller_id)
-            seller_info.balance += pay_to_completed_order
-            seller_info.save()
+            # Оновлюємо баланс продавця
+            response = update_seller_balance(seller_id)
+            update_owner_balance()
+            update_technical_balance()
+            logger.info(response)
+
             # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
             offer = OffersForPlacement.objects.filter(
                 sellers=sold_order.seller,
@@ -272,13 +258,15 @@ def update_sold_order_when_video_download(order_number, path_to_video, sent_gold
 
 
 def get_orders_history(user_id):
-    orders_history = SoldOrders.objects.filter(seller_id=user_id,).select_related('server')
+    seller_id = Sellers.objects.get(auth_user_id=user_id)
+    orders_history = SoldOrders.objects.filter(seller_id=seller_id,).select_related('server')
     return orders_history
 
 
 def get_server_id(user_id):
+    seller_id = Sellers.objects.get(auth_user_id=user_id)
     try:
-        order_info = SoldOrders.objects.get(seller_id=user_id, download_video_status=False)
+        order_info = SoldOrders.objects.get(seller_id=seller_id, download_video_status=False)
         server_id = order_info.server_id
     except SoldOrders.DoesNotExist:
         return f"Замовлення не знайдено"
@@ -310,3 +298,89 @@ def get_balance(user_id):
         return None
     return seller.balance
 
+
+def get_exchange_commission():
+    # Отримання останнього запису з `Commission`
+    try:
+        rang_exchange = Commission.objects.latest('created_time').commission
+    except ObjectDoesNotExist:
+        logger.error("No Commission records found.")
+        return None
+    return rang_exchange
+
+
+def get_interest_rate_by_user_id(auth_user_id):
+    # Отримання `interest_rate` з `Sellers`
+    try:
+        interest_rate = Sellers.objects.get(auth_user_id=auth_user_id).interest_rate
+    except ObjectDoesNotExist:
+        logger.error(f"No Sellers record found for auth_user_id={auth_user_id}.")
+        return None
+    return interest_rate
+
+
+def update_seller_balance(seller_id):
+    target_field = 'earned_without_admins_commission'
+
+    # Step 1: Calculate the total earned_without_admins_commission for the specific seller
+    total_earned = SoldOrders.objects.filter(
+        seller_id=seller_id,
+        charged_to_payment=True,
+        paid_in_salary=False,
+    ).aggregate(total_earned=Sum(target_field))['total_earned']
+    logger.info(f"sum_total_earned__{total_earned}")
+    # If no records are found, total_earned will be None. Set it to 0 in that case.
+    if total_earned is None:
+        total_earned = 0
+
+    # Step 2: Update the seller's balance
+    Sellers.objects.filter(id=seller_id).update(balance=total_earned)
+
+    return 'Balance updated successfully.'
+
+
+def update_owner_balance():
+    target_field = 'owner_commission'
+    owner_id = 1
+
+    # Step 1: Calculate the total earned_without_admins_commission for the specific seller
+    total_earned = SoldOrders.objects.filter(
+        charged_to_payment=True,
+        paid_to_owner=False
+    ).aggregate(total_earned=Sum(target_field, output_field=DecimalField()))['total_earned']
+    logger.info(f"owner_sum_total_earned__{total_earned}")
+    # If no records are found, total_earned will be None. Set it to 0 in that case.
+    if total_earned is None:
+        total_earned = 0
+
+    # Step 2: Update the seller's balance
+    Sellers.objects.filter(id=owner_id).update(balance=total_earned)
+
+    return 'Balance updated successfully.'
+
+
+def update_technical_balance():
+    target_field = 'technical_commission'
+    technical_id = 2
+
+    check_coma = SoldOrders.objects.filter(
+        charged_to_payment=True,
+        paid_to_technical=False
+    )
+    for row in check_coma:
+        logger.info(f"row.technical_commission__{row.technical_commission}")
+    # Step 1: Calculate the total earned_without_admins_commission for the specific seller
+    total_earned = SoldOrders.objects.filter(
+        charged_to_payment=True,
+        paid_to_technical=False
+    ).aggregate(total_earned=Sum(target_field, output_field=DecimalField()))['total_earned']
+    logger.info(f"technical_sum_total_earned__{total_earned}")
+
+    # If no records are found, total_earned will be None. Set it to 0 in that case.
+    if total_earned is None:
+        total_earned = 0
+
+    # Step 2: Update the seller's balance
+    Sellers.objects.filter(id=technical_id).update(balance=total_earned)
+
+    return 'Balance updated successfully.'

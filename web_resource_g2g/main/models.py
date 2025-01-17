@@ -2,7 +2,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from datetime import datetime
 
 from django.utils import timezone
 
@@ -15,7 +14,7 @@ class Commission(models.Model):
 class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255, blank=True, null=True)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
-    balance = models.IntegerField(default=0)
+    balance = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     interest_rate = models.IntegerField(default=75)
 
     class Meta:
@@ -112,15 +111,11 @@ class SoldOrders(models.Model):
     send_video_status = models.BooleanField(default=False, null=True)
     charged_to_payment = models.BooleanField(default=False)
     paid_in_salary = models.BooleanField(default=False)
+    paid_to_owner = models.BooleanField(default=False)
+    paid_to_technical = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'sold_orders'
 
-    # def save(self, *args, **kwargs):
-    #     # Якщо статус змінюється на 'completed', оновлюємо баланс продавця
-    #     if self.status == 'completed':
-    #         seller = self.seller
-    #         seller.balance += self.to_be_earned
-    #         seller.save()
-    #     super().save(*args, **kwargs)
+
 

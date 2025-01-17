@@ -24,7 +24,7 @@
               <td>{{ order.server.server_name }}</td>
               <td>{{ order.server.game_name}}</td>
               <td>{{ order.server.fraction }}</td>
-              <td>{{ order.quantity }}</td>
+              <td id="quantity_gold">{{ order.quantity }}</td>
               <td>{{ order.character_name }}</td>
               <td>{{ order.trade_mode }}</td>
               <td>{{ order.price_unit }}</td>
@@ -59,6 +59,9 @@
     const progressDiv = document.getElementById('progress');
     const cancelUpload = document.getElementById('cancelUpload'); // Отримуємо кнопку "Скасувати"
     const sent_goldInput = document.getElementById('sent_gold');
+    const quantity = document.getElementById('quantity_gold');
+
+
 
     uploadButton.addEventListener('click', () => {
         uploadForm.style.display = 'block';
@@ -76,11 +79,18 @@
     submitButton.addEventListener('click', () => {
         const file = videoFile.files[0];
         const sent_gold = sent_goldInput.value;
+        const quantity_gold = parseInt(quantity.textContent, 10);
+
+        if (sent_gold > quantity_gold) { // Перевірка тут
+            alert("Відправлене золото не може перевищувати замовлене");
+            return; // Зупиняємо виконання
+        }
 
         if (!sent_gold) {
             alert("Будь ласка, введіть кількість відправленого золота.");
             return;
         }
+
         if (isNaN(sent_gold)) {
             alert("кількість відправленого золота має містити тільки цифри.");
             return;
