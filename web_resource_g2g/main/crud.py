@@ -4,6 +4,7 @@ import os
 
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import model_to_dict
 
 from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders, Commission
 from django.db.models import F, Sum, DecimalField
@@ -83,17 +84,17 @@ def get_float_price(row, auth_user_id):
             currently_strategy, flat=True
         ).first()
 
+        if float_price is None:
+            logger.error(f"No TopPrices record found for server_name={server_urls_id}.")
+            float_price_without_exchange = 0
+            return round(float_price_without_exchange, 3)
+
         total_percent = interest_rate - rang_exchange
         float_price_without_exchange = float_price * (total_percent / 100)
 
-        if float_price is None:
-            logger.error(f"No TopPrices record found for server_name={server_urls_id}.")
-            return None
-
-        # Логування результатів
-        logger.info(f"float_price__{float_price}")
-        logger.info(f"rang_exchange__{rang_exchange}, interest_rate__{interest_rate}")
-        logger.info(f"float_price_without_exchange__{float_price_without_exchange}, total_percent__{total_percent}")
+        logger.info(f"float_price__{float_price}, rang_exchange__{rang_exchange},"
+                    f" interest_rate__{interest_rate} float_price_without_exchange__{float_price_without_exchange},"
+                    f" total_percent__{total_percent}")
 
         return round(float_price_without_exchange, 3)
 
@@ -103,7 +104,7 @@ def get_float_price(row, auth_user_id):
         return None
 
 
-def update_data(data):
+def update_data(data, user_id):
     try:
         # Retrieve the OffersForPlacement object
         offer = OffersForPlacement.objects.get(id=data['row_id'])
@@ -112,13 +113,13 @@ def update_data(data):
         setattr(offer, data['field_name'], data['new_value'])
         offer.save()
 
-        # Get the new strategy (price)
-        new_strategy = offer.price
+        offer_dict = model_to_dict(offer)
+        logger.info(f"offer_dict__{offer_dict}")
+
 
         try:
             # Retrieve the TopPrices object
-            top_prices_row = TopPrices.objects.get(server_name=offer.server_urls_id)
-            new_price = getattr(top_prices_row, new_strategy)
+            show_price = get_float_price(offer_dict, user_id)
         except TopPrices.DoesNotExist:
             # Handle the case where the TopPrices object does not exist
             new_price = 0
@@ -127,7 +128,7 @@ def update_data(data):
         # Handle the case where the OffersForPlacement object does not exist
         raise ValueError(f"OffersForPlacement with id {data['row_id']} does not exist.")
 
-    return new_price
+    return show_price
 
 
 def get_servers_for_add():
@@ -296,7 +297,7 @@ def get_balance(user_id):
     except Sellers.DoesNotExist:
         logger.warning(f"Продавець не знайдено")
         return None
-    return seller.balance
+    return round(seller.balance, 2)
 
 
 def get_exchange_commission():

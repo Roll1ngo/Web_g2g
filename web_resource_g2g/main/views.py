@@ -34,9 +34,10 @@ def start_page(request):
 
 def update_table_data(request):
     if request.method == 'POST':
+        user_id = request.user.id
         data = json.loads(request.body)
         logger.info(data)
-        new_price = crud.update_data(data)
+        new_price = crud.update_data(data, user_id)
         logger.info(new_price)
         return JsonResponse({'success': True, 'new_price': new_price})
     return HttpResponseNotAllowed(['POST'])
@@ -87,7 +88,6 @@ def show_order_info(request, server_id):
 def upload_video(request, sold_order_number):
     logger.info(f"sold_order_number__{sold_order_number}")
 
-
     if request.method == 'POST':
         if 'video' in request.FILES:
             video_file = request.FILES['video']
@@ -96,7 +96,6 @@ def upload_video(request, sold_order_number):
             try:
                 # Збереження файлу
                 filename = crud.create_video_filename(request, sold_order_number)
-                # filename = 'some_name_for_video_file.mp4'
                 filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
                 with open(filepath, 'wb+') as destination:
                     for chunk in video_file.chunks():

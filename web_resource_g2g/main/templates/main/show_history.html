@@ -32,7 +32,7 @@
                     <td>{{ item.order.character_name }}</td>
                     <td>{{ item.order.trade_mode }}</td>
                     <td>{{ item.order.price_unit }}</td>
-                    <td>{{ item.order.to_be_earned|floatformat:2 }}</td>
+                    <td>{{ item.order.earned_without_admins_commission|floatformat:2 }}</td>
                     <td>{{ item.current_balance|floatformat:2}}</td>
                     <td>{{ item.order.created_time }}</td>
                     <td>{{ item.order.sold_order_number }}</td>
