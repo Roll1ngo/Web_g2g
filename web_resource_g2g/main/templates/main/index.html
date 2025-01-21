@@ -273,7 +273,7 @@
 
     if (stockInput && totalInput) {
       const stock = parseFloat(stockInput.value) || 0;
-      const total = (stock * price).toFixed(2); // Округлення до двох знаків після коми
+      const total = parseFloat((stock * price)).toFixed(2); // Округлення до двох знаків після коми
       totalInput.value = total;
       console.log(`Updated Total in row ID ${rowId}: ${total}`);
     } else {
@@ -369,20 +369,6 @@
     selectElement.addEventListener('change', (event) => {
       const selectedOption = event.target.value; // Отримуємо вибраний варіант
       const rowId = event.target.id.split('-').pop(); // Отримуємо ID рядка з ID елемента
-
-      const priceField = document.getElementById(`price-field-${rowId}`);
-            const stockField = document.getElementById(`stock-field-${rowId}`);
-            const fullCostField = document.getElementById(`full-cost-${rowId}`);
-
-            const price = parseFloat(priceField.value) || 0;
-            const stock = parseFloat(stockField.value) || 0;
-            const fullCost = parseFloat(fullCostField.value) || 0;
-
-            if (price === 0 || stock === 0 || fullCost === 0) {
-                alert('Неможливо виставити товар з нульовими значеннями');
-                event.target.value = 'emtpy-field'; // Скидаємо вибір
-                return;
-            }
 
       // Якщо вибраний варіант не порожній
       if (selectedOption !== 'emtpy-field') {
