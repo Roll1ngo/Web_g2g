@@ -13,6 +13,7 @@
               <th>Запас</th>
               <th>Загалом</th>
               <th>Стратегія</th>
+              <th>Доставка</th>
               <th>Опції</th>
               <th>Статус</th>
           </tr>
@@ -35,12 +36,17 @@
               </td>
               <td ><input type="text" style="width: 100px" value="{{ row.stock}}" id="stock-field-{{row.id}}" name="stock" onkeypress="return isNumberKey(event)"></td>
               <td><input type="text" style="width: 100px" value="{{ row.full_cost }}" id="full-cost-{{row.id}}" readonly></td>
-
-              <td>
-                <select class="strategy-select" name="price" id="strategySelect_{{ row.id }}">
-                  <option value="mean20_lot" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
+               <td>
+                <select class="delivery-select" name="price" id="strategySelect-{{ row.id }}">
+                  <option value="mail" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
                   <option value="mean10_lot" {% if row.strategy_price == "mean10_lot" %}selected{% endif %}>Баланс</option>
                   <option value="minimal" {% if row.strategy_price == "minimal" %}selected{% endif %}>Швидко</option>
+                </select>
+              </td>
+             <td>
+                <select class="strategy-select" name="face_to_face_trade" id="deliverySelect_{{ row.id }} ">
+                  <option value="face_to_face_trade" {% if row.face_to_face_trade == True %}selected{% endif %}>Mail and Trade</option>
+                  <option value="mail_delivery" {% if row.face_to_face_trade == False %}selected{% endif %}>Mail</option>
                 </select>
               </td>
               <td>
@@ -267,6 +273,7 @@
   function updateTotal(rowId, price) {
     const stockInputId = `stock-field-${rowId}`;
     const totalInputId = `full-cost-${rowId}`;
+    const deliveryInputId = 'deliverySelect-${{ row.id }}';
 
     const stockInput = document.querySelector(`#${stockInputId}`);
     const totalInput = document.querySelector(`#${totalInputId}`);
@@ -282,7 +289,7 @@
   }
 
   tableRows.forEach(row => {
-    const inputs = row.querySelectorAll('input, select.strategy-select');
+    const inputs = row.querySelectorAll('input, select.strategy-select, select.delivery-select');
 
     inputs.forEach(input => {
       // Add keypress validation for numeric inputs

@@ -37,7 +37,7 @@ def update_table_data(request):
         user_id = request.user.id
         data = json.loads(request.body)
         logger.info(data)
-        new_price = crud.update_data(data, user_id)
+        new_price = crud.update_price_delivery(data, user_id)
         logger.info(new_price)
         return JsonResponse({'success': True, 'new_price': new_price})
     return HttpResponseNotAllowed(['POST'])

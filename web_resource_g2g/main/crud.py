@@ -104,13 +104,20 @@ def get_float_price(row, auth_user_id):
         return None
 
 
-def update_data(data, user_id):
+def update_price_delivery(data, user_id):
+    field = data['field_name']
+    value = data['new_value']
+
     try:
         # Retrieve the OffersForPlacement object
         offer = OffersForPlacement.objects.get(id=data['row_id'])
 
-        # Update the specified field with the new value
-        setattr(offer, data['field_name'], data['new_value'])
+        if field == 'price':
+            # Update the specified field with the new value
+            setattr(offer, field, value )
+        elif field == 'face_to_face_trade':
+            setattr(offer, field, True if value == 'face_to_face_trade' else False)
+
         offer.save()
 
         offer_dict = model_to_dict(offer)
