@@ -13,6 +13,7 @@ def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
         all_bets = crud.get_main_data_from_table(user_id)
+        logger.info(f"all_bets__{all_bets}")
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
@@ -81,8 +82,10 @@ def show_order_info(request, server_id):
         return render(request, 'main/not_found_order.html')
 
     sold_order_number = order_info.sold_order_number
+    price_unit = round(order_info.earned_without_admins_commission, 2) / order_info.quantity
     return render(request, 'main/show_order_info.html', context={"order": order_info,
-                                                                 "sold_order_number": sold_order_number})
+                                                                 "sold_order_number": sold_order_number,
+                                                                 "price_unit": price_unit})
 
 
 def upload_video(request, sold_order_number):

@@ -36,19 +36,28 @@
               </td>
               <td ><input type="text" style="width: 100px" value="{{ row.stock}}" id="stock-field-{{row.id}}" name="stock" onkeypress="return isNumberKey(event)"></td>
               <td><input type="text" style="width: 100px" value="{{ row.full_cost }}" id="full-cost-{{row.id}}" readonly></td>
-               <td>
+
+                 {% if row.exists_strategy == True %}
+               <td><input type="text" style="width: 80px; background-color: #b3b3b3;" value="Баланс" readonly></td>
+                 {% else %}
+              <td>
                 <select class="delivery-select" name="price" id="strategySelect-{{ row.id }}">
-                  <option value="mail" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
+                  <option value="mean20_lot" {% if row.strategy_price == "mean20_lot" %}selected{% endif %}>Дорого</option>
                   <option value="mean10_lot" {% if row.strategy_price == "mean10_lot" %}selected{% endif %}>Баланс</option>
                   <option value="minimal" {% if row.strategy_price == "minimal" %}selected{% endif %}>Швидко</option>
                 </select>
+                 {% endif %}
               </td>
+                {% if row.exists_strategy == True %}
+               <td ><input type="text" style="width: 140px; background-color: #b3b3b3;" value="mail" readonly></td>
+                {% else %}
              <td>
                 <select class="strategy-select" name="face_to_face_trade" id="deliverySelect_{{ row.id }} ">
                   <option value="face_to_face_trade" {% if row.face_to_face_trade == True %}selected{% endif %}>Mail and Trade</option>
                   <option value="mail_delivery" {% if row.face_to_face_trade == False %}selected{% endif %}>Mail</option>
                 </select>
               </td>
+              {% endif %}
               <td>
                 <select  id="options-select-{{ row.id }}" class="select-options">
                   <option value="emtpy-field"></option>
@@ -84,9 +93,16 @@
       </tbody>
       </table>
   </div>
+
   <div class="center-container" style="justify-content: space-between;">
     <span><button class="save-button">Додати сервер</button></span>
   </div>
+
+   <div class="center-container" style="justify-content: space-between;">
+    <span style="color: green; margin-right: 10px;">
+      Якщо поля "Стратегія" та "Доставка" мають статистичний стан з відсутніми варіантами для вибору, значить на цьому сервері ведеться спільна торгівля за усередненими критеріями.
+    </span>
+   </div>
 
 <div id="add-server-form" style="display: none;">
     <table>

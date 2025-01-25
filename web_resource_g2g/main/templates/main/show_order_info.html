@@ -27,10 +27,10 @@
               <td id="quantity_gold">{{ order.quantity }}</td>
               <td>{{ order.character_name }}</td>
               <td>{{ order.trade_mode }}</td>
-              <td>{{ order.price_unit }}</td>
+              <td>{{ price_unit }}</td>
               <td>{{order.earned_without_admins_commission|floatformat:2 }}</td>
               {% if not order.download_video_status %}
-              <td>Очикується завантаження відео</td>
+              <td>Очікується завантаження відео</td>
               {% else %}
               <td>Завершено</td>
               {% endif %}

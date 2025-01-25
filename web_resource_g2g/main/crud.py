@@ -46,10 +46,29 @@ def get_main_data_from_table(auth_user_id: int):
         )
     )
     # Оновлюємо ціни та створюємо новий список
+
     main_data_float_price = []
     for row in main_data:
         try:
-            row['strategy_price'] = row['price']
+            # #Шукаємо стратегію на активному лоті такого ж сервера
+            current_strategy = OffersForPlacement.objects.filter(
+                server_urls=row['server_urls'],
+                active_rate=True
+            ).exclude(sellers=row['sellers']).values_list('price', flat=True).first()
+
+            if current_strategy:
+                ballance_strategy_for_all = 'mean10_lot'
+                change_all_strategy = OffersForPlacement.objects.filter(server_urls_id=row['server_urls'])
+                change_all_strategy.update(price=ballance_strategy_for_all, face_to_face_trade=False)
+
+                row['strategy_price'] = ballance_strategy_for_all
+                row['price'] = ballance_strategy_for_all
+                row['exists_strategy'] = True
+                row['face_to_face_trade'] = False
+            else:
+                row['strategy_price'] = row['price']
+                row['exists_strategy'] = False
+
             stock = row['stock']
             if row['price']:
                 new_price = get_float_price(row, auth_user_id)
@@ -63,6 +82,8 @@ def get_main_data_from_table(auth_user_id: int):
         except (ValueError, TypeError) as e:
             logger.info(f"Error updating {row.server_name}: {e}")
             continue  # Пропустити помилковий рядок і перейти до наступного
+
+
 
     return main_data_float_price
 
@@ -83,6 +104,7 @@ def get_float_price(row, auth_user_id):
         float_price = TopPrices.objects.filter(server_name=server_urls_id).values_list(
             currently_strategy, flat=True
         ).first()
+
 
         if float_price is None:
             logger.error(f"No TopPrices record found for server_name={server_urls_id}.")
