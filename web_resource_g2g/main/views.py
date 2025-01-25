@@ -87,6 +87,7 @@ def show_order_info(request, server_id):
 
 def upload_video(request, sold_order_number):
     logger.info(f"sold_order_number__{sold_order_number}")
+    user = request.user.id
 
     if request.method == 'POST':
         if 'video' in request.FILES:
@@ -101,7 +102,7 @@ def upload_video(request, sold_order_number):
                     for chunk in video_file.chunks():
                         destination.write(chunk)
                 logger.info(f"filepath__{filepath}")
-                response = crud.update_sold_order_when_video_download(sold_order_number, filepath, sent_gold)
+                response = crud.update_sold_order_when_video_download(user, sold_order_number, filepath, sent_gold)
                 logger.info(f"response__{response}")
 
                 return redirect('main:start_page')

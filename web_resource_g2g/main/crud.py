@@ -228,12 +228,13 @@ def get_order_info(server_id, user_id):
     return order_info
 
 
-def update_sold_order_when_video_download(order_number, path_to_video, sent_gold):
+def update_sold_order_when_video_download(user, order_number, path_to_video, sent_gold):
     logger.info(f"sold_order_number__{order_number}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
+    seller_id = Sellers.objects.get(auth_user_id=user)
     try:
         with transaction.atomic():  # Забезпечує цілісність транзакції
             # Оновлюємо запис у SoldOrders
-            sold_order = SoldOrders.objects.get(sold_order_number=order_number)
+            sold_order = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id.id)
             seller_id = sold_order.seller_id
             sold_order.path_to_video = path_to_video
             sold_order.sent_gold = sent_gold
