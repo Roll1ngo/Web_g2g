@@ -80,7 +80,7 @@ def get_main_data_from_table(auth_user_id: int):
 
             main_data_float_price.append(row)
         except (ValueError, TypeError) as e:
-            logger.info(f"Error updating {row.server_name}: {e}")
+            logger.info(f"Error updating {row['server_name']}: {e}")
             continue  # Пропустити помилковий рядок і перейти до наступного
 
 
