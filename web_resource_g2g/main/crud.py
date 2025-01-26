@@ -134,7 +134,7 @@ def update_price_delivery(data, user_id):
         # Retrieve the OffersForPlacement object
         offer = OffersForPlacement.objects.get(id=data['row_id'])
 
-        if field == 'price':
+        if field == 'price' or 'stock':
             # Update the specified field with the new value
             setattr(offer, field, value )
         elif field == 'face_to_face_trade':
