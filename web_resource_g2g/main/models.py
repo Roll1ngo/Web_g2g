@@ -118,4 +118,17 @@ class SoldOrders(models.Model):
         db_table = 'sold_orders'
 
 
-
+class VitaliyOrders(models.Model):
+    server = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
+    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
+    status = models.CharField(max_length=255)
+    bought_by = models.CharField(max_length=255)
+    character_name = models.CharField(max_length=255)
+    sold_order_number = models.IntegerField()
+    quantity = models.IntegerField()
+    price_unit = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    comission_fee = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    to_be_earned = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    trade_mode = models.CharField(max_length=255)
+    created_time = models.DateTimeField(default=timezone.now)
