@@ -131,7 +131,7 @@ def update_price_delivery(data, user_id):
     value = data['new_value']
 
     try:
-        # Retrieve the OffersForPlacement object
+        # Retrieve the  OffersForPlacement object
         offer = OffersForPlacement.objects.get(id=data['row_id'])
 
         if field == 'price' or field == 'stock':
