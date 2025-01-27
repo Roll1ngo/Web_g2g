@@ -140,7 +140,7 @@ def update_price_delivery(data, user_id):
         elif field == 'face_to_face_trade':
             setattr(offer, field, True)
         elif field == 'mail_delivery':
-            setattr(offer, field, False)
+            setattr(offer, 'face_to_face_trade', False)
 
         offer.save()
 

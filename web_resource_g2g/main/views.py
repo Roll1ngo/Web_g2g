@@ -108,10 +108,9 @@ def upload_video(request, sold_order_number):
                 logger.info(f"response__{response}")
 
                 return redirect('main:start_page')
-            # except Exception as e:
-            #     messages.success(request, 'Error saving video')
-            finally:
-                'error'
+            except Exception as e:
+                messages.success(request, 'Error saving video')
+
         else:
             messages.error(request, 'Будь ласка, виберіть файл.')
 
