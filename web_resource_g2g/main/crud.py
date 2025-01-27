@@ -114,9 +114,9 @@ def get_float_price(row, auth_user_id):
         total_percent = interest_rate - rang_exchange
         float_price_without_exchange = float_price * (total_percent / 100)
 
-        logger.info(f"float_price__{float_price}, rang_exchange__{rang_exchange},"
-                    f" interest_rate__{interest_rate} float_price_without_exchange__{float_price_without_exchange},"
-                    f" total_percent__{total_percent}")
+        # logger.info(f"float_price__{float_price}, rang_exchange__{rang_exchange},"
+        #             f" interest_rate__{interest_rate} float_price_without_exchange__{float_price_without_exchange},"
+        #             f" total_percent__{total_percent}")
 
         return round(float_price_without_exchange, 3)
 
@@ -326,15 +326,26 @@ def create_video_filename(request, sold_order_number):
 def get_balance(user_id):
     target_field = 'earned_without_admins_commission'
 
-    seller_id = Sellers.objects.get(auth_user_id=user_id)
+    try:
+        seller_id = Sellers.objects.get(auth_user_id=user_id)
+    except Sellers.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
+        return 0
+
     total_earned = SoldOrders.objects.filter(
         seller_id=seller_id,
         charged_to_payment=True,
         paid_in_salary=False,
     ).aggregate(total_earned=Sum(target_field))['total_earned']
-    logger.info(f"sum_total_earned__{total_earned}")
+
     if total_earned is None:
         total_earned = 0
+    elif not isinstance(total_earned, (int, float)):
+        try:
+            total_earned = float(total_earned)
+        except (ValueError, TypeError):
+            total_earned = 0
+
     return round(total_earned, 2)
 
 
@@ -352,6 +363,7 @@ def get_interest_rate_by_user_id(auth_user_id):
     # Отримання `interest_rate` з `Sellers`
     try:
         seller = Sellers.objects.filter(auth_user_id=auth_user_id).first()
+        logger.info(f"seller_interest_rate__{seller.interest_rate}")
         if not seller or seller.interest_rate is None:
             raise ValueError(f"No seller or interest rate found for user {auth_user_id}")
         interest_rate = seller.interest_rate
