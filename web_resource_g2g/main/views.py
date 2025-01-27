@@ -13,7 +13,6 @@ def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
         all_bets = crud.get_main_data_from_table(user_id)
-        logger.info(f"all_bets__{all_bets}")
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)

@@ -324,12 +324,18 @@ def create_video_filename(request, sold_order_number):
 
 
 def get_balance(user_id):
-    try:
-        seller = Sellers.objects.filter(auth_user_id=user_id).first()
-    except Sellers.DoesNotExist:
-        logger.warning(f"Продавець не знайдено")
-        return None
-    return round(seller.balance, 2)
+    target_field = 'earned_without_admins_commission'
+
+    seller_id = Sellers.objects.get(auth_user_id=user_id)
+    total_earned = SoldOrders.objects.filter(
+        seller_id=seller_id,
+        charged_to_payment=True,
+        paid_in_salary=False,
+    ).aggregate(total_earned=Sum(target_field))['total_earned']
+    logger.info(f"sum_total_earned__{total_earned}")
+    if total_earned is None:
+        total_earned = 0
+    return round(total_earned, 2)
 
 
 def get_exchange_commission():
