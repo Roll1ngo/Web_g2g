@@ -351,7 +351,10 @@ def get_exchange_commission():
 def get_interest_rate_by_user_id(auth_user_id):
     # Отримання `interest_rate` з `Sellers`
     try:
-        interest_rate = Sellers.objects.get(auth_user_id=auth_user_id).interest_rate
+        seller = Sellers.objects.filter(auth_user_id=auth_user_id).first()
+        if not seller or seller.interest_rate is None:
+            raise ValueError(f"No seller or interest rate found for user {auth_user_id}")
+        interest_rate = seller.interest_rate
     except ObjectDoesNotExist:
         logger.error(f"No Sellers record found for auth_user_id={auth_user_id}.")
         return None
