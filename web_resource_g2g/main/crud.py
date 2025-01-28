@@ -6,7 +6,7 @@ from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
 
-from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders, Commission
+from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders, Commission, SellerServerInterestRate
 from django.db.models import F, Sum, DecimalField
 from .utils.logger_config import logger
 
@@ -71,8 +71,9 @@ def get_main_data_from_table(auth_user_id: int):
 
             stock = row['stock']
             if row['price']:
-                new_price = get_float_price(row, auth_user_id)
+                new_price, interest_rate = get_float_price(row, auth_user_id)
                 row['price'] = new_price
+                row['interest_rate'] = interest_rate
                 row['full_cost'] = round(new_price * stock, 3)
 
             else:
@@ -83,8 +84,6 @@ def get_main_data_from_table(auth_user_id: int):
             logger.info(f"Error updating {row['server_name']}: {e}")
             continue  # Пропустити помилковий рядок і перейти до наступного
 
-
-
     return main_data_float_price
 
 
@@ -94,22 +93,21 @@ def get_float_price(row, auth_user_id):
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
         rang_exchange = get_exchange_commission()
-        interest_rate = get_interest_rate_by_user_id(auth_user_id)
+        interest_rate = get_interest_rate_by_user_id(auth_user_id, server_urls_id)
 
         if not currently_strategy or not server_urls_id:
             logger.error("Missing 'price' or 'server_urls' in row.")
-            return None
+            return None, None
 
         # Отримання `float_price` з `TopPrices`
         float_price = TopPrices.objects.filter(server_name=server_urls_id).values_list(
             currently_strategy, flat=True
         ).first()
 
-
         if float_price is None:
             logger.error(f"No TopPrices record found for server_name={server_urls_id}.")
             float_price_without_exchange = 0
-            return round(float_price_without_exchange, 3)
+            return round(float_price_without_exchange, 3), interest_rate
 
         total_percent = interest_rate - rang_exchange
         float_price_without_exchange = float_price * (total_percent / 100)
@@ -118,12 +116,12 @@ def get_float_price(row, auth_user_id):
         #             f" interest_rate__{interest_rate} float_price_without_exchange__{float_price_without_exchange},"
         #             f" total_percent__{total_percent}")
 
-        return round(float_price_without_exchange, 3)
+        return round(float_price_without_exchange, 3), interest_rate
 
     except Exception as e:
         # Логування будь-якої несподіваної помилки
         logger.error(f"Unexpected error in get_float_price: {e}", exc_info=True)
-        return None
+        return None, None
 
 
 def update_price_delivery(data, user_id):
@@ -140,16 +138,14 @@ def update_price_delivery(data, user_id):
         elif field == 'face_to_face_trade':
             setattr(offer, field, True if value == 'face_to_face_trade' else False)
 
-
         offer.save()
 
         offer_dict = model_to_dict(offer)
         logger.info(f"offer_dict__{offer_dict}")
 
-
         try:
             # Retrieve the TopPrices object
-            show_price = get_float_price(offer_dict, user_id)
+            show_price, interest_rate = get_float_price(offer_dict, user_id)
         except TopPrices.DoesNotExist:
             # Handle the case where the TopPrices object does not exist
             new_price = 0
@@ -358,18 +354,21 @@ def get_exchange_commission():
     return rang_exchange
 
 
-def get_interest_rate_by_user_id(auth_user_id):
+def get_interest_rate_by_user_id(auth_user_id, server_id):
+    logger.info(f"auth_user_id__{auth_user_id}, server_id__{server_id}")
     # Отримання `interest_rate` з `Sellers`
     try:
-        seller = Sellers.objects.filter(auth_user_id=auth_user_id).first()
-        logger.info(f"seller_interest_rate__{seller.interest_rate}")
-        if not seller or seller.interest_rate is None:
-            raise ValueError(f"No seller or interest rate found for user {auth_user_id}")
-        interest_rate = seller.interest_rate
+        seller_id = Sellers.objects.get(auth_user_id=auth_user_id)
+        logger.info(f"seller_id__{seller_id}")
+        seller_rate = SellerServerInterestRate.objects.filter(seller_id=seller_id, server_id=server_id).first()
+        if not seller_rate or seller_rate.interest_rate is None:
+            interest_rate = 0
+            logger.info(f"Ставка відсутня для seller_id={seller_id} та server_id={server_id}.")
+            return interest_rate
     except ObjectDoesNotExist:
-        logger.error(f"No Sellers record found for auth_user_id={auth_user_id}.")
+        logger.error(f"Запис SellerServerInterestRate не знайдено для seller_id={seller_id} та server_id={server_id}.")
         return None
-    return interest_rate
+    return seller_rate.interest_rate
 
 
 def update_seller_balance(seller_id):
