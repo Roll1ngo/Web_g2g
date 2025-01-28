@@ -1,14 +1,16 @@
 import datetime
 import time
 
+from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.db import models
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.html import format_html
 
 from .crud import update_seller_balance, update_technical_balance, update_owner_balance
-from .models import Sellers, SoldOrders
+from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls
 from .utils.logger_config import logger
 
 
@@ -178,4 +180,30 @@ class SoldOrdersAdmin(admin.ModelAdmin):
         return self._icon(obj, 'paid_to_owner')
 
     paid_to_owner_icon.short_description = 'Власнику сплачено'
+
+
+class ServerUrlsChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return f"{obj.server_name} - {obj.game_name}"
+
+
+@admin.register(SellerServerInterestRate)
+class SellerServerInterestRateAdmin(admin.ModelAdmin):
+    list_display = ('seller', 'server_display', 'interest_rate')
+    list_filter = ('seller', 'server__game_name', 'server__server_name')
+    list_editable = ('interest_rate',)
+    search_fields = ('seller__name', 'server__game_name', 'server__server_name')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "server":
+            # Sort the queryset by server_name alphabetically
+            kwargs["queryset"] = ServerUrls.objects.all().order_by('server_name')
+            kwargs["form_class"] = ServerUrlsChoiceField
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def server_display(self, obj):
+        return f"{obj.server.server_name} - {obj.server.game_name}"
+
+    server_display.short_description = 'Server'
+
 

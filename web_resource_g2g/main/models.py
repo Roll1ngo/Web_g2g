@@ -1,4 +1,5 @@
 # models.py
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -121,3 +122,12 @@ class SoldOrders(models.Model):
 class VitaliyOrders(models.Model):
     sold_order_number = models.IntegerField()
     created_time = models.DateTimeField(default=timezone.now)
+
+
+class SellerServerInterestRate(models.Model):
+    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
+    server = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
+    interest_rate = models.IntegerField(null=False, validators=[
+        MinValueValidator(1),
+        MaxValueValidator(100)
+    ])
