@@ -82,10 +82,10 @@ def show_order_info(request, server_id):
         return render(request, 'main/not_found_order.html')
 
     sold_order_number = order_info.sold_order_number
-    price_unit = round(order_info.earned_without_admins_commission, 2) / order_info.quantity
+    price_unit = order_info.earned_without_admins_commission / order_info.quantity
     return render(request, 'main/show_order_info.html', context={"order": order_info,
                                                                  "sold_order_number": sold_order_number,
-                                                                 "price_unit": price_unit})
+                                                                 "price_unit": round(price_unit, 2)})
 
 
 def upload_video(request, sold_order_number):
