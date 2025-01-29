@@ -17,7 +17,7 @@ logger.setLevel(logging.INFO)
 executable_path = os.path.abspath(sys.executable)
 
 # Create a log file in the same directory as the executable
-log_file = os.path.join(os.path.dirname(executable_path), "g2g_bets.ans")
+log_file = os.path.join(os.path.dirname(executable_path), "front_server.ans")
 
 # Create a file handler using the `logging.handlers` module
 file_handler = logging.handlers.RotatingFileHandler(

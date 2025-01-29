@@ -21,6 +21,14 @@
       <tbody>
         {% for row in bets_list %}
           <tr id="{{row.id}}">
+            {% if row.interest_rate == 0 %}
+
+              <td colspan="10" style="text-align: center; background-color: #f8d7da; color: #721c24; font-weight: bold; padding: 15px; border: 1px solid #f5c6cb;">
+                  Для сервера {{row.server_name}} відсутня відсоткова ставка продавця.
+                Зверніться до адміністратора для закріплення вашої ставки за цим сервером <a style="color: blue;" target="_blank" href="https://t.me/VladislavBratus">тут</a></a>.
+                <button class="delete-button" data-row-id="{{row.id}}">Видалити сервер зі списку</button>
+              </td>
+            {% else %}
             <td>{{ forloop.counter }}</td>
             <form method="post" id="bet-form-{{ row.id }}" action="{% url 'main:update_table_data' %}" >
               {% csrf_token %}
@@ -49,7 +57,7 @@
                  {% endif %}
               </td>
                 {% if row.exists_strategy == True %}
-               <td ><input type="text" style="width: 140px; background-color: #b3b3b3;" value="mail" readonly></td>
+               <td ><input type="text" style="width: 140px; background-color: #b3b3b3;" value="Mail and Trade" readonly></td>
                 {% else %}
              <td>
                 <select class="strategy-select" name="face_to_face_trade" id="deliverySelect_{{ row.id }} ">
@@ -88,6 +96,7 @@
               </td>
             </form>
           </tr>
+          {% endif %}
         {% endfor %}
 
       </tbody>
@@ -510,6 +519,41 @@
     document.head.appendChild(style);
   }
 });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.delete-button');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const rowId = button.dataset.rowId;
+
+        // Надсилаємо запит на сервер для видалення
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("{% url 'main:delete_server'%}", { // URL для видалення
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({ row_id: rowId }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              // Оновлюємо сторінку
+              window.location.reload();
+              console.log('Сервер успішно видалено:', data.message);
+            } else {
+              console.error('Помилка видалення сервера:', data.error);
+            }
+          })
+          .catch(error => console.error('Помилка запиту:', error));
+      });
+    });
+  });
 </script>
 {% endblock %}
 

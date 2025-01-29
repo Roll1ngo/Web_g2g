@@ -13,6 +13,7 @@ def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
         all_bets = crud.get_main_data_from_table(user_id)
+        logger.info(f"all_bets__{all_bets}")
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
@@ -138,3 +139,10 @@ def show_balance(request):
 
     logger.info(f"balance__{balance}")
     return render(request, 'users/base.html', context={'user_balance': balance})
+
+
+def delete_server(request):
+    data = json.loads(request.body)
+    row_id = data.get('row_id')
+    crud.delete_server_from_list(row_id)
+    return JsonResponse({"success": True})
