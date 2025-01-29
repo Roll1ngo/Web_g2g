@@ -59,7 +59,7 @@ def get_main_data_from_table(auth_user_id: int):
             if current_strategy:
                 ballance_strategy_for_all = 'mean10_lot'
                 change_all_strategy = OffersForPlacement.objects.filter(server_urls_id=row['server_urls'])
-                change_all_strategy.update(price=ballance_strategy_for_all, face_to_face_trade=False)
+                change_all_strategy.update(price=ballance_strategy_for_all, face_to_face_trade=True)
 
                 row['strategy_price'] = ballance_strategy_for_all
                 row['price'] = ballance_strategy_for_all
