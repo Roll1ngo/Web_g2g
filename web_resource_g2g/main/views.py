@@ -124,7 +124,6 @@ def show_history_orders(request):
             'order': order,
             'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення
         })
-    logger.info(orders_with_balance)
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
 

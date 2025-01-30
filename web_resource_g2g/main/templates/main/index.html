@@ -321,54 +321,60 @@
       if (input.name === 'stock') {
         input.addEventListener('keypress', isNumberKey);
         input.addEventListener('blur', () => validateStock(input));
+        input.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            validateStock(input); // Validate the input
+            input.blur(); // Trigger the blur event to save changes
       }
+    });
+   }
 
-      // Listen for changes to update data dynamically
-      input.addEventListener('change', () => {
-        const rowId = row.id;
-        const fieldName = input.name;
-        const newValue = input.value;
+  // Listen for changes to update data dynamically
+  input.addEventListener('change', () => {
+    const rowId = row.id;
+    const fieldName = input.name;
+    const newValue = input.value;
 
-        console.log(`Detected change - Row ID: ${rowId}, Field: ${fieldName}, New Value: ${newValue}`);
+    console.log(`Detected change - Row ID: ${rowId}, Field: ${fieldName}, New Value: ${newValue}`);
 
-        const data = {
-          row_id: rowId,
-          field_name: fieldName,
-          new_value: newValue,
-        };
+    const data = {
+      row_id: rowId,
+      field_name: fieldName,
+      new_value: newValue,
+    };
 
-        fetch("{% url 'main:update_table_data' %}", {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken,
-          },
-          body: JSON.stringify(data),
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Server response:', data);
+    fetch("{% url 'main:update_table_data' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrftoken,
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Server response:', data);
 
-            if (data.success) {
-              const priceInputId = `price-field-${rowId}`;
-              const priceInput = document.querySelector(`#${priceInputId}`);
-              if (priceInput) {
-                console.log(`Updating price in row ID ${rowId} with new value: ${data.new_price}`);
-                priceInput.value = data.new_price;
+        if (data.success) {
+          const priceInputId = `price-field-${rowId}`;
+          const priceInput = document.querySelector(`#${priceInputId}`);
+          if (priceInput) {
+            console.log(`Updating price in row ID ${rowId} with new value: ${data.new_price}`);
+            priceInput.value = data.new_price;
 
-                // Оновлення "Загалом" після отримання нової ціни
-                updateTotal(rowId, parseFloat(data.new_price));
+            // Оновлення "Загалом" після отримання нової ціни
+            updateTotal(rowId, parseFloat(data.new_price));
 
-              } else {
-                console.warn(`Price field not found in row ID: ${rowId}`);
-              }
-            } else {
-              console.error('Failed to update data:', data);
-            }
-          })
-          .catch(error => {
-            console.error('Fetch request error:', error);
-          });
+          } else {
+            console.warn(`Price field not found in row ID: ${rowId}`);
+          }
+        } else {
+          console.error('Failed to update data:', data);
+        }
+      })
+      .catch(error => {
+        console.error('Fetch request error:', error);
+      });
       });
     });
   });
