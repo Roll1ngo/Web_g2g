@@ -127,6 +127,8 @@ def get_float_price(row, auth_user_id):
 def update_price_delivery(data, user_id):
     field = data['field_name']
     value = data['new_value']
+    if field == 'stock' and value == '':
+        value = 0
 
     try:
         # Retrieve the  OffersForPlacement object
