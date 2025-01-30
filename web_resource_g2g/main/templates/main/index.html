@@ -391,80 +391,84 @@
 
 });
 </script>
+
+
 <script>
-  //Призупинення та видалення лотів
   document.addEventListener('DOMContentLoaded', () => {
-  // Відслідковуємо зміну в select
   const selectElements = document.querySelectorAll('.select-options');
 
   selectElements.forEach((selectElement) => {
     selectElement.addEventListener('change', (event) => {
-      const selectedOption = event.target.value; // Отримуємо вибраний варіант
-      const rowId = event.target.id.split('-').pop(); // Отримуємо ID рядка з ID елемента
+      const selectedOption = event.target.value;
+      const rowId = event.target.id.split('-').pop();
 
-      // Якщо вибраний варіант не порожній
-      if (selectedOption !== 'emtpy-field') {
-        // Створюємо модальне вікно підтвердження
-        const modal = document.createElement('div');
-        modal.classList.add('modal');
-        modal.innerHTML = `
-          <div class="modal-overlay"></div>
-          <div class="modal-content">
-            <p>Ви дійсно хочете ${
-                selectedOption === 'pause'
-                  ? 'зупинити продаж'
-                  : selectedOption === 'delete'
-                  ? 'видалити сервер'
-                  : 'відновити продаж'
-              }?</p>
-            <button id="confirm-button" class="btn">Так</button>
-            <button id="cancel-button" class="btn btn-cancel">Ні</button>
-          </div>
-        `;
-        document.body.appendChild(modal);
+      // Отримуємо значення stock та full_cost
+      const stock = parseInt(document.getElementById(`stock-field-${rowId}`).value, 10);
+      const fullCost = parseFloat(document.getElementById(`full-cost-${rowId}`).value);
 
-        // Додаємо стилі для модального вікна
-        addModalStyles();
-
-        // Обробка натискання кнопки "Так"
-        const confirmButton = document.getElementById('confirm-button');
-        confirmButton.addEventListener('click', () => {
-          modal.remove(); // Закриваємо модальне вікно
-
-          // Надсилаємо дані на сервер
-          const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-          fetch("{% url 'main:handle_option_change' %}", {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrfToken,
-            },
-            body: JSON.stringify({ row_id: rowId, action: selectedOption }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                // Перезавантажуємо сторінку
-                window.location.reload();
-                console.log('Операцію успішно виконано:', data.message);
-              } else {
-                console.error('Помилка:', data.error);
-              }
-            })
-            .catch((error) => console.error('Помилка запиту:', error));
-        });
-
-        // Обробка натискання кнопки "Ні"
-        const cancelButton = document.getElementById('cancel-button');
-        cancelButton.addEventListener('click', () => {
-          modal.remove(); // Закриваємо модальне вікно
+      // Перевірка перед відновленням продажу
+      if (selectedOption === 'resume') {
+        if (stock === 0) {
+          alert("Для виставлення товару на продаж необхідне значення запасу");
           event.target.value = 'emtpy-field'; // Скидаємо вибір
-        });
+          return;
+        }
+        if (fullCost < 5) {
+          alert("Необхідне мінімальне значення запасу 5$");
+          event.target.value = 'emtpy-field'; // Скидаємо вибір
+          return;
+        }
       }
+
+      // Створення модального вікна
+      const modal = document.createElement('div');
+      modal.classList.add('modal');
+      modal.innerHTML = `
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+          <p>Ви дійсно хочете ${
+            selectedOption === 'pause'
+              ? 'зупинити продаж'
+              : selectedOption === 'delete'
+              ? 'видалити сервер'
+              : 'відновити продаж'
+          }?</p>
+          <button id="confirm-button" class="btn">Так</button>
+          <button id="cancel-button" class="btn btn-cancel">Ні</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      addModalStyles();
+
+      document.getElementById('confirm-button').addEventListener('click', () => {
+        modal.remove();
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        fetch("{% url 'main:handle_option_change' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({ row_id: rowId, action: selectedOption }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.reload();
+            } else {
+              console.error('Помилка:', data.error);
+            }
+          })
+          .catch((error) => console.error('Помилка запиту:', error));
+      });
+
+      document.getElementById('cancel-button').addEventListener('click', () => {
+        modal.remove();
+        event.target.value = 'emtpy-field';
+      });
     });
   });
 
-  // Функція для додавання стилів модального вікна
   function addModalStyles() {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -480,20 +484,10 @@
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 1000;
       }
-      .modal-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-      }
       .modal-content {
-        position: relative;
         background: white;
         padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         text-align: center;
         z-index: 1001;
       }
@@ -509,12 +503,6 @@
       .modal-content .btn-cancel {
         background-color: #dc3545;
       }
-      .modal-content .btn:hover {
-        background-color: #0056b3;
-      }
-      .modal-content .btn-cancel:hover {
-        background-color: #c82333;
-      }
     `;
     document.head.appendChild(style);
   }
@@ -522,6 +510,7 @@
 </script>
 
 <script>
+  // Видалення сервера без процетної ставка
   document.addEventListener('DOMContentLoaded', () => {
     const deleteButtons = document.querySelectorAll('.delete-button');
 
