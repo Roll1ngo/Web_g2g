@@ -68,16 +68,10 @@ def handle_option_change(request):
     return JsonResponse({'success': True})
 
 
-def show_order_info(request, server_id):
+def show_order_info(request):
     user_id = request.user.id
 
-    if server_id == 0:
-        server_id = crud.get_server_id(user_id)
-        if server_id == 'Замовлення не знайдено':
-            return render(request, 'main/not_active_orders.html')
-        logger.info(f"{server_id}")
-
-    order_info = crud.get_order_info(server_id, user_id)
+    order_info = crud.get_order_info(user_id)
     if order_info is None:
         return render(request, 'main/not_found_order.html')
 

@@ -87,7 +87,7 @@
                 <span class="status-circle" style="background-color: green"></span>
 
                 {% elif row.order_status == 1 %}
-                 <a href="{% url 'main:show_order_info' row.server_urls %}" class="status-link">
+                 <a href="{% url 'main:show_order_info'%}" class="status-link">
                     <span class="status-circle blinking"></span>
                 </a>
 

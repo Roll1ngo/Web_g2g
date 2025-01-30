@@ -100,7 +100,7 @@
                         <div>
                             <div class="d-flex align-items-center">
                                 <span style="color: lightblue;">Баланс {{user_balance}} $</span>
-                                <a href="{% url 'main:start_page' %}" class="nav-link me-3">Активні замовлення</a>
+                                <a href="{% url 'main:show_order_info'%}" class="nav-link me-3">Активне замовлення</a>
                                 <a href="{% url 'main:history_orders' %}" class="nav-link me-3">Історія замовлень</a>
                                 <a href="/" class="nav-link me-3">{{ user.username }}</a>
                                 <form action="logout/" method="post">
