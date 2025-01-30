@@ -68,24 +68,18 @@ def handle_option_change(request):
     return JsonResponse({'success': True})
 
 
-def show_order_info(request, server_id):
+def show_order_info(request):
     user_id = request.user.id
 
-    if server_id == 0:
-        server_id = crud.get_server_id(user_id)
-        if server_id == 'Замовлення не знайдено':
-            return render(request, 'main/not_active_orders.html')
-        logger.info(f"{server_id}")
-
-    order_info = crud.get_order_info(server_id, user_id)
+    order_info = crud.get_order_info(user_id)
     if order_info is None:
         return render(request, 'main/not_found_order.html')
 
     sold_order_number = order_info.sold_order_number
-    price_unit = round(order_info.earned_without_admins_commission, 2) / order_info.quantity
+    price_unit = order_info.earned_without_admins_commission / order_info.quantity
     return render(request, 'main/show_order_info.html', context={"order": order_info,
                                                                  "sold_order_number": sold_order_number,
-                                                                 "price_unit": price_unit})
+                                                                 "price_unit": round(price_unit, 2)})
 
 
 def upload_video(request, sold_order_number):
@@ -130,7 +124,6 @@ def show_history_orders(request):
             'order': order,
             'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення
         })
-    logger.info(orders_with_balance)
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
 
