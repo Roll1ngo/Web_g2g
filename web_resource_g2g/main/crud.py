@@ -1,12 +1,11 @@
 from datetime import datetime
-from pathlib import Path
-import os
 
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
 
-from .models import OffersForPlacement, ServerUrls, Sellers, TopPrices, SoldOrders, Commission, SellerServerInterestRate
+from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
+                     SoldOrders, Commission, SellerServerInterestRate, ChangeStockHistory)
 from django.db.models import F, Sum, DecimalField
 from .utils.logger_config import logger
 
@@ -127,12 +126,13 @@ def get_float_price(row, auth_user_id):
 def update_price_delivery(data, user_id):
     field = data['field_name']
     value = data['new_value']
+    row_id = data['row_id']
     if field == 'stock' and value == '':
         value = 0
 
     try:
         # Retrieve the  OffersForPlacement object
-        offer = OffersForPlacement.objects.get(id=data['row_id'])
+        offer = OffersForPlacement.objects.get(id=row_id)
 
         if field == 'price' or field == 'stock':
             # Update the specified field with the new value
@@ -141,6 +141,8 @@ def update_price_delivery(data, user_id):
             setattr(offer, field, True if value == 'face_to_face_trade' else False)
 
         offer.save()
+        if field == 'stock':
+            update_stock_table(row_id, value)
 
         offer_dict = model_to_dict(offer)
         logger.info(f"offer_dict__{offer_dict}")
@@ -439,3 +441,15 @@ def update_technical_balance():
     Sellers.objects.filter(id=technical_id).update(balance=total_earned)
 
     return 'Balance updated successfully.'
+
+
+def update_stock_table(row_id, stock_value):
+    offer = OffersForPlacement.objects.get(id=row_id)
+    stock_row = ChangeStockHistory.objects.create(
+        seller_id=offer.sellers.id,
+        server_id=offer.server_urls.id,
+        stock=stock_value,
+        created_time=datetime.now()
+    )
+    stock_row.save()
+    logger.info("New record to stock table created.")

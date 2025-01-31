@@ -24,22 +24,15 @@ class Sellers(models.Model):
         return self.auth_user.username
 
 
-class PaymentHistory(models.Model):
-    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
-    amount = models.IntegerField(default=0)  # Сума виплати
-    created_time = models.DateTimeField(default=timezone.now)  # Час виплати
-    description = models.TextField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'payment_history'
-
-
 class ServerUrls(models.Model):
     server_name = models.CharField(max_length=255)
     game_name = models.CharField(max_length=255)
     server_url = models.URLField()
     region = models.CharField(max_length=255)
     fraction = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.server_name} - {self.game_name}"
 
     class Meta:
         db_table = 'server_urls'
@@ -130,3 +123,11 @@ class SellerServerInterestRate(models.Model):
         MinValueValidator(1),
         MaxValueValidator(100)
     ])
+
+
+class ChangeStockHistory(models.Model):
+    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
+    server = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
+    stock = models.IntegerField()
+    created_time = models.DateTimeField(default=timezone.now)  # Час виплати
+    description = models.TextField(blank=True, null=True)
