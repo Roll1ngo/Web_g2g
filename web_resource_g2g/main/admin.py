@@ -20,11 +20,13 @@ from .utils.logger_config import logger
 class ChangeStockHistoryAdmin(admin.ModelAdmin):
     # Поля для відображення у списку
     list_display = (
-        "seller", "server", "stock", "created_time"
+        "seller", "server", "stock",
+        "active_rate_record", "created_time",
+        "description"
     )
 
     # Фільтрація за цими полями
-    list_filter = ("seller", "server", "stock", "created_time")
+    list_filter = ("seller", "server", "stock", "active_rate_record", "created_time")
 
     # Сортування за замовчуванням
     ordering = ('-created_time',)

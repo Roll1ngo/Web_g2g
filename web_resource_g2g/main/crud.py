@@ -142,7 +142,7 @@ def update_price_delivery(data, user_id):
 
         offer.save()
         if field == 'stock':
-            update_stock_table(row_id, value)
+            update_stock_table(row_id, 'change stock')
 
         offer_dict = model_to_dict(offer)
         logger.info(f"offer_dict__{offer_dict}")
@@ -240,6 +240,7 @@ def pause_offer(offer_id, action):
         setattr(offer, 'active_rate', 1)
 
     offer.save()
+    update_stock_table(offer_id, 'Change status')
 
 
 def get_order_info(user_id):
@@ -443,12 +444,14 @@ def update_technical_balance():
     return 'Balance updated successfully.'
 
 
-def update_stock_table(row_id, stock_value):
+def update_stock_table(row_id, description):
     offer = OffersForPlacement.objects.get(id=row_id)
     stock_row = ChangeStockHistory.objects.create(
         seller_id=offer.sellers.id,
         server_id=offer.server_urls.id,
-        stock=stock_value,
+        stock=offer.stock,
+        active_rate_record=offer.active_rate,
+        description=description,
         created_time=datetime.now()
     )
     stock_row.save()

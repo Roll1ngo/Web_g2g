@@ -129,5 +129,6 @@ class ChangeStockHistory(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
     server = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
     stock = models.IntegerField()
+    active_rate_record = models.BooleanField(default=False)
     created_time = models.DateTimeField(default=timezone.now)  # Час виплати
     description = models.TextField(blank=True, null=True)
