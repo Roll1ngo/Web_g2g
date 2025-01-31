@@ -4,20 +4,35 @@ import time
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from django.db import models
+from django.http import HttpResponse
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.html import format_html
+from import_export.admin import ExportActionModelAdmin
+from import_export import resources
 
 from .crud import update_seller_balance, update_technical_balance, update_owner_balance
 from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls
 from .utils.logger_config import logger
 
 
+class SellersResource(resources.ModelResource):
+    class Meta:
+        model = Sellers
+        fields = ('auth_user__username', 'auth_user__email', 'balance')  # Поля для експорту
+
+
 @admin.register(Sellers)
-class SellersAdmin(admin.ModelAdmin):
-    list_display = ('auth_user', 'interest_rate', 'balance')  # замініть на поля вашої моделі
-    list_editable = ('interest_rate',)  # поля, які можна редагувати прямо у списку
+class SellersAdmin(ExportActionModelAdmin):
+    resource_class = SellersResource
+    list_display = ('auth_user', 'get_user_email', 'balance')
+    actions = ['export_as_txt']  # Додаємо власну дію до списку дій
+
+    def get_user_email(self, obj):
+        return obj.auth_user.email
+
+    get_user_email.short_description = 'Payoneer'
+
 
 
 class SellerBalanceFilter(SimpleListFilter):
@@ -203,6 +218,7 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
 
     def server_display(self, obj):
         return f"{obj.server.server_name} - {obj.server.game_name}"
+
 
     server_display.short_description = 'Server'
 

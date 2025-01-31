@@ -16,13 +16,12 @@ class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255, blank=True, null=True)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=10, decimal_places=3, default=0)
-    interest_rate = models.IntegerField(default=75)
 
     class Meta:
         db_table = 'sellers'
 
     def __str__(self):
-        return f"seller: {self.auth_user}, telegram: {self.id_telegram}, balance: {self.balance}"
+        return self.auth_user.username
 
 
 class PaymentHistory(models.Model):
