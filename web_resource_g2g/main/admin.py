@@ -12,8 +12,22 @@ from import_export.admin import ExportActionModelAdmin
 from import_export import resources
 
 from .crud import update_seller_balance, update_technical_balance, update_owner_balance
-from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls
+from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory
 from .utils.logger_config import logger
+
+
+@admin.register(ChangeStockHistory)
+class ChangeStockHistoryAdmin(admin.ModelAdmin):
+    # Поля для відображення у списку
+    list_display = (
+        "seller", "server", "stock", "created_time"
+    )
+
+    # Фільтрація за цими полями
+    list_filter = ("seller", "server", "stock", "created_time")
+
+    # Сортування за замовчуванням
+    ordering = ('-created_time',)
 
 
 class SellersResource(resources.ModelResource):
@@ -32,7 +46,6 @@ class SellersAdmin(ExportActionModelAdmin):
         return obj.auth_user.email
 
     get_user_email.short_description = 'Payoneer'
-
 
 
 class SellerBalanceFilter(SimpleListFilter):
@@ -71,7 +84,7 @@ class CreatedTimeFilter(admin.SimpleListFilter):
             return queryset.filter(created_time__gte=thirty_days_ago)
         elif self.value() == 'all':
             return queryset
-        return queryset # Повертаємо початковий queryset, якщо фільтр не застосовано
+        return queryset  # Повертаємо початковий queryset, якщо фільтр не застосовано
 
 
 @admin.register(SoldOrders)
@@ -88,7 +101,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
         'paid_to_owner',
         'technical_commission',
         'paid_to_technical',
-            )
+    )
 
     # Фільтрація за цими полями
     list_filter = ('seller__auth_user__username',
@@ -108,12 +121,14 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     # Метод для відображення імені продавця
     def seller_name(self, obj):
         return obj.seller.auth_user.username
+
     seller_name.admin_order_field = 'seller__auth_user__username'
     seller_name.short_description = 'Продавець'
 
     # Метод для відображення балансу продавця
     def seller_balance(self, obj):
         return obj.seller.balance
+
     seller_balance.admin_order_field = 'seller__balance'
     seller_balance.short_description = 'Баланс'
 
@@ -124,6 +139,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
 
     def seller(self, obj):
         return obj.seller.auth_user.username
+
     seller.admin_order_field = 'seller__auth_user__username'
     seller.short_description = 'Продавець'
 
@@ -154,7 +170,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     @admin.action(description='Сплатити технічну комісію')
     def pay_technical_commission(self, request, queryset):
         updated_count = queryset.update(paid_to_technical=True)
-        update_technical_balance() # Виклик celery task
+        update_technical_balance()  # Виклик celery task
         self.message_user(request, f"Оновлено записів: {updated_count}."
                                    f" Встановлено статус 'оплачено технічну комісію'.")
 
@@ -167,6 +183,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
 
     def order_value(self, obj):
         return obj.earned_without_admins_commission
+
     order_value.short_description = 'Вартість замовлення'
 
     def _icon(self, obj, field_name):  # Створення функції для відображення іконок
@@ -219,7 +236,4 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
     def server_display(self, obj):
         return f"{obj.server.server_name} - {obj.server.game_name}"
 
-
     server_display.short_description = 'Server'
-
-
