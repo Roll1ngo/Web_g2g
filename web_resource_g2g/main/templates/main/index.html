@@ -24,7 +24,7 @@
             {% if row.interest_rate == 0 %}
 
               <td colspan="10" style="text-align: center; background-color: #f8d7da; color: #721c24; font-weight: bold; padding: 15px; border: 1px solid #f5c6cb;">
-                  Для сервера {{row.server_name}} відсутня відсоткова ставка продавця.
+                  Для сервера {{row.server_name}} - {{row.game_name}} відсутня відсоткова ставка продавця.
                 Зверніться до адміністратора для закріплення вашої ставки за цим сервером <a style="color: blue;" target="_blank" href="https://t.me/VladislavBratus">тут</a></a>.
                 <button class="delete-button" data-row-id="{{row.id}}">Видалити сервер зі списку</button>
               </td>
