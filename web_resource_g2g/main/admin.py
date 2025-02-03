@@ -27,6 +27,11 @@ from .tg_bot_run import send_messages_sync
 class ServerUrlsAdmin(admin.ModelAdmin):
     list_display = ('server_name',)
     search_fields = ('server_name',)
+    ordering = ('server_name',)
+
+    def has_module_permission(self, request):
+        """Приховуємо модель із головної сторінки Django Admin"""
+        return False
 
 
 @admin.register(ChangeStockHistory)
@@ -39,7 +44,7 @@ class ChangeStockHistoryAdmin(admin.ModelAdmin):
     )
 
     # Фільтрація за цими полями
-    list_filter = ("seller", "active_rate_record", "created_time")
+    list_filter = ("seller", "active_rate_record", "created_time", "description")
 
     # Сортування за замовчуванням
     ordering = ('-created_time',)
@@ -242,9 +247,9 @@ class ServerUrlsChoiceField(forms.ModelChoiceField):
 @admin.register(SellerServerInterestRate)
 class SellerServerInterestRateAdmin(admin.ModelAdmin):
     list_display = ('seller', 'server_display', 'interest_rate')
-    list_filter = ('seller', 'server__game_name', 'server__server_name')
+    list_filter = ('seller', 'server__game_name')
     list_editable = ('interest_rate',)
-    search_fields = ('seller__name', 'server__game_name', 'server__server_name')
+    search_fields = ('seller__auth_user__username', 'server__game_name', 'server__server_name')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "server":
@@ -398,7 +403,11 @@ class AddOrderAdmin(admin.ModelAdmin):
                               )
                 logger.info(message)
 
-                send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
+                response = send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
+                if response:
+                    SoldOrders.objects.filter(sold_order_number=order.sold_order_number).update(send_message=True)
+                else:
+                    "Telegram повідомлення не надіслано"
 
             else:
                 self.message_user(request, f"У продавця {seller.auth_user.username} немає Telegram ID.",

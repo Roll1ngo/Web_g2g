@@ -19,6 +19,7 @@ async def send_messages_to_users(seller_id, seller_name, message):
             await bot.send_message(chat_id=user_id, text=message)
             print(f"✅ Повідомлення надіслано до {name}")
             await asyncio.sleep(2)  # Затримка між відправками (не обов’язково)
+        return True
     except TelegramNetworkError as e:
         print(f"❌ Помилка мережі: {e}")
     except Exception as e:
@@ -29,7 +30,8 @@ async def send_messages_to_users(seller_id, seller_name, message):
 
 def send_messages_sync(seller_id, seller_name, message):
     """ Виклик асинхронної функції з синхронного коду """
-    asyncio.run(send_messages_to_users(seller_id, seller_name, message))
+    response = asyncio.run(send_messages_to_users(seller_id, seller_name, message))
+    return True if response else False
 
 
 # 🔹 Використання:
