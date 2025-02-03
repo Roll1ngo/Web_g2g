@@ -19,6 +19,8 @@ class Sellers(models.Model):
 
     class Meta:
         db_table = 'sellers'
+        verbose_name_plural = "Продавці"
+        verbose_name = "Продавця"
 
     def __str__(self):
         return self.auth_user.username
@@ -78,6 +80,8 @@ class OffersForPlacement(models.Model):
 
     class Meta:
         db_table = 'offers_for_placement'
+        verbose_name = "Пропозицію для розміщення на торгах"
+        verbose_name_plural = "Пропозиції для розміщення на торгах"
 
 
 class SoldOrders(models.Model):
@@ -109,6 +113,9 @@ class SoldOrders(models.Model):
 
     class Meta:
         db_table = 'sold_orders'
+        verbose_name = "Список замовлень для виплати"
+        verbose_name_plural = "Список замовлень для виплати"  # Множина
+
 
 
 class VitaliyOrders(models.Model):
@@ -124,6 +131,10 @@ class SellerServerInterestRate(models.Model):
         MaxValueValidator(100)
     ])
 
+    class Meta:
+        verbose_name_plural = "Сервера продавців з ставками"
+        verbose_name = "Сервер продавця з ставкою"
+
 
 class ChangeStockHistory(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
@@ -132,3 +143,7 @@ class ChangeStockHistory(models.Model):
     active_rate_record = models.BooleanField(default=False)
     created_time = models.DateTimeField(default=timezone.now)  # Час виплати
     description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Рядок"
+        verbose_name_plural = "Історія зміни стоку та статусу лотів"
