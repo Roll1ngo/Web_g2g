@@ -359,7 +359,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'paid_to_owner',
         'paid_to_technical',
     )
-    list_filter = ('seller', 'created_time')
+    list_filter = ('seller', 'created_time', 'download_video_status')
     actions = ['send_message_to_seller']
 
     # Поля для відображення у формі створення замовлення
