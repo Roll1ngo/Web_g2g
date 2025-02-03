@@ -1,10 +1,15 @@
+import asyncio
 import datetime
+import os
+import sys
 import time
+from decimal import Decimal
 
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from django.http import HttpResponse
+from django.db import models
+from django.shortcuts import redirect
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.html import format_html
@@ -12,8 +17,16 @@ from import_export.admin import ExportActionModelAdmin
 from import_export import resources
 
 from .crud import update_seller_balance, update_technical_balance, update_owner_balance
-from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory
+from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory, OffersForPlacement, \
+    Commission
 from .utils.logger_config import logger
+from .tg_bot_run import send_messages_sync
+
+
+@admin.register(ServerUrls)
+class ServerUrlsAdmin(admin.ModelAdmin):
+    list_display = ('server_name',)
+    search_fields = ('server_name',)
 
 
 @admin.register(ChangeStockHistory)
@@ -26,7 +39,7 @@ class ChangeStockHistoryAdmin(admin.ModelAdmin):
     )
 
     # Фільтрація за цими полями
-    list_filter = ("seller", "server", "stock", "active_rate_record", "created_time")
+    list_filter = ("seller", "active_rate_record", "created_time")
 
     # Сортування за замовчуванням
     ordering = ('-created_time',)
@@ -118,7 +131,11 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     ordering = ('-created_time',)
 
     # Вказуємо список доступних дій
-    actions = ['mark_paid', 'pay_technical_commission', 'mark_reviewed']
+    actions = ['mark_paid', 'pay_technical_commission', 'mark_reviewed', 'send_message_to_seller']
+
+    # Заборона створення нових замовлень
+    def has_add_permission(self, request):
+        return False
 
     # Метод для відображення імені продавця
     def seller_name(self, obj):
@@ -213,6 +230,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     def paid_to_owner_icon(self, obj):  # Функція для відображення іконки paid_to_owner
         return self._icon(obj, 'paid_to_owner')
 
+
     paid_to_owner_icon.short_description = 'Власнику сплачено'
 
 
@@ -239,3 +257,207 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
         return f"{obj.server.server_name} - {obj.server.game_name}"
 
     server_display.short_description = 'Server'
+
+
+@admin.register(OffersForPlacement)
+class OffersForPlacementAdmin(admin.ModelAdmin):
+    list_display = ('sellers', 'server_urls', 'active_rate', 'price', 'stock', 'face_to_face_trade', 'order_status')
+    list_editable = ('order_status', 'active_rate', 'face_to_face_trade')
+    list_filter = ('sellers',)
+    search_fields = ('sellers__name', 'currency', 'description')
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        return queryset.select_related('sellers', 'server_urls')
+
+
+class AddOrder(SoldOrders):
+    class Meta:
+        proxy = True
+        verbose_name = "Замовлення"
+        verbose_name_plural = "Замовлення"
+
+
+class AddOrderForm(forms.ModelForm):
+    TRADE_MODE_CHOICES = [
+        ("Mail", "Mail"),
+        ("Face to face trade", "Face to face trade"),
+    ]
+
+    price_unit = forms.DecimalField(
+        label="Ціна за одиницю",
+        required=False,
+        decimal_places=2,
+        max_digits=10,
+        widget=forms.NumberInput(attrs={'readonly': 'readonly'})
+    )
+
+    earned_without_admins_commission = forms.DecimalField(
+        label="Чистий заробіток без сервісної комісії",
+        required=False,
+        decimal_places=2,
+        max_digits=10,
+        widget=forms.NumberInput(attrs={'readonly': 'readonly'})
+    )
+
+    owner_commission = forms.DecimalField(
+        label="Комісія власника",
+        required=False,
+        decimal_places=2,
+        max_digits=10,
+        widget=forms.NumberInput(attrs={'readonly': 'readonly'})
+    )
+
+    technical_commission = forms.DecimalField(
+        label="Технічна комісія",
+        required=False,
+        decimal_places=2,
+        max_digits=10,
+        widget=forms.NumberInput(attrs={'readonly': 'readonly'})
+    )
+
+    trade_mode = forms.ChoiceField(
+        choices=TRADE_MODE_CHOICES,
+        label="Режим торгівлі",
+        widget=forms.Select()
+    )
+
+    class Meta:
+        model = AddOrder
+        fields = '__all__'  # Всі поля з моделі
+
+
+@admin.register(AddOrder)
+class AddOrderAdmin(admin.ModelAdmin):
+    technical_commission_percent = Decimal(5)  # Перетворюємо в Decimal
+
+    form = AddOrderForm  # Використовуємо кастомну форму
+    list_display = (
+        'server',
+        'seller',
+        'status',
+        'character_name',
+        'sold_order_number',
+        'quantity',
+        'trade_mode',
+        'created_time',
+        'total_amount',
+        'owner_commission',
+        'technical_commission',
+        'earned_without_admins_commission',
+        'to_be_earned',
+        'sent_gold',
+        'bought_by',
+        'price_unit',
+        'comission_fee',  # Note the correct spelling: commission_fee
+        'send_message',
+        'path_to_video',
+        'download_video_status',
+        'send_video_status',
+        'charged_to_payment',
+        'paid_in_salary',
+        'paid_to_owner',
+        'paid_to_technical',
+    )
+    list_filter = ('seller', 'created_time')
+    actions = ['send_message_to_seller']
+
+    # Поля для відображення у формі створення замовлення
+    fields = (
+        'seller',
+        'server',
+        'character_name',
+        'sold_order_number',
+        'quantity',
+        'trade_mode',
+        'total_amount',
+        'created_time'
+    )
+    readonly_fields = ('price_unit', 'earned_without_admins_commission', 'owner_commission', 'technical_commission')
+
+    search_fields = ('server__name',)
+    # Додаємо поле server до autocomplete_fields
+    autocomplete_fields = ['server']
+
+    # Дозволяємо створення нових замовлень
+    def has_add_permission(self, request):
+        return True
+
+    @admin.action(description='Надіслати повідомлення продавцю')
+    def send_message_to_seller(self, request, queryset):
+        for order in queryset:
+            seller = order.seller
+            if seller.id_telegram:  # Перевіряємо, чи є у продавця Telegram ID
+                message = str(f"Вітаю, {seller.auth_user.username} для вас замовлення від {order.created_time} \n"
+                              f"Сервер___________{order.server.server_name}\n"
+                              f"Гра___________{order.server.game_name}\n"
+                              f"Кількість___________{order.quantity}\n"
+                              f"Ім'я персонажа___________{order.character_name}\n"
+                              f"Спосіб доставки___________{order.trade_mode}\n"
+                              f"Сума замовлення: {order.earned_without_admins_commission}\n"
+                              )
+                logger.info(message)
+
+                send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
+
+            else:
+                self.message_user(request, f"У продавця {seller.auth_user.username} немає Telegram ID.",
+                                  level='WARNING')
+
+
+    # Встановлення значень за замовчанням для полів
+    def save_model(self, request, obj, form, change):
+
+        # Отримуємо exchange_commission (з останнього запису в таблиці Commission)
+        exchange_commission = Commission.objects.order_by('-created_time').first()
+        exchange_commission = Decimal(exchange_commission.commission) if exchange_commission else Decimal(0)
+
+        # Отримуємо seller_interest_rate для вказаного продавця та сервера
+        try:
+            seller_interest = SellerServerInterestRate.objects.get(seller=obj.seller, server=obj.server)
+            seller_interest_rate = Decimal(seller_interest.interest_rate)
+        except SellerServerInterestRate.DoesNotExist:
+            seller_interest_rate = Decimal(0)  # Якщо немає ставки
+            logger.critical(f"Ставка не знайдена для продавця {obj.seller} та сервера {obj.server}")
+
+        total_amount = Decimal(obj.total_amount)  # Перетворюємо в Decimal
+
+        # Обчислюємо значення за формулами
+        to_be_earned_without_exchange_commission = total_amount * (Decimal(1) - exchange_commission / Decimal(100))
+        earned_without_service_commission = to_be_earned_without_exchange_commission * (
+                    seller_interest_rate / Decimal(100))
+        full_service_commission = to_be_earned_without_exchange_commission - earned_without_service_commission
+        technical_commission = to_be_earned_without_exchange_commission * (
+                    Decimal(self.technical_commission_percent) / Decimal(100))
+        owner_commission = full_service_commission - technical_commission
+
+        # Заповнюємо приховані поля значеннями за замовчанням
+        if not change:  # Перевіряємо, що це створення нового об'єкта
+            obj.charged_to_payment = False
+            obj.paid_in_salary = False
+            obj.paid_to_owner = False
+            obj.paid_to_technical = False
+            obj.bought_by = 'Vlad_Handle_order'
+            obj.send_message = True
+            obj.path_to_video = ''
+            obj.download_video_status = False
+            obj.send_video_status = False
+            obj.status = 'DELIVERING'
+            obj.sent_gold = 0
+            obj.to_be_earned = to_be_earned_without_exchange_commission
+            obj.earned_without_admins_commission = earned_without_service_commission
+            obj.technical_commission = technical_commission
+            obj.owner_commission = owner_commission
+            obj.price_unit = obj.earned_without_admins_commission / obj.quantity if obj.quantity else 0
+
+        # Вивід результатів перед збереженням
+        logger.warning(f"Загальна вартість: {obj.total_amount}")
+        logger.warning(f"Ставка {obj.seller.auth_user.username} на сервері {obj.server.server_name}: {seller_interest_rate}")
+        logger.warning(f"З вирахуванням  комісії біржі: {obj.to_be_earned}")
+        logger.warning(f"З вирахуванням адміністративної комісії: {obj.earned_without_admins_commission}")
+        logger.warning(f"Комісія власника: {obj.owner_commission}")
+        logger.warning(f"Технічна комісія: {obj.technical_commission}")
+        logger.warning(f"Ціна за одиницю з урахуванням усіх комісій: {obj.price_unit}")
+
+        # Зберігаємо об'єкт
+        super().save_model(request, obj, form, change)

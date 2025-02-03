@@ -1,5 +1,7 @@
 import os
 import subprocess
+import signal
+import sys
 
 
 def kill_process_on_port(port):
@@ -24,10 +26,24 @@ def kill_process_on_port(port):
 
 
 def run_django_server():
-    os.system("python manage.py runserver")
+    # Отримуємо шлях до Python інтерпретатора у віртуальному середовищі
+    python_path = sys.executable
+
+    # Запускаємо Django сервер з використанням цього шляху
+    django_process = subprocess.Popen([python_path, "manage.py", "runserver"])
+
+    try:
+        # Чекаємо завершення Django сервера (Ctrl+C)
+        django_process.wait()
+    except KeyboardInterrupt:
+        print("Отримано сигнал переривання. Завершуємо процеси...")
+        django_process.terminate()  # Завершуємо Django сервер
+        print("Процеси завершено.")
 
 
 if __name__ == "__main__":
     port = 8000
     kill_process_on_port(port)
+
     run_django_server()
+
