@@ -11,6 +11,7 @@ from django.contrib.admin import SimpleListFilter
 from django.db import models
 from django.shortcuts import redirect
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from import_export.admin import ExportActionModelAdmin
@@ -18,9 +19,36 @@ from import_export import resources
 
 from .crud import update_seller_balance, update_technical_balance, update_owner_balance
 from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory, OffersForPlacement, \
-    Commission
+    Commission, CommissionBreakdown, CommissionRates
 from .utils.logger_config import logger
 from .tg_bot_run import send_messages_sync
+
+
+@admin.register(CommissionBreakdown)
+class CommissionBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('order', 'seller',
+                    'mentor', 'recruiter', 'renter',
+                    'service_type', 'amount',
+                    'created_time')  # Add a column for the link
+
+
+@admin.register(CommissionRates)
+class CommissionRatesAdmin(admin.ModelAdmin):
+    list_display = ('exchange', 'renter', 'mentor', 'owner', 'technical', 'recruiter', 'edit_link')  # Add a column for the link
+
+    fields = ('exchange', 'renter', 'mentor', 'owner', 'technical', 'recruiter')
+
+    def edit_link(self, obj):
+        return format_html('<a href="{}">Редагувати</a>', reverse('admin:main_commissionrates_change', args=[obj.pk]))
+    edit_link.allow_tags = True  # Mark the function as safe for rendering HTML
+    edit_link.short_description = ' '  # Set a blank column header
+
+    # Optional: If you want to customize the change form URL
+    def get_changeform_url(self, obj=None):
+        if obj is not None:
+            return reverse('admin:main_commissionrates_change', args=[obj.pk])
+        else:
+            return super().get_changeform_url(obj)
 
 
 @admin.register(ServerUrls)
@@ -59,7 +87,11 @@ class SellersResource(resources.ModelResource):
 @admin.register(Sellers)
 class SellersAdmin(ExportActionModelAdmin):
     resource_class = SellersResource
-    list_display = ('auth_user', 'get_user_email', 'balance')
+    list_display = ('auth_user', 'get_user_email',
+                    'mentor', 'recruiter', 'renter', 'balance')
+
+    list_editable = ('mentor', 'recruiter', 'renter')
+
     actions = ['export_as_txt']  # Додаємо власну дію до списку дій
 
     def get_user_email(self, obj):
