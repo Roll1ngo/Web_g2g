@@ -1,9 +1,6 @@
-# models.py
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
-
-
 from django.utils import timezone
 
 
@@ -16,6 +13,10 @@ class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255, blank=True, null=True)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    mentor = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="mentees")
+    recruiter = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="recruits")
+    renter = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="rented_sellers")
+
 
     class Meta:
         db_table = 'sellers'
@@ -147,3 +148,34 @@ class ChangeStockHistory(models.Model):
     class Meta:
         verbose_name = "Рядок"
         verbose_name_plural = "Історія зміни стоку та статусу лотів"
+
+
+class CommissionRates(models.Model):
+    exchange = models.DecimalField(max_digits=5, decimal_places=3, default=0.07)  # Біржа
+    renter = models.DecimalField(max_digits=5, decimal_places=3, default=0.10)  # Оренда персонажа
+    mentor = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Ментор
+    owner = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Власник
+    technical = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Технічна підтримка
+    recruiter = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Рекрутер
+
+    def __str__(self):
+        return "Ставки комісій"
+
+    class Meta:
+        verbose_name = "Ставка комісії"
+        verbose_name_plural = "Ставки комісій"
+
+
+class CommissionBreakdown(models.Model):
+    order = models.ForeignKey(SoldOrders, on_delete=models.CASCADE, related_name="commissions")
+    seller = models.ForeignKey(Sellers, on_delete=models.CASCADE, related_name="commissions")
+    mentor = models.ForeignKey(Sellers, on_delete=models.SET_NULL, null=True, blank=True, related_name="mentor_commissions")
+    recruiter = models.ForeignKey(Sellers, on_delete=models.SET_NULL, null=True, blank=True, related_name="recruiter_commissions")
+    renter = models.ForeignKey(Sellers, on_delete=models.SET_NULL, null=True, blank=True)
+    service_type = models.CharField(max_length=255)  # Наприклад, "біржа", "оренда", "ментор"
+    amount = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    created_time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        verbose_name = "Отримані комісії с замовлень"
+        verbose_name_plural = "Отримані комісії с замовлень"
