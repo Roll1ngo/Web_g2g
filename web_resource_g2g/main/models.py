@@ -15,7 +15,10 @@ class Sellers(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     mentor = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="mentees")
     recruiter = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="recruits")
-    renter = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="rented_sellers")
+    renter_lvl1 = models.ForeignKey("self", on_delete=models.SET_NULL,
+                                    null=True, blank=True, related_name="sellers_renters_lvl1")
+    renter_lvl2 = models.ForeignKey("self", on_delete=models.SET_NULL,
+                                    null=True, blank=True, related_name="sellers_renters_lvl2")
 
 
     class Meta:
@@ -152,7 +155,8 @@ class ChangeStockHistory(models.Model):
 
 class CommissionRates(models.Model):
     exchange = models.DecimalField(max_digits=5, decimal_places=3, default=0.07)  # Біржа
-    renter = models.DecimalField(max_digits=5, decimal_places=3, default=0.10)  # Оренда персонажа
+    renter_lvl1 = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)
+    renter_lvl2 = models.DecimalField(max_digits=5, decimal_places=3, default=0.10)  # Оренда персонажа
     mentor = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Ментор
     owner = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Власник
     technical = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Технічна підтримка
@@ -171,7 +175,10 @@ class CommissionBreakdown(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE, related_name="commissions")
     mentor = models.ForeignKey(Sellers, on_delete=models.SET_NULL, null=True, blank=True, related_name="mentor_commissions")
     recruiter = models.ForeignKey(Sellers, on_delete=models.SET_NULL, null=True, blank=True, related_name="recruiter_commissions")
-    renter = models.ForeignKey(Sellers, on_delete=models.SET_NULL, null=True, blank=True)
+    renter_lvl1 = models.ForeignKey(Sellers, on_delete=models.SET_NULL,
+                                    null=True, blank=True, related_name="commission_breakdowns_lvl1")
+    renter_lvl2 = models.ForeignKey(Sellers, on_delete=models.SET_NULL,
+                                    null=True, blank=True, related_name="commission_breakdowns_lvl2")
     service_type = models.CharField(max_length=255)  # Наприклад, "біржа", "оренда", "ментор"
     amount = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     created_time = models.DateTimeField(default=timezone.now)

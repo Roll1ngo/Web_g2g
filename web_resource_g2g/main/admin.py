@@ -27,14 +27,14 @@ from .tg_bot_run import send_messages_sync
 @admin.register(CommissionBreakdown)
 class CommissionBreakdownAdmin(admin.ModelAdmin):
     list_display = ('order', 'seller',
-                    'mentor', 'recruiter', 'renter',
+                    'mentor', 'recruiter', 'renter_lvl1', 'renter_lvl2',
                     'service_type', 'amount',
                     'created_time')  # Add a column for the link
 
 
 @admin.register(CommissionRates)
 class CommissionRatesAdmin(admin.ModelAdmin):
-    list_display = ('exchange', 'renter', 'mentor', 'owner', 'technical', 'recruiter', 'edit_link')  # Add a column for the link
+    list_display = ('exchange', 'renter_lvl1', 'renter_lvl2', 'mentor', 'owner', 'technical', 'recruiter', 'edit_link')  # Add a column for the link
 
     fields = ('exchange', 'renter', 'mentor', 'owner', 'technical', 'recruiter')
 
@@ -88,9 +88,9 @@ class SellersResource(resources.ModelResource):
 class SellersAdmin(ExportActionModelAdmin):
     resource_class = SellersResource
     list_display = ('auth_user', 'get_user_email',
-                    'mentor', 'recruiter', 'renter', 'balance')
+                    'mentor', 'recruiter', 'renter_lvl1', 'renter_lvl2', 'balance')
 
-    list_editable = ('mentor', 'recruiter', 'renter')
+    list_editable = ('mentor', 'recruiter', 'renter_lvl1', 'renter_lvl2')
 
     actions = ['export_as_txt']  # Додаємо власну дію до списку дій
 
