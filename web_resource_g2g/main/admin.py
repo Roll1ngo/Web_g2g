@@ -402,6 +402,8 @@ class AddOrderAdmin(admin.ModelAdmin):
                               f"Сума замовлення: {order.earned_without_admins_commission}\n"
                               )
                 logger.info(message)
+                logger.info(f"seller.id_telegram__{seller.id_telegram},"
+                            f" seller.auth_user.username__{seller.auth_user.username}")
 
                 response = send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
                 if response:
@@ -412,7 +414,6 @@ class AddOrderAdmin(admin.ModelAdmin):
             else:
                 self.message_user(request, f"У продавця {seller.auth_user.username} немає Telegram ID.",
                                   level='WARNING')
-
 
     # Встановлення значень за замовчанням для полів
     def save_model(self, request, obj, form, change):

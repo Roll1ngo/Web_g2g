@@ -145,5 +145,6 @@ class ChangeStockHistory(models.Model):
     description = models.TextField(blank=True, null=True)
 
     class Meta:
+
         verbose_name = "Рядок"
         verbose_name_plural = "Історія зміни стоку та статусу лотів"

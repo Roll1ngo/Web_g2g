@@ -23,7 +23,8 @@ log_file = os.path.join(os.path.dirname(executable_path), "front_server.ans")
 file_handler = logging.handlers.RotatingFileHandler(
     log_file,
     maxBytes=max_bytes,
-    backupCount=backup_count
+    backupCount=backup_count,
+    encoding='utf-8'
 )
 
 # Formatter for the file
@@ -36,11 +37,19 @@ file_handler.setFormatter(file_formatter)
 # Add the file handler to the logger
 logger.addHandler(file_handler)
 
+# Налаштування StreamHandler для виводу в консоль з UTF-8
+console_handler = logging.StreamHandler(stream=sys.stdout)  # Використовуємо sys.stdout
+console_handler.setFormatter(file_formatter)  # Використовуємо той самий formatter, що й для файлу
+logger.addHandler(console_handler)
+
 # Console colored output configuration
 coloredlogs.install(level='INFO',
                     fmt='\033[1;32m%(asctime)s - %(levelname)s -'
                         ' \033[1;33m%(module)s\033[1;32m.\033[1;34m%(funcName)s\033[1;32m:%(lineno)d - %(message)s\033[0m',
-                    datefmt='%H:%M:%S')
+                    datefmt='%H:%M:%S',
+                    logger=logger)
+
+
 
 
 # Logging uncaught exceptions
