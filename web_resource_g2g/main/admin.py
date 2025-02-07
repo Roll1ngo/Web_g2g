@@ -8,6 +8,7 @@ from decimal import Decimal
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import redirect
 from django.templatetags.static import static
@@ -27,10 +28,15 @@ from .tg_bot_run import send_messages_sync
 @admin.register(CommissionBreakdown)
 class CommissionBreakdownAdmin(admin.ModelAdmin):
     list_display = ('order', 'seller',
-                    'mentor', 'recruiter', 'renter_lvl1', 'renter_lvl2',
                     'service_type', 'amount',
                     'created_time')  # Add a column for the link
 
+    def order_link(self, obj):
+        """Створює клікабельний лінк на замовлення у AddOrderAdmin."""
+        url = reverse('admin:main_addorder_change', args=[obj.order.id])  # main = ім'я твого додатку
+        return format_html('<a href="{}">{}</a>', url, obj.order.id)
+
+    order_link.short_description = "Order"  # Назва колонки
 
 @admin.register(CommissionRates)
 class CommissionRatesAdmin(admin.ModelAdmin):
@@ -88,9 +94,9 @@ class SellersResource(resources.ModelResource):
 class SellersAdmin(ExportActionModelAdmin):
     resource_class = SellersResource
     list_display = ('auth_user', 'get_user_email',
-                    'mentor', 'recruiter', 'renter_lvl1', 'renter_lvl2', 'balance')
+                    'mentor', 'recruiter', 'balance')
 
-    list_editable = ('mentor', 'recruiter', 'renter_lvl1', 'renter_lvl2')
+    list_editable = ('mentor', 'recruiter')
 
     actions = ['export_as_txt']  # Додаємо власну дію до списку дій
 
@@ -278,16 +284,22 @@ class ServerUrlsChoiceField(forms.ModelChoiceField):
 
 @admin.register(SellerServerInterestRate)
 class SellerServerInterestRateAdmin(admin.ModelAdmin):
-    list_display = ('seller', 'server_display', 'interest_rate')
+    list_display = ('seller', 'server_display',
+                    'interest_rate',
+                    'renter_lvl1', 'renter_lvl2')
     list_filter = ('seller', 'server__game_name')
-    list_editable = ('interest_rate',)
+    list_editable = ('interest_rate', 'renter_lvl1', 'renter_lvl2')
     search_fields = ('seller__auth_user__username', 'server__game_name', 'server__server_name')
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "server":
-            # Sort the queryset by server_name alphabetically
             kwargs["queryset"] = ServerUrls.objects.all().order_by('server_name')
             kwargs["form_class"] = ServerUrlsChoiceField
+        elif db_field.name in ('renter_lvl1', 'renter_lvl2'):
+            # Отримуємо всіх продавців, потім витягуємо унікальних користувачів за допомогою Python set
+            sellers = Sellers.objects.all()
+            distinct_users = set(seller.auth_user for seller in sellers)  # Використовуємо set для отримання унікальних користувачів
+            kwargs["queryset"] = User.objects.filter(id__in=[user.id for user in distinct_users]).order_by('username')  # Фільтруємо користувачів за id
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def server_display(self, obj):
@@ -295,12 +307,23 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
 
     server_display.short_description = 'Server'
 
+    # Додаємо методи для відображення нових назв колонок
+    def renter_10_percent(self, obj):
+        return obj.renter_lvl1  # Повертаємо значення поля renter_lvl1
+
+    renter_10_percent.short_description = 'Renter 10%'  # Нова назва колонки
+
+    def renter_5_percent(self, obj):
+        return obj.renter_lvl2  # Повертаємо значення поля renter_lvl2
+
+    renter_5_percent.short_description = 'Renter 5%'  # Нова назва колонки
+
 
 @admin.register(OffersForPlacement)
 class OffersForPlacementAdmin(admin.ModelAdmin):
     list_display = ('sellers', 'server_urls', 'active_rate', 'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade')
-    list_filter = ('sellers',)
+    list_filter = ('sellers','active_rate')
     search_fields = ('sellers__name', 'currency', 'description')
 
     def get_queryset(self, request):
