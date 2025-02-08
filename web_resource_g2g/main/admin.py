@@ -18,7 +18,7 @@ from django.utils.html import format_html
 from import_export.admin import ExportActionModelAdmin
 from import_export import resources
 
-from .crud import update_seller_balance, update_technical_balance, update_owner_balance
+from . import crud
 from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory, OffersForPlacement, \
     Commission, CommissionBreakdown, CommissionRates
 from .utils.logger_config import logger
@@ -27,16 +27,27 @@ from .tg_bot_run import send_messages_sync
 
 @admin.register(CommissionBreakdown)
 class CommissionBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('order', 'seller',
-                    'service_type', 'amount',
-                    'created_time')  # Add a column for the link
+    list_display = ('order', 'seller', 'service_type', 'amount', 'created_time',
+                    'charged_to_payment_commission', 'paid_in_salary_commission')
+    list_editable = ('seller',)
+    list_filter = ('seller', 'service_type', 'charged_to_payment_commission',
+                   'paid_in_salary_commission', 'created_time')
 
-    def order_link(self, obj):
-        """Створює клікабельний лінк на замовлення у AddOrderAdmin."""
-        url = reverse('admin:main_addorder_change', args=[obj.order.id])  # main = ім'я твого додатку
-        return format_html('<a href="{}">{}</a>', url, obj.order.id)
+    actions = ['mark_paid']
 
-    order_link.short_description = "Order"  # Назва колонки
+    @admin.action(description='Відмітити комісії як оплачені')
+    def mark_paid(self, request, queryset):
+
+        # Оновлюємо всі записи, які відповідають фільтрації
+        queryset.update(paid_in_salary_commission=True)
+        crud.update_owner_balance()
+
+        # Отримуємо список унікальних продавців з оновлених замовлень
+        users_ids = set(queryset.values_list('seller__auth_user_id', flat=True).distinct())
+
+        for user_id in users_ids:
+            crud.update_seller_balance(user_id)
+
 
 @admin.register(CommissionRates)
 class CommissionRatesAdmin(admin.ModelAdmin):
@@ -98,7 +109,17 @@ class SellersAdmin(ExportActionModelAdmin):
 
     list_editable = ('mentor', 'recruiter')
 
-    actions = ['export_as_txt']  # Додаємо власну дію до списку дій
+    actions = ['export_as_txt', 'update_balance']  # Додаємо власну дію до списку дій
+
+    @admin.action(description='Оновити баланс')
+    def update_balance(self, request, queryset):
+
+        for user_id in queryset.values_list('auth_user_id', flat=True).distinct():
+            new_balance = crud.get_balance(user_id)
+            logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
+        crud.update_technical_balance()
+        crud.update_owner_balance()
+        self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
 
     def get_user_email(self, obj):
         return obj.auth_user.email
@@ -174,7 +195,11 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     ordering = ('-created_time',)
 
     # Вказуємо список доступних дій
-    actions = ['mark_paid', 'pay_technical_commission', 'mark_reviewed', 'send_message_to_seller']
+    actions = ['update_balance',
+               'mark_paid',
+               'pay_technical_commission',
+               'mark_reviewed',
+               'send_message_to_seller']
 
     # Заборона створення нових замовлень
     def has_add_permission(self, request):
@@ -205,12 +230,22 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     seller.admin_order_field = 'seller__auth_user__username'
     seller.short_description = 'Продавець'
 
+    @admin.action(description='Оновити баланс')
+    def update_balance(self, request, queryset):
+
+        for user_id in queryset.values_list('seller__auth_user_id__id', flat=True).distinct():
+            new_balance = crud.get_balance(user_id)
+            logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
+        crud.update_technical_balance()
+        crud.update_owner_balance()
+        self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
+
     @admin.action(description='Відмітити як оплачені')
     def mark_paid(self, request, queryset):
 
         # Отримуємо список унікальних продавців з оновлених замовлень
-        sellers_ids = set(queryset.values_list('seller_id', flat=True).distinct())
-        logger.info(f"sellers_ids__{sellers_ids}")
+        users_ids = set(queryset.values_list('seller__auth_user_id__id', flat=True).distinct())
+        logger.info(f"auth_user_id{users_ids}")
 
         # Оновлюємо всі записи, які відповідають фільтрації
         updated_count = queryset.update(paid_in_salary=True)
@@ -218,11 +253,12 @@ class SoldOrdersAdmin(admin.ModelAdmin):
         # Виключаємо продавців з ID 1 та 2
         excluded_sellers = {1, 2}
 
-        for seller_id in sellers_ids:
-            logger.info(seller_id)
-            logger.info(f"seller_id__{seller_id}")
-            if seller_id not in excluded_sellers:
-                update_seller_balance(seller_id)
+        for user_id in users_ids:
+            logger.info(user_id)
+            logger.info(f"seller_id__{user_id}")
+            if user_id not in excluded_sellers:
+                crud.update_status_paid_in_salary_commission(user_id)
+                crud.update_seller_balance(user_id)
 
         self.message_user(
             request,
@@ -232,7 +268,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     @admin.action(description='Сплатити технічну комісію')
     def pay_technical_commission(self, request, queryset):
         updated_count = queryset.update(paid_to_technical=True)
-        update_technical_balance()  # Виклик celery task
+        crud.update_technical_balance()  # Виклик celery task
         self.message_user(request, f"Оновлено записів: {updated_count}."
                                    f" Встановлено статус 'оплачено технічну комісію'.")
 
@@ -240,7 +276,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     def mark_reviewed(self, request, queryset):
         updated_count = queryset.update(paid_to_owner=True)
         for order in queryset:  # Ітерація по оновленим об'єктам
-            update_owner_balance()
+            crud.update_owner_balance()
         self.message_user(request, f"Успішно оновлено {updated_count} записів, відмічено як переглянуті.")
 
     def order_value(self, obj):
@@ -296,10 +332,8 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
             kwargs["queryset"] = ServerUrls.objects.all().order_by('server_name')
             kwargs["form_class"] = ServerUrlsChoiceField
         elif db_field.name in ('renter_lvl1', 'renter_lvl2'):
-            # Отримуємо всіх продавців, потім витягуємо унікальних користувачів за допомогою Python set
-            sellers = Sellers.objects.all()
-            distinct_users = set(seller.auth_user for seller in sellers)  # Використовуємо set для отримання унікальних користувачів
-            kwargs["queryset"] = User.objects.filter(id__in=[user.id for user in distinct_users]).order_by('username')  # Фільтруємо користувачів за id
+            # Отримуємо унікальні екземпляри Sellers, а не User
+            kwargs["queryset"] = Sellers.objects.order_by('auth_user__username').distinct()
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def server_display(self, obj):
@@ -307,16 +341,6 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
 
     server_display.short_description = 'Server'
 
-    # Додаємо методи для відображення нових назв колонок
-    def renter_10_percent(self, obj):
-        return obj.renter_lvl1  # Повертаємо значення поля renter_lvl1
-
-    renter_10_percent.short_description = 'Renter 10%'  # Нова назва колонки
-
-    def renter_5_percent(self, obj):
-        return obj.renter_lvl2  # Повертаємо значення поля renter_lvl2
-
-    renter_5_percent.short_description = 'Renter 5%'  # Нова назва колонки
 
 
 @admin.register(OffersForPlacement)
@@ -393,6 +417,7 @@ class AddOrderAdmin(admin.ModelAdmin):
 
     form = AddOrderForm  # Використовуємо кастомну форму
     list_display = (
+        'id',
         'server',
         'seller',
         'status',
@@ -461,6 +486,8 @@ class AddOrderAdmin(admin.ModelAdmin):
                 response = send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
                 if response:
                     SoldOrders.objects.filter(sold_order_number=order.sold_order_number).update(send_message=True)
+                    OffersForPlacement.objects.filter(sellers=seller.id,
+                                                      server_urls=order.server.id).update(order_status=True)
                 else:
                     "Telegram повідомлення не надіслано"
 

@@ -119,7 +119,6 @@ class SoldOrders(models.Model):
         verbose_name_plural = "Список замовлень для виплати"  # Множина
 
 
-
 class VitaliyOrders(models.Model):
     sold_order_number = models.IntegerField()
     created_time = models.DateTimeField(default=timezone.now)
@@ -132,12 +131,12 @@ class SellerServerInterestRate(models.Model):
         MinValueValidator(1),
         MaxValueValidator(100)
     ])
-    renter_lvl1 = models.ForeignKey("self", on_delete=models.SET_NULL,
+    renter_lvl1 = models.ForeignKey(Sellers, on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name="Renter 10%",
-                                    related_name="sellerserver_renters_lvl1")
-    renter_lvl2 = models.ForeignKey("self", on_delete=models.SET_NULL,
+                                    related_name="sellers_renters_lvl1")
+    renter_lvl2 = models.ForeignKey(Sellers, on_delete=models.SET_NULL,
                                     null=True, blank=True, verbose_name="Renter 5%",
-                                    related_name="sellerserver_renters_lvl2")
+                                    related_name="sellers_renters_lvl2")
 
     def __str__(self):
         return f"{self.seller}"
@@ -182,7 +181,10 @@ class CommissionBreakdown(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE, related_name="commissions")
     service_type = models.CharField(max_length=255)  # Наприклад, "біржа", "оренда", "ментор"
     amount = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    charged_to_payment_commission = models.BooleanField(default=False)
+    paid_in_salary_commission = models.BooleanField(default=False)
     created_time = models.DateTimeField(default=timezone.now)
+
 
     class Meta:
         verbose_name = "Отримані комісії с замовлень"

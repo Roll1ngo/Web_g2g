@@ -5,10 +5,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
-                     SoldOrders, Commission, SellerServerInterestRate, ChangeStockHistory)
+                     SoldOrders, Commission, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown)
 from django.db.models import F, Sum, DecimalField
 from .utils.logger_config import logger
 
+owner_user_and_seller_id = 1
+technical_user_and_seller_id = 2
 
 def get_main_data_from_table(auth_user_id: int):
     main_data = (
@@ -253,12 +255,12 @@ def get_order_info(user_id):
     return order_info
 
 
-def update_sold_order_when_video_download(user, order_number, path_to_video, sent_gold):
+def update_sold_order_when_video_download(user_id, order_number, path_to_video, sent_gold):
     logger.info(f"sold_order_number__{order_number}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
-    seller_id = Sellers.objects.get(auth_user_id=user)
+    seller_id = Sellers.objects.get(auth_user_id=user_id)
     try:
         with transaction.atomic():  # Забезпечує цілісність транзакції
-            # Оновлюємо запис у SoldOrders
+            # Оновлюємо статуси у SoldOrders
             sold_order = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id.id)
             seller_id = sold_order.seller_id
             sold_order.path_to_video = path_to_video
@@ -267,11 +269,13 @@ def update_sold_order_when_video_download(user, order_number, path_to_video, sen
             sold_order.charged_to_payment = True
             sold_order.save()
 
+            # Зараховуємо комісії до оплати
+            update_status_charged_to_payment_commission(sold_order.id)
+
             # Оновлюємо баланс продавця
-            response = update_seller_balance(seller_id)
+            update_seller_balance(user_id)
             update_owner_balance()
             update_technical_balance()
-            logger.info(response)
 
             # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
             offer = OffersForPlacement.objects.filter(
@@ -325,7 +329,11 @@ def create_video_filename(request, sold_order_number):
 
 
 def get_balance(user_id):
-    target_field = 'earned_without_admins_commission'
+
+    if user_id == owner_user_and_seller_id:
+        return update_owner_balance()
+    if user_id == technical_user_and_seller_id:
+        return update_technical_balance()
 
     try:
         seller_id = Sellers.objects.get(auth_user_id=user_id)
@@ -337,7 +345,7 @@ def get_balance(user_id):
         seller_id=seller_id,
         charged_to_payment=True,
         paid_in_salary=False,
-    ).aggregate(total_earned=Sum(target_field))['total_earned']
+    ).aggregate(total_earned=Sum('earned_without_admins_commission'))['total_earned']
 
     if total_earned is None:
         total_earned = 0
@@ -347,7 +355,22 @@ def get_balance(user_id):
         except (ValueError, TypeError):
             total_earned = 0
 
-    return round(total_earned, 2)
+    # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
+    commission_earned = CommissionBreakdown.objects.filter(
+        seller=seller_id,
+        charged_to_payment_commission=True,
+        paid_in_salary_commission=False
+    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
+    total_balance = float(total_earned) + float(commission_earned)
+
+    # If no records are found, total_earned will be None. Set it to 0 in that case.
+    if total_balance is None:
+        total_balance = 0
+
+    Sellers.objects.filter(id=seller_id.id).update(balance=total_balance)
+
+    logger.info(f"technical_sum_total_earned__{total_balance}")
+    return round(total_balance, 2)
 
 
 def get_exchange_commission():
@@ -377,49 +400,40 @@ def get_interest_rate_by_user_id(auth_user_id, server_id):
     return seller_rate.interest_rate
 
 
-def update_seller_balance(seller_id):
-    target_field = 'earned_without_admins_commission'
+def update_seller_balance(user_id):
+    get_balance(user_id)
 
-    # Step 1: Calculate the total earned_without_admins_commission for the specific seller
-    total_earned = SoldOrders.objects.filter(
-        seller_id=seller_id,
-        charged_to_payment=True,
-        paid_in_salary=False,
-    ).aggregate(total_earned=Sum(target_field))['total_earned']
-    logger.info(f"sum_total_earned__{total_earned}")
-    # If no records are found, total_earned will be None. Set it to 0 in that case.
-    if total_earned is None:
-        total_earned = 0
-
-    # Step 2: Update the seller's balance
-    Sellers.objects.filter(id=seller_id).update(balance=total_earned)
-
-    return 'Balance updated successfully.'
+    return 'Seller balance updated successfully.'
 
 
 def update_owner_balance():
     target_field = 'owner_commission'
-    owner_id = 1
-
     # Step 1: Calculate the total earned_without_admins_commission for the specific seller
     total_earned = SoldOrders.objects.filter(
         charged_to_payment=True,
         paid_to_owner=False
     ).aggregate(total_earned=Sum(target_field, output_field=DecimalField()))['total_earned']
-    logger.info(f"owner_sum_total_earned__{total_earned}")
+
     # If no records are found, total_earned will be None. Set it to 0 in that case.
-    if total_earned is None:
-        total_earned = 0
+    total_earned = 0 if total_earned is None else total_earned
+    logger.info(f"technical_sum_total_earned__{total_earned}")
 
-    # Step 2: Update the seller's balance
-    Sellers.objects.filter(id=owner_id).update(balance=total_earned)
+    # 2. Баланс із CommissionBreakdown
+    commission_earned = CommissionBreakdown.objects.filter(
+        seller=owner_user_and_seller_id,
+        charged_to_payment_commission=True,
+        paid_in_salary_commission=False
+    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
+    total_balance = float(total_earned) + float(commission_earned)
 
-    return 'Balance updated successfully.'
+    Sellers.objects.filter(id=owner_user_and_seller_id).update(balance=total_balance)
+
+    logger.info('Balance updated successfully.')
+    return round(total_balance, 2)
 
 
 def update_technical_balance():
     target_field = 'technical_commission'
-    technical_id = 2
 
     check_coma = SoldOrders.objects.filter(
         charged_to_payment=True,
@@ -432,16 +446,23 @@ def update_technical_balance():
         charged_to_payment=True,
         paid_to_technical=False
     ).aggregate(total_earned=Sum(target_field, output_field=DecimalField()))['total_earned']
-    logger.info(f"technical_sum_total_earned__{total_earned}")
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
-    if total_earned is None:
-        total_earned = 0
+    total_earned = 0 if total_earned is None else total_earned
+    logger.info(f"technical_sum_total_earned__{total_earned}")
 
-    # Step 2: Update the seller's balance
-    Sellers.objects.filter(id=technical_id).update(balance=total_earned)
+    # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
+    commission_earned = CommissionBreakdown.objects.filter(
+        seller=technical_user_and_seller_id,
+        charged_to_payment_commission=True,
+        paid_in_salary_commission=False
+    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
+    total_balance = float(total_earned) + float(commission_earned)
 
-    return 'Balance updated successfully.'
+    Sellers.objects.filter(id=technical_user_and_seller_id).update(balance=total_balance)
+
+    logger.info('Balance updated successfully.')
+    return round(total_balance, 2)
 
 
 def update_stock_table(row_id, description):
@@ -456,3 +477,14 @@ def update_stock_table(row_id, description):
     )
     stock_row.save()
     logger.info("New record to stock table created.")
+
+
+def update_status_paid_in_salary_commission(user_id):
+    seller_id = Sellers.objects.get(auth_user_id=user_id)
+    CommissionBreakdown.objects.filter(seller_id=seller_id).update(paid_in_salary_commission=True)
+    logger.info("Status paid_in_salary_commission updated successfully.")
+
+
+def update_status_charged_to_payment_commission(order_id):
+    CommissionBreakdown.objects.filter(order=order_id).update(charged_to_payment_commission=True)
+    logger.info("Status paid_in_salary_commission updated successfully.")
