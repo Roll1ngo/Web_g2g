@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
+from django.utils import timezone
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      SoldOrders, Commission, SellerServerInterestRate, ChangeStockHistory)
@@ -452,7 +453,7 @@ def update_stock_table(row_id, description):
         stock=offer.stock,
         active_rate_record=offer.active_rate,
         description=description,
-        created_time=datetime.now()
+        created_time=timezone.now()
     )
     stock_row.save()
     logger.info("New record to stock table created.")
