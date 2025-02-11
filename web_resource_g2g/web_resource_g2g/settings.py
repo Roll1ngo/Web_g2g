@@ -137,3 +137,4 @@ PASSWORD_RESET_CONFIRM_URL = 'password_reset_confirm'
 
 MEDIA_URL = '/media/'  # URL для медіа-файлів
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Директорія для зберігання медіа-файлів
+LOGOUT_REDIRECT_URL = '/'

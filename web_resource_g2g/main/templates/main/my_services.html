@@ -1,0 +1,146 @@
+{% extends "users/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<style>
+  :root {
+    --primary-color: #EEE8AA ; /* Світло-жовтий колір для заголовків */
+    --secondary-color: #333333; /* Темний колір для тексту */
+    --background-color: #F5F5F5; /* Світлий фон */
+    --table-header-bg: #E0E0E0; /* Фон заголовків таблиці */
+    --table-row-bg: #FFFFFF; /* Фон рядків таблиці */
+    --table-border-color: #CCCCCC; /* Колір меж таблиці */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+}
+
+h2 {
+    color: var(--primary-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    opacity: 0.7; /* Прозорість таблиці 60% */
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+table th {
+    background-color: var(--table-header-bg);
+
+}
+
+table tr {
+    background-color: var(--table-row-bg);
+}
+
+table tr:hover {
+    background-color: #F0F0F0; /* Колір при наведенні */
+}
+</style>
+<!-- Заголовок для першої таблиці -->
+{% if not my_services and not my_clients_provide_service %}
+  <h2>Ви наразі не надаєте жодних послуг</h2>
+{% else %}
+    <div class="center-container">
+      <h2>Послуги</h2>
+    </div>
+
+    <!-- Нова таблиця -->
+    <table>
+        <thead>
+            <tr>
+                <th>Клієнт</th>
+                <th>Моя послуга</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mentor in my_clients_provide_service.mentor %}
+            <tr>
+                <td>{{ mentor }}</td>
+                <td>Менторство</td>
+            </tr>
+            {% endfor %}
+
+            {% for recruiter in my_clients_provide_service.recruiter %}
+            <tr>
+                <td>{{ recruiter }}</td>
+                <td>Рекрутинг</td>
+            </tr>
+            {% endfor %}
+
+            {% for seller, levels in my_clients_provide_service.renter_lvl.items %}
+                {% if levels.renter_lvl1 %}
+                    <tr>
+                        <td>{{ seller }}</td>
+                        <td>Оренда 1 рівня(10%) {{ levels.renter_lvl1|join:", " }}</td>
+                    </tr>
+                {% endif %}
+                {% if levels.renter_lvl2 %}
+                    <tr>
+                        <td>{{ seller }}</td>
+                        <td>Оренда 2 рівня(5%) {{ levels.renter_lvl2|join:", " }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+<!-- Роздільник між таблицями -->
+  <br><br>
+
+<!-- Заголовок для другої таблиці -->
+    <div class="center-container">
+      <h2>Нарахування</h2>
+    </div>
+
+    <!-- Існуюча таблиця -->
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Клієнт</th>
+                <th>Послуга</th>
+                <th>Сервер</th>
+                <th>Гра</th>
+                <th>Номер замовлення</th>
+                <th>Зараховано на баланс</th>
+                <th>Час замовлення</th>
+                <th>Статус виплати</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in my_services %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ service.order.seller.auth_user.username }}</td>
+                <td>{{ service.service_type }}</td>
+                <td>{{ service.order.server.server_name }}</td>
+                <td>{{ service.order.server.game_name }}</td>
+                <td>{{ service.order.sold_order_number }}</td>
+                <td>{{ service.amount|floatformat:2 }}</td>
+                <td>{{ service.order.created_time }}</td>
+
+                {% if service.charged_to_payment_commission and not service.paid_in_salary_commission %}
+                <td>Зараховано до оплати</td>
+                {% elif service.charged_to_payment_commission and service.paid_in_salary_commission %}
+                <td>Виплачено</td>
+                {% else %}
+                <td>Інформація відсутня</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+{% endif %}
+{% endblock %}

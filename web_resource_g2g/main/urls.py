@@ -13,4 +13,5 @@ urlpatterns = [
     path('history_orders/', views.show_history_orders, name='history_orders'),
     path('balance/', views.show_balance, name='balance'),
     path("delete_server/", views.delete_server, name="delete_server"),
+    path("my_services/", views.my_services, name="my_services"),
 ]
