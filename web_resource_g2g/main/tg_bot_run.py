@@ -12,7 +12,7 @@ async def send_messages_to_users(seller_id, seller_name, message):
     bot = Bot(token=BOT_TOKEN)
 
     # ID отримувачів
-    recipients = {seller_id: seller_name, 190861163: 'Vlad'}   # 822070279: 'Vitaliy'
+    recipients = { 190861163: 'Vlad'}   # 822070279: 'Vitaliy' seller_id: seller_name,
 
     try:
         for user_id, name in recipients.items():

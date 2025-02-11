@@ -1,5 +1,50 @@
 {% extends "users/base.html" %}
 {% block content %}
+<style>
+  :root {
+    --primary-color: #EEE8AA ; /* Світло-жовтий колір для заголовків */
+    --secondary-color: #333333; /* Темний колір для тексту */
+    --background-color: #F5F5F5; /* Світлий фон */
+    --table-header-bg: #E0E0E0; /* Фон заголовків таблиці */
+    --table-row-bg: #FFFFFF; /* Фон рядків таблиці */
+    --table-border-color: #CCCCCC; /* Колір меж таблиці */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+}
+
+h2 {
+    color: var(--primary-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    opacity: 0.7; /* Прозорість таблиці 60% */
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+table th {
+    background-color: var(--table-header-bg);
+
+}
+
+table tr {
+    background-color: var(--table-row-bg);
+}
+
+table tr:hover {
+    background-color: #F0F0F0; /* Колір при наведенні */
+}
+</style>
 <div class="center-container">
     <table>
         <thead>

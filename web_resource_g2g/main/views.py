@@ -139,3 +139,13 @@ def delete_server(request):
     row_id = data.get('row_id')
     crud.delete_server_from_list(row_id)
     return JsonResponse({"success": True})
+
+
+def my_services(request):
+    user_id = request.user.id
+    my_service_commission_list = crud.get_my_service_list(user_id)
+    my_clients_provide_service = crud.get_clients_provide_service(user_id)
+    logger.info(f"my_clients_provide_service__{my_clients_provide_service}")
+    return render(request, 'main/my_services.html', context={"my_services": my_service_commission_list,
+                                                             'my_clients_provide_service': my_clients_provide_service})
+
