@@ -150,15 +150,23 @@ class CreatedTimeFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
+            ('last_24_hours', 'Остання доба'),  # Додаємо пункт для 24 годин
             ('last_30_days', 'Останні 30 днів'),
+            ('last_15_days', 'Останні 15 днів')
+
         )
 
     def queryset(self, request, queryset):
-        if self.value() == 'last_30_days':
+        if self.value() == 'last_24_hours':
+            twenty_four_hours_ago = timezone.now() - datetime.timedelta(hours=24)
+            return queryset.filter(created_time__gte=twenty_four_hours_ago)
+        elif self.value() == 'last_30_days':
             thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
             return queryset.filter(created_time__gte=thirty_days_ago)
-        elif self.value() == 'all':
-            return queryset
+        elif self.value() == 'last_10_days':
+            fifteen_days_ago = timezone.now() - datetime.timedelta(days=15)
+            return queryset.filter(created_time__gte=fifteen_days_ago)
+
         return queryset  # Повертаємо початковий queryset, якщо фільтр не застосовано
 
 
@@ -352,7 +360,7 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
 class OffersForPlacementAdmin(admin.ModelAdmin):
     list_display = ('sellers', 'server_urls', 'active_rate', 'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade')
-    list_filter = ('sellers', 'active_rate')
+    list_filter = ('sellers', 'active_rate', 'order_status')
     search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
 
@@ -449,7 +457,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'paid_to_owner',
         'paid_to_technical',
     )
-    list_filter = ('seller', 'created_time', 'download_video_status', 'paid_in_salary')
+    list_filter = ('seller', CreatedTimeFilter, 'download_video_status', 'paid_in_salary')
     actions = ['send_message_to_seller']
 
     # Поля для відображення у формі створення замовлення
