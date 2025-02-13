@@ -150,9 +150,9 @@ class CreatedTimeFilter(admin.SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            ('last_24_hours', 'Остання доба'),  # Додаємо пункт для 24 годин
-            ('last_30_days', 'Останні 30 днів'),
-            ('last_15_days', 'Останні 15 днів')
+            ('last_24_hours', 'За добу'),  # Додаємо пункт для 24 годин
+            ('last_30_days', 'За місяць'),
+            ('last_15_days', 'За 15 днів')
 
         )
 
