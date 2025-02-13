@@ -442,7 +442,7 @@ def update_technical_balance():
     # Step 2: Update the seller's balance
     Sellers.objects.filter(id=technical_id).update(balance=total_earned)
 
-    return 'Balance updated successfully.'
+    return 'Balance  updated  successfully.'
 
 
 def update_stock_table(row_id, description):
