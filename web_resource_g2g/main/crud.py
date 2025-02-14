@@ -500,7 +500,8 @@ def calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_i
     seller_total_rate = calculate_seller_total_rate(seller_id, server_id)
     logger.info(f"seller_total_rate__{seller_total_rate}")
 
-    record_commissions_service_providers(seller_services_info, commissions_service_providers, order_number)
+    record_commissions_service_providers(seller_services_info, commissions_service_providers,
+                                         order_number, seller_id)
 
 
 def calculate_commissions_for_service_providers(seller_services_info, quantity_cost):
@@ -572,8 +573,9 @@ def calculate_seller_total_rate(seller_id, server_id):
     return seller_total_rate
 
 
-def record_commissions_service_providers(seller_services_info, commissions_service_providers, order_number):
-    order_id = SoldOrders.objects.get(sold_order_number=order_number)
+def record_commissions_service_providers(seller_services_info, commissions_service_providers,
+                                         order_number, seller_id):
+    order_id = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id)
     logger.info(f"order_id__{order_id}")
     logger.info(f"seller_services_info__{seller_services_info}")
     logger.info(f"commissions_service_providers__{commissions_service_providers}")
