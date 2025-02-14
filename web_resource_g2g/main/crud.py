@@ -624,12 +624,6 @@ def update_owner_balance():
 def update_technical_balance():
     target_field = 'technical_commission'
 
-    check_coma = SoldOrders.objects.filter(
-        charged_to_payment=True,
-        paid_to_technical=False
-    )
-    for row in check_coma:
-        logger.info(f"row.technical_commission__{row.technical_commission}")
     # Step 1: Calculate the total earned_without_admins_commission for the specific seller
     total_earned = SoldOrders.objects.filter(
         charged_to_payment=True,
