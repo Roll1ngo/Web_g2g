@@ -113,7 +113,7 @@ def get_float_price(row, auth_user_id):
         ).first()
 
         if float_price is None:
-            logger.error(f"No TopPrices record found for server_name={server_urls_id}.")
+            logger.warning(f"Відсутні ціни для сервера {server_urls_id}. Потрібен сеанс парсингу")
             float_price_without_exchange = 0
             return round(float_price_without_exchange, 3), interest_rate
 
