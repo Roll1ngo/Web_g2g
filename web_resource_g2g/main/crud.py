@@ -17,6 +17,29 @@ owner_user_and_seller_id = 1
 technical_user_and_seller_id = 2
 
 
+def check_exists_another_order_before_change_order_status(seller_id,
+                                                          server_id,
+                                                          sold_order_number):
+    """
+    Перевіряє, чи існують інші замовлення (крім замовлення з sold_order_number)
+    для вказаного сервера та продавця, у яких download_video_status = False.
+
+    :param server_id: ID сервера
+    :param seller_id: ID продавця
+    :param sold_order_number: Номер замовлення, яке не враховується
+    :return: True, якщо такі замовлення існують, інакше False
+    """
+    # Виконуємо запит до моделі SoldOrders
+    other_orders_exist = SoldOrders.objects.filter(server_id = server_id,
+                                                   seller_id = seller_id,
+                                                   download_video_status = False
+                                                   ).exclude(
+                                                   sold_order_number = sold_order_number
+                                                   ).exists()
+
+    return other_orders_exist
+
+
 def get_main_data_from_table(auth_user_id: int):
     main_data = (
         OffersForPlacement.objects
@@ -321,12 +344,12 @@ def update_sold_order_when_video_download(user_id, order_number, path_to_video, 
         with transaction.atomic():  # Забезпечує цілісність транзакції
             # Оновлюємо статуси у SoldOrders
             sold_order = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id.id)
-            seller_id = sold_order.seller_id
             sold_order.path_to_video = path_to_video
             sold_order.sent_gold = sent_gold
             sold_order.download_video_status = True
             sold_order.charged_to_payment = True
             sold_order.save()
+            logger.info('посилання на відео додано до бази даних')
 
             # Зараховуємо комісії до оплати
             update_status_charged_to_payment_commission(sold_order.id)
@@ -336,18 +359,26 @@ def update_sold_order_when_video_download(user_id, order_number, path_to_video, 
             update_owner_balance()
             update_technical_balance()
 
-            # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
-            offer = OffersForPlacement.objects.filter(
-                sellers=sold_order.seller,
-                server_urls=sold_order.server,
-                order_status=True
-            ).first()
+            # Перевірка на наявність інших замовлень перед зміною статусу
+            exists_order = check_exists_another_order_before_change_order_status(seller_id,
+                                                                                 sold_order.server,
+                                                                                 order_number)
+            if not exists_order:
+                # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
+                offer = OffersForPlacement.objects.filter(sellers=sold_order.seller,
+                                                          server_urls=sold_order.server,
+                                                          order_status=True
+                                                          ).first()
 
-            if offer:
-                offer.order_status = False
+                if offer:
+                    offer.order_status = False
                 offer.save()
-        logger.info('посилання на відео додано до бази даних та статус змінено')
-        return "Статус оновлено успішно."
+
+                return f'статус активного замовлення на сервері змінено на False.'
+            else:
+                return (f'статус активного замовлення залишається True.'
+                        f' Продавець має ще активні замовлення на цьому сервері')
+
     except SoldOrders.DoesNotExist:
         return f"Замовлення не знайдено"
     except Exception as e:
@@ -486,7 +517,6 @@ def get_renter_info(seller_id, server_id):
 
 def calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,
                                                              quantity_cost, order_number):
-
     # Отримуємо словник з інформацією про послуги якими користується продавець та кто їх надає
     seller_services_info = get_seller_services_info(seller_id, server_id)
     logger.info(f"seller_services_info__{seller_services_info}")
@@ -505,7 +535,6 @@ def calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_i
 
 
 def calculate_commissions_for_service_providers(seller_services_info, quantity_cost):
-
     # Отримуємо словник з комісіями за послуги
     commissions = get_global_commissions_rates()
 
@@ -519,11 +548,13 @@ def calculate_commissions_for_service_providers(seller_services_info, quantity_c
 
     if seller_services_info.get('renter_lvl1') is not None:
         renter_lvl1_commission = commissions.get('renter_lvl1', Decimal('0.0'))
-        commissions_service_providers['renter_lvl1'] = round(quantity_cost * renter_lvl1_commission / Decimal('100.0'), 6)
+        commissions_service_providers['renter_lvl1'] = round(quantity_cost * renter_lvl1_commission / Decimal('100.0'),
+                                                             6)
 
     if seller_services_info.get('renter_lvl2') is not None:
         renter_lvl2_commission = commissions.get('renter_lvl2', Decimal('0.0'))
-        commissions_service_providers['renter_lvl2'] = round(quantity_cost * renter_lvl2_commission / Decimal('100.0'), 6)
+        commissions_service_providers['renter_lvl2'] = round(quantity_cost * renter_lvl2_commission / Decimal('100.0'),
+                                                             6)
 
     if seller_services_info.get('recruiter') is not None:
         recruiter_commission = commissions.get('recruiter', Decimal('0.0'))
