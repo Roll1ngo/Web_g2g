@@ -5,6 +5,7 @@ from decimal import Decimal
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.shortcuts import redirect
 
 from django.templatetags.static import static
 from django.urls import reverse
@@ -15,9 +16,50 @@ from import_export import resources
 
 from . import crud
 from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory, OffersForPlacement, \
-    CommissionBreakdown, CommissionRates
+    CommissionBreakdown, CommissionRates, VitaliyOrders
 from .utils.logger_config import logger
 from .tg_bot_run import send_messages_sync
+
+
+class CreatedTimeFilter(admin.SimpleListFilter):
+    title = 'Час створення'  # Назва фільтра, що відображається в адмін-панелі
+    parameter_name = 'created_time'  # Ім'я параметра, що передається в URL
+
+    def lookups(self, request, model_admin):
+        return (
+            ('last_24_hours', 'За добу'),
+            ('last_3_days', 'За 3 дні'),
+            ('last_7_days', 'За 7 днів'),
+            ('last_15_days', 'За 15 днів'),
+            ('last_30_days', 'За місяць')
+
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'last_24_hours':
+            twenty_four_hours_ago = timezone.now() - datetime.timedelta(hours=24)
+            return queryset.filter(created_time__gte=twenty_four_hours_ago)
+        elif self.value() == 'last_3_days':
+            three_days_ago = timezone.now() - datetime.timedelta(days=3)
+            return queryset.filter(created_time__gte=three_days_ago)
+        elif self.value() == 'last_7_days':
+            seven_days_ago = timezone.now() - datetime.timedelta(days=7)
+            return queryset.filter(created_time__gte=seven_days_ago)
+        elif self.value() == 'last_10_days':
+            fifteen_days_ago = timezone.now() - datetime.timedelta(days=15)
+            return queryset.filter(created_time__gte=fifteen_days_ago)
+        elif self.value() == 'last_30_days':
+            thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
+            return queryset.filter(created_time__gte=thirty_days_ago)
+
+        return queryset  # Повертаємо початковий queryset, якщо фільтр не застосовано
+
+
+@admin.register(VitaliyOrders)
+class VitaliyOrdersAdmin(admin.ModelAdmin):
+    list_display = ('sold_order_number', 'created_time')
+    list_filter = (CreatedTimeFilter,)
+    ordering = ('created_time',)
 
 
 @admin.register(CommissionBreakdown)
@@ -25,7 +67,7 @@ class CommissionBreakdownAdmin(admin.ModelAdmin):
     list_display = ('order', 'seller', 'service_type', 'amount', 'created_time',
                     'charged_to_payment_commission', 'paid_in_salary_commission')
     list_filter = ('seller', 'service_type', 'charged_to_payment_commission',
-                   'paid_in_salary_commission', 'created_time')
+                   'paid_in_salary_commission', CreatedTimeFilter)
 
     actions = ['mark_paid']
 
@@ -143,31 +185,6 @@ class SellerBalanceFilter(SimpleListFilter):
             return queryset.filter(seller__balance__gt=500)
         return queryset
 
-
-class CreatedTimeFilter(admin.SimpleListFilter):
-    title = 'Час створення'  # Назва фільтра, що відображається в адмін-панелі
-    parameter_name = 'created_time'  # Ім'я параметра, що передається в URL
-
-    def lookups(self, request, model_admin):
-        return (
-            ('last_24_hours', 'За добу'),  # Додаємо пункт для 24 годин
-            ('last_30_days', 'За місяць'),
-            ('last_15_days', 'За 15 днів')
-
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'last_24_hours':
-            twenty_four_hours_ago = timezone.now() - datetime.timedelta(hours=24)
-            return queryset.filter(created_time__gte=twenty_four_hours_ago)
-        elif self.value() == 'last_30_days':
-            thirty_days_ago = timezone.now() - datetime.timedelta(days=30)
-            return queryset.filter(created_time__gte=thirty_days_ago)
-        elif self.value() == 'last_10_days':
-            fifteen_days_ago = timezone.now() - datetime.timedelta(days=15)
-            return queryset.filter(created_time__gte=fifteen_days_ago)
-
-        return queryset  # Повертаємо початковий queryset, якщо фільтр не застосовано
 
 
 @admin.register(SoldOrders)
@@ -356,8 +373,39 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
     server_display.short_description = 'Server'
 
 
+# Форма для встановлення значень за замовчуванням
+class OffersForPlacementForm(forms.ModelForm):
+    price_choices = [
+        ("minimal", "Швидко"),
+        ("mean10_lot", "Баланс"),
+        ("mean20_lot", "Дорого"),
+    ]
+
+    price = forms.ChoiceField(choices=price_choices, required=True)
+
+    class Meta:
+        model = OffersForPlacement
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Встановлюємо значення за замовчуванням
+        self.fields['currency'].initial = "USD"
+        self.fields['description'].initial = "gold"
+        self.fields['min_units_per_order'].initial = 1
+        self.fields['duration'].initial = 3
+        self.fields['auction_house'].initial = False
+        self.fields['percent_offset'].initial = 0
+        self.fields['delivery_online_hrs'].initial = 18
+        self.fields['delivery_offline_hrs'].initial = 6
+        self.fields['is_created_lot'].initial = True
+        self.fields['reserve_stock'].initial = 0
+
+
 @admin.register(OffersForPlacement)
 class OffersForPlacementAdmin(admin.ModelAdmin):
+    form = OffersForPlacementForm  # Використовуємо кастомну форму
+
     list_display = ('sellers', 'server_urls', 'active_rate', 'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade')
     list_filter = ('sellers', 'active_rate', 'order_status')
@@ -381,6 +429,12 @@ class AddOrderForm(forms.ModelForm):
         ("Mail", "Mail"),
         ("Face to face trade", "Face to face trade"),
     ]
+    STATUS_CHOICES = [('DELIVERING', 'DELIVERING'),
+                      ('DELIVERED', 'DELIVERED'),
+                      ('COMPLETED', 'COMPLETED'),
+                      ('NOTFOUNDONG2G', 'NOTFOUNDONG2G'),
+                      ('CANCELLED', 'CANCELLED'),
+                      ('CANCEL_REQUESTED', 'CANCEL_REQUESTED'),]
 
     price_unit = forms.DecimalField(
         label="Ціна за одиницю",
@@ -416,7 +470,12 @@ class AddOrderForm(forms.ModelForm):
 
     trade_mode = forms.ChoiceField(
         choices=TRADE_MODE_CHOICES,
-        label="Режим торгівлі",
+        label="Trade mode",
+        widget=forms.Select()
+    )
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        label="Status",
         widget=forms.Select()
     )
 
@@ -457,11 +516,11 @@ class AddOrderAdmin(admin.ModelAdmin):
         'paid_to_owner',
         'paid_to_technical',
     )
-    list_filter = ('seller', CreatedTimeFilter, 'download_video_status', 'paid_in_salary')
+    list_filter = ('seller', CreatedTimeFilter, 'paid_in_salary', 'status', 'download_video_status')
     actions = ['send_message_to_seller']
 
     # Поля для відображення у формі створення замовлення
-    fields = (
+    add_fields = (
         'seller',
         'server',
         'character_name',
@@ -471,6 +530,28 @@ class AddOrderAdmin(admin.ModelAdmin):
         'total_amount',
         'created_time'
     )
+    # Всі поля доступні для редагування
+    fields = (
+        'server',
+        'seller',
+        'status',
+        'character_name',
+        'sold_order_number',
+        'quantity',
+        'trade_mode',
+        'created_time',
+        'sent_gold',
+        'bought_by',
+        'send_message',
+        'path_to_video',
+        'download_video_status',
+        'send_video_status',
+        'charged_to_payment',
+        'paid_in_salary',
+        'paid_to_owner',
+        'paid_to_technical',
+    )
+
     readonly_fields = ('price_unit', 'earned_without_admins_commission', 'owner_commission', 'technical_commission')
 
     search_fields = ('server__name',)

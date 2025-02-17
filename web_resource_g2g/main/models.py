@@ -123,6 +123,10 @@ class VitaliyOrders(models.Model):
     sold_order_number = models.IntegerField()
     created_time = models.DateTimeField(default=timezone.now)
 
+    class Meta:
+        verbose_name = "Замовлення Віталія"
+        verbose_name_plural = "Замовлення Віталія"
+
 
 class SellerServerInterestRate(models.Model):
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE)
