@@ -1,0 +1,243 @@
+{% extends "users/base.html" %}
+{% load static %}
+{% block content %}
+{% if user.is_authenticated %}
+<style>
+  :root {
+    --primary-color: #EEE8AA ; /* Світло-жовтий колір для заголовків */
+    --secondary-color: #333333; /* Темний колір для тексту */
+    --background-color: #F5F5F5; /* Світлий фон */
+    --table-header-bg: #E0E0E0; /* Фон заголовків таблиці */
+    --table-row-bg: #FFFFFF; /* Фон рядків таблиці */
+    --table-border-color: #CCCCCC; /* Колір меж таблиці */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+}
+
+h2 {
+    color: var(--primary-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    opacity: 0.7; /* Прозорість таблиці 60% */
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+table th {
+    background-color: var(--table-header-bg);
+
+}
+
+table tr {
+    background-color: var(--table-row-bg);
+}
+
+table tr:hover {
+    background-color: #F0F0F0; /* Колір при наведенні */
+}
+  #orderForm {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+#orderForm h2 {
+  margin-top: 0;
+}
+
+#orderForm label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#orderForm input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#orderForm button {
+  padding: 8px 16px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#orderForm button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#orderForm button[type="button"] {
+  background-color: #f44336;
+  color: white;
+}
+</style>
+<div class="center-container">
+  <table>
+	<thead>
+	<tr>
+	  <th></th>
+	  <th>Сервер</th>
+	  <th>Гра</th>
+	  <th>Ціна</th>
+	  <th>Кількість</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for lot in lots_for_sale %}
+	<tr id="{{ lot.id }}" class="clickable-row" data-seller-id="{{ lot.sellers }}">
+	  <td>{{ forloop.counter }}</td>
+	  <td><input type="text" id="server-{{ lot.id }}" value="{{ lot.server_name }}" title="{{ lot.server_name }}"
+				 readonly></td>
+	  <td><input type="text" id="game-{{ lot.id }}" value="{{ lot.game_name }}" title="{{ lot.game_name }}" readonly>
+	  </td>
+	  <td><input type="text" id="price-{{ lot.id }}" value="{{ lot.price }}" readonly></td>
+	  <td><input type="text" id="stock-{{ lot.id }}"
+				 value="{% if lot.game_name == 'Cataclysm' %}{{ lot.stock }}K{% else %}{{ lot.stock }}{% endif %}"
+				 readonly></td>
+
+	</tr>
+	{% endfor %}
+	</tbody>
+  </table>
+</div>
+{% endif %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const rows = document.querySelectorAll(".clickable-row");
+
+  rows.forEach((row) => {
+    row.addEventListener("click", function () {
+      const lotId = row.id;
+      const sellerId = row.dataset.sellerId
+      const serverName = row.querySelector(`input[id^="server-"]`).value;
+      const gameName = row.querySelector(`input[id^="game-"]`).value;
+      const priceString = row.querySelector(`input[id^="price-"]`).value.replace(",", ".");
+      const price = parseFloat(priceString);
+      const stockText = row.querySelector(`input[id^="stock-"]`).value;
+      const stock = parseInt(stockText.replace("K", "").trim());
+
+      showOrderForm(lotId, sellerId, serverName, gameName, price, stock);
+    });
+  });
+
+  function showOrderForm(lotId, sellerId, serverName, gameName, price, stock) {
+    closeOrderForm();
+
+    const formHtml = `
+      <div id="orderForm" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+       background-image: url('{% static 'images/unnamed.jpg' %}'); background-size: cover;
+       background-repeat: no-repeat; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+        <h3>Замовлення на сервері: ${serverName}</h3>
+        <form id="orderFormContent">
+          <label for="characterName">Ім'я персонажа:</label>
+          <input type="text" id="characterName" name="characterName" style="width: 30ch;" required><br><br>
+
+		  <label for="deliveryMethod">Спосіб доставки:</label>
+		  <select id="deliveryMethod" name="deliveryMethod">
+			<option value="Mail">Mail</option>
+			<option value="Trade">Trade</option>
+		  </select><br><br>
+
+          <label for="quantity">Кількість золота:</label>
+          <input type="number" id="quantity" name="quantity" min="1" max="${stock}" value="1" style="width: 10ch;" required>
+          <span style="margin-left: 10px;">(Доступно: ${stock})</span><br><br>
+
+          <label>Загальна вартість:</label>
+          <span id="totalCost" style="font-size: 2.0em; font-weight: bold; color: #696969; text-decoration: underline">${price.toFixed(2)}</span> (поточна ціна за одиницю: ${price.toFixed(2)})<br><br>
+
+          <button type="submit">Замовити</button>
+          <button type="button" id="cancelOrder">Скасувати</button>
+        </form>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", formHtml);
+
+    const quantityInput = document.getElementById("quantity");
+    const totalCostElement = document.getElementById("totalCost");
+    const deliveryMethodSelect = document.getElementById("deliveryMethod");
+
+    const updateTotalCost = () => {
+      const quantity = parseInt(quantityInput.value) || 1;
+      const totalCost = quantity * price;
+      totalCostElement.textContent = totalCost.toFixed(2);
+    };
+
+    quantityInput.addEventListener("input", updateTotalCost);
+    quantityInput.addEventListener("change", updateTotalCost);
+    updateTotalCost();
+
+    document.getElementById("cancelOrder").addEventListener("click", closeOrderForm);
+
+    document.getElementById("orderFormContent").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const characterName = document.getElementById("characterName").value; // Отримуємо characterName тут!
+      const quantity = parseInt(document.getElementById("quantity").value);
+      const totalCost = (quantity * price).toFixed(2);
+      deliveryMethod = deliveryMethodSelect.value
+
+
+      const confirmation = confirm(`Ви підтверджуєте замовлення?\n\nСервер: ${serverName}\nПерсонаж: ${characterName}\nКількість: ${quantity}\nЗагальна вартість: ${totalCost}`);
+
+      if (confirmation) {
+        const orderData = {
+          seller_id: sellerId,
+          order_quantity: quantity,
+          total_amount: totalCost,
+          character_name: characterName,
+          server_id: lotId,
+          server_name: serverName,
+          unit_price: price,
+          game_name: gameName,
+          delivery_method: deliveryMethod
+        };
+
+        fetch("{% url 'internal_market:create_order_from_form' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify(orderData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              alert("Замовлення успішно створено!");
+              closeOrderForm();
+            } else {
+              alert("Помилка при створенні замовлення.");
+            }
+          })
+          .catch((error) => {
+            console.error("Помилка:", error);
+            alert("Сталася помилка при відправці запиту.");
+          });
+      }
+    });
+  }
+
+  function closeOrderForm() {
+    const form = document.getElementById("orderForm");
+    if (form) {
+      form.remove();
+    }
+  }
+});
+</script>
+
+{% endblock %}
