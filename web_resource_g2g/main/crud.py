@@ -8,7 +8,7 @@ from django.forms import model_to_dict
 from django.utils import timezone
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
-                     SoldOrders, Commission, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
+                     SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
                      CommissionRates)
 from django.db.models import F, Sum, DecimalField, Q
 from .utils.logger_config import logger
@@ -30,17 +30,18 @@ def check_exists_another_order_before_change_order_status(seller_id,
     :return: True, якщо такі замовлення існують, інакше False
     """
     # Виконуємо запит до моделі SoldOrders
-    other_orders_exist = SoldOrders.objects.filter(server_id = server_id,
-                                                   seller_id = seller_id,
-                                                   download_video_status = False
+    other_orders_exist = SoldOrders.objects.filter(server_id=server_id,
+                                                   seller_id=seller_id,
+                                                   download_video_status=False
                                                    ).exclude(
-                                                   sold_order_number = sold_order_number
+                                                   sold_order_number=sold_order_number
                                                    ).exists()
 
     return other_orders_exist
 
 
 def get_main_data_from_table(auth_user_id: int):
+    seller_id = get_seller_id_by_user_id(auth_user_id)
     main_data = (
         OffersForPlacement.objects
         .select_related('server_urls')
@@ -100,7 +101,7 @@ def get_main_data_from_table(auth_user_id: int):
 
             stock = row['stock']
             if row['price']:
-                new_price, interest_rate = get_float_price(row, auth_user_id)
+                new_price, interest_rate = get_float_price(row, seller_id)
                 row['price'] = new_price
                 row['interest_rate'] = interest_rate
                 row['full_cost'] = round(new_price * stock, 3)
@@ -116,14 +117,14 @@ def get_main_data_from_table(auth_user_id: int):
     return main_data_float_price
 
 
-def get_float_price(row, auth_user_id):
+def get_float_price(row, seller_id):
     try:
         # Перевірка наявності ключів у `row`
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
         rang_exchange = float(get_global_commissions_rates()['exchange'])
         logger.info(rang_exchange)
-        interest_rate = get_interest_rate_by_user_id(auth_user_id, server_urls_id)
+        interest_rate = get_interest_rate_by_seller_id(seller_id, server_urls_id)
         logger.info(f"interest_rate__{interest_rate}")
 
         if not currently_strategy or not server_urls_id:
@@ -479,11 +480,14 @@ def get_global_commissions_rates():
     return commissions
 
 
-def get_interest_rate_by_user_id(auth_user_id, server_id):
-    logger.info(f"auth_user_id__{auth_user_id}, server_id__{server_id}")
+def get_seller_id_by_user_id(user_id):
+    seller = Sellers.objects.get(auth_user_id=user_id)
+    return seller.id
+
+
+def get_interest_rate_by_seller_id(seller_id, server_id):
     # Отримання `interest_rate` з `Sellers`
     try:
-        seller_id = Sellers.objects.get(auth_user_id=auth_user_id)
         logger.info(f"seller_id__{seller_id}")
         seller_rate = SellerServerInterestRate.objects.filter(seller_id=seller_id, server_id=server_id).first()
         if not seller_rate or seller_rate.interest_rate is None:

@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.urls import reverse
 from django.views import View
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
@@ -86,7 +87,7 @@ def change_password(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('/')
+    return redirect(reverse('users:login'))
 
 
 class CustomPasswordResetView(PasswordResetView):
