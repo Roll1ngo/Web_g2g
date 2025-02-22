@@ -57,8 +57,8 @@ class CreatedTimeFilter(admin.SimpleListFilter):
 
 @admin.register(VitaliyOrders)
 class VitaliyOrdersAdmin(admin.ModelAdmin):
-    list_display = ('sold_order_number', 'created_time')
-    list_filter = (CreatedTimeFilter,)
+    list_display = ('status', 'sold_order_number', 'created_time')
+    list_filter = (CreatedTimeFilter, 'status')
     ordering = ('created_time',)
 
 
