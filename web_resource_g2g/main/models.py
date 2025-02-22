@@ -120,6 +120,7 @@ class SoldOrders(models.Model):
 
 
 class VitaliyOrders(models.Model):
+    status = models.CharField(max_length=255, null=True, default="REGISTERED", blank=True)
     sold_order_number = models.IntegerField()
     created_time = models.DateTimeField(default=timezone.now)
 
