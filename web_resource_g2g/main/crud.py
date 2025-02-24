@@ -12,6 +12,7 @@ from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      CommissionRates)
 from django.db.models import F, Sum, DecimalField, Q
 from .utils.logger_config import logger
+from main import calculate_commissions_crud as commissions_crud
 
 owner_user_and_seller_id = 1
 technical_user_and_seller_id = 2
@@ -122,9 +123,9 @@ def get_float_price(row, seller_id):
         # Перевірка наявності ключів у `row`
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
-        rang_exchange = float(get_global_commissions_rates()['exchange'])
+        rang_exchange = float(commissions_crud.get_global_commissions_rates()['exchange'])
         logger.info(rang_exchange)
-        interest_rate = get_interest_rate_by_seller_id(seller_id, server_urls_id)
+        interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
         logger.info(f"interest_rate__{interest_rate}")
 
         if not currently_strategy or not server_urls_id:
@@ -156,11 +157,6 @@ def get_float_price(row, seller_id):
     #     return None, None
     finally:
         pass
-
-
-def get_my_service_list(user_id):
-    my_services = CommissionBreakdown.objects.filter(seller__auth_user_id=user_id)
-    return my_services
 
 
 def get_clients_provide_service(user_id):
@@ -353,7 +349,7 @@ def update_sold_order_when_video_download(user_id, order_number, path_to_video, 
             logger.info('посилання на відео додано до бази даних')
 
             # Зараховуємо комісії до оплати
-            update_status_charged_to_payment_commission(sold_order.id)
+            commissions_crud.update_status_charged_to_payment_commission(sold_order.id)
 
             # Оновлюємо баланс продавця
             update_seller_balance(user_id)
@@ -423,13 +419,14 @@ def create_video_filename(request, sold_order_number):
 
 
 def get_balance(user_id):
+    logger.info("inside get_balance")
     if user_id == owner_user_and_seller_id:
         return update_owner_balance()
     if user_id == technical_user_and_seller_id:
         return update_technical_balance()
-
     try:
-        seller_id = Sellers.objects.get(auth_user_id=user_id)
+        seller_id = get_seller_id_by_user_id(user_id)
+        logger.info(f"user_id__{user_id}, seller_id__{seller_id}")
     except Sellers.DoesNotExist:
         logger.error(f"Seller with auth_user_id {user_id} does not exist.")
         return 0
@@ -449,181 +446,22 @@ def get_balance(user_id):
             total_earned = 0
 
     # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
-    commission_earned = CommissionBreakdown.objects.filter(
-        seller=seller_id,
-        charged_to_payment_commission=True,
-        paid_in_salary_commission=False
-    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
+    commission_earned = commissions_crud.get_breakdown_commissions(seller_id)
     total_balance = float(total_earned) + float(commission_earned)
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
     if total_balance is None:
         total_balance = 0
 
-    Sellers.objects.filter(id=seller_id.id).update(balance=total_balance)
+    Sellers.objects.filter(id=seller_id).update(balance=total_balance)
 
-    logger.info(f"technical_sum_total_earned__{total_balance}")
+    logger.info(f"seller_total_balance_{total_balance}")
     return round(total_balance, 2)
-
-
-def get_global_commissions_rates():
-    rates = CommissionRates.objects.first()
-    commissions = {
-        "exchange": rates.exchange,
-        "renter_lvl1": rates.renter_lvl1,
-        "renter_lvl2": rates.renter_lvl2,
-        "mentor": rates.mentor,
-        "owner": rates.owner,
-        "technical": rates.technical,
-        "recruiter": rates.recruiter
-    }
-    return commissions
 
 
 def get_seller_id_by_user_id(user_id):
     seller = Sellers.objects.get(auth_user_id=user_id)
     return seller.id
-
-
-def get_interest_rate_by_seller_id(seller_id, server_id):
-    # Отримання `interest_rate` з `Sellers`
-    try:
-        logger.info(f"seller_id__{seller_id}")
-        seller_rate = SellerServerInterestRate.objects.filter(seller_id=seller_id, server_id=server_id).first()
-        if not seller_rate or seller_rate.interest_rate is None:
-            interest_rate = 0
-            logger.info(f"Ставка відсутня для seller_id={seller_id} та server_id={server_id}.")
-            return interest_rate
-    except ObjectDoesNotExist:
-        logger.error(f"Запис SellerServerInterestRate не знайдено для seller_id={seller_id} та server_id={server_id}.")
-        return None
-    return seller_rate.interest_rate
-
-
-def get_renter_info(seller_id, server_id):
-    try:
-        renter_info = SellerServerInterestRate.objects.get(seller=seller_id, server=server_id)
-
-        # Перетворюємо об'єкт на словник
-        renter_info_dict = model_to_dict(renter_info)
-
-        lvl1 = renter_info_dict.get('renter_lvl1')
-        lvl2 = renter_info_dict.get('renter_lvl2')
-        if lvl1:
-            return {'renter_lvl1': lvl1}
-        elif lvl2:
-            return {'renter_lvl2': lvl2}
-        else:
-            return {}
-    except SellerServerInterestRate.DoesNotExist:
-        logger.error(f"Запис SellerServerInterestRate не знайдено для seller_id={seller_id} та server_id={server_id}.")
-
-
-def calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,
-                                                             quantity_cost, order_number):
-    # Отримуємо словник з інформацією про послуги якими користується продавець та кто їх надає
-    seller_services_info = get_seller_services_info(seller_id, server_id)
-    logger.info(f"seller_services_info__{seller_services_info}")
-
-    # Отримуємо словник для продавця з послугами та вартістю кожної для цього замовлення
-    commissions_service_providers = calculate_commissions_for_service_providers(seller_services_info,
-                                                                                quantity_cost)
-    logger.info(f"commissions_values__{commissions_service_providers}")
-
-    # Чистий відсоток продавця після віднімання комісій
-    seller_total_rate = calculate_seller_total_rate(seller_id, server_id)
-    logger.info(f"seller_total_rate__{seller_total_rate}")
-
-    record_commissions_service_providers(seller_services_info, commissions_service_providers,
-                                         order_number, seller_id)
-
-
-def calculate_commissions_for_service_providers(seller_services_info, quantity_cost):
-    # Отримуємо словник з комісіями за послуги
-    commissions = get_global_commissions_rates()
-
-    # Створюємо словник для збереження комісій
-    commissions_service_providers = {}
-
-    # Обчислюємо комісії для кожного сервісного провайдера
-    if seller_services_info.get('mentor') is not None:
-        mentor_commission = commissions.get('mentor', Decimal('0.0'))
-        commissions_service_providers['mentor'] = round(quantity_cost * mentor_commission / Decimal('100.0'), 6)
-
-    if seller_services_info.get('renter_lvl1') is not None:
-        renter_lvl1_commission = commissions.get('renter_lvl1', Decimal('0.0'))
-        commissions_service_providers['renter_lvl1'] = round(quantity_cost * renter_lvl1_commission / Decimal('100.0'),
-                                                             6)
-
-    if seller_services_info.get('renter_lvl2') is not None:
-        renter_lvl2_commission = commissions.get('renter_lvl2', Decimal('0.0'))
-        commissions_service_providers['renter_lvl2'] = round(quantity_cost * renter_lvl2_commission / Decimal('100.0'),
-                                                             6)
-
-    if seller_services_info.get('recruiter') is not None:
-        recruiter_commission = commissions.get('recruiter', Decimal('0.0'))
-        commissions_service_providers['recruiter'] = round(quantity_cost * recruiter_commission / Decimal('100.0'), 6)
-
-    return commissions_service_providers
-
-
-def get_seller_services_info(seller_id, server_id):
-    renter_info = get_renter_info(seller_id, server_id)
-
-    mentor_recruiter_from_seller = Sellers.objects.get(id=seller_id)
-    if mentor_recruiter_from_seller is None:
-        logger.warning(f"No seller found with ID: {seller_id}")
-        return None  # Or raise an exception if appropriate
-
-    mentor_recruiter_from_seller_info_dict = model_to_dict(mentor_recruiter_from_seller)
-    mentor_recruiter_from_seller_info_dict.update(renter_info)
-
-    return mentor_recruiter_from_seller_info_dict
-
-
-def calculate_seller_total_rate(seller_id, server_id):
-    seller_services_info = get_seller_services_info(seller_id, server_id)
-    commissions = get_global_commissions_rates()
-
-    # Початкова комісія (100%)
-    seller_total_rate = Decimal('100.0')
-
-    # Віднімаємо обов'язкові комісії (власник та технічна комісія)
-    seller_total_rate -= commissions.get('owner', Decimal('0.0'))
-    seller_total_rate -= commissions.get('technical', Decimal('0.0'))
-
-    # Віднімаємо комісії, якщо вони існують
-    if seller_services_info.get('mentor') is not None:
-        seller_total_rate -= commissions.get('mentor', Decimal('0.0'))
-
-    if seller_services_info.get('renter_lvl1') is not None:
-        seller_total_rate -= commissions.get('renter_lvl1', Decimal('0.0'))
-
-    if seller_services_info.get('renter_lvl2') is not None:
-        seller_total_rate -= commissions.get('renter_lvl2', Decimal('0.0'))
-
-    if seller_services_info.get('recruiter') is not None:
-        seller_total_rate -= commissions.get('recruiter', Decimal('0.0'))
-
-    return seller_total_rate
-
-
-def record_commissions_service_providers(seller_services_info, commissions_service_providers,
-                                         order_number, seller_id):
-    order_id = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id)
-    logger.info(f"order_id__{order_id}")
-    logger.info(f"seller_services_info__{seller_services_info}")
-    logger.info(f"commissions_service_providers__{commissions_service_providers}")
-    for service_provider, commission in commissions_service_providers.items():
-        seller = Sellers.objects.get(id=seller_services_info[service_provider])
-        new_record = CommissionBreakdown.objects.create(order=order_id,
-                                                        seller=seller,
-                                                        service_type=service_provider,
-                                                        amount=commission,
-                                                        charged_to_payment_commission=False,
-                                                        paid_in_salary_commission=False,
-                                                        created_time=timezone.now())
-        new_record.save()
 
 
 def update_seller_balance(user_id):
@@ -645,11 +483,7 @@ def update_owner_balance():
     logger.info(f"technical_sum_total_earned__{total_earned}")
 
     # 2. Баланс із CommissionBreakdown
-    commission_earned = CommissionBreakdown.objects.filter(
-        seller=owner_user_and_seller_id,
-        charged_to_payment_commission=True,
-        paid_in_salary_commission=False
-    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
+    commission_earned = commissions_crud.get_breakdown_commissions(owner_user_and_seller_id)
     total_balance = float(total_earned) + float(commission_earned)
 
     Sellers.objects.filter(id=owner_user_and_seller_id).update(balance=total_balance)
@@ -669,19 +503,13 @@ def update_technical_balance():
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
     total_earned = 0 if total_earned is None else total_earned
-    logger.info(f"technical_sum_total_earned__{total_earned}")
 
     # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
-    commission_earned = CommissionBreakdown.objects.filter(
-        seller=technical_user_and_seller_id,
-        charged_to_payment_commission=True,
-        paid_in_salary_commission=False
-    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
+    commission_earned = commissions_crud.get_breakdown_commissions(technical_user_and_seller_id)
     total_balance = float(total_earned) + float(commission_earned)
 
     Sellers.objects.filter(id=technical_user_and_seller_id).update(balance=total_balance)
 
-    logger.info('Balance updated successfully.')
     return round(total_balance, 2)
 
 
@@ -699,12 +527,7 @@ def update_stock_table(row_id, description):
     logger.info("New record to stock table created.")
 
 
-def update_status_paid_in_salary_commission(user_id):
-    seller_id = Sellers.objects.get(auth_user_id=user_id)
-    CommissionBreakdown.objects.filter(seller_id=seller_id).update(paid_in_salary_commission=True)
-    logger.info("Status paid_in_salary_commission updated successfully.")
 
 
-def update_status_charged_to_payment_commission(order_id):
-    CommissionBreakdown.objects.filter(order=order_id).update(charged_to_payment_commission=True)
-    logger.info("Status paid_in_salary_commission updated successfully.")
+
+

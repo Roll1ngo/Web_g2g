@@ -5,7 +5,6 @@ from decimal import Decimal
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
-from django.shortcuts import redirect
 
 from django.templatetags.static import static
 from django.urls import reverse
@@ -14,11 +13,13 @@ from django.utils.html import format_html
 from import_export.admin import ExportActionModelAdmin
 from import_export import resources
 
-from . import crud
-from .models import Sellers, SoldOrders, SellerServerInterestRate, ServerUrls, ChangeStockHistory, OffersForPlacement, \
-    CommissionBreakdown, CommissionRates, VitaliyOrders
-from .utils.logger_config import logger
-from .tg_bot_run import send_messages_sync
+from main import calculate_commissions_crud as commissions_crud
+from main import crud
+from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
+                         ServerUrls, ChangeStockHistory, OffersForPlacement,
+                         CommissionBreakdown, CommissionRates, VitaliyOrders)
+from main.utils.logger_config import logger
+from main.tg_bot_run import send_messages_sync
 
 
 class CreatedTimeFilter(admin.SimpleListFilter):
@@ -73,7 +74,6 @@ class CommissionBreakdownAdmin(admin.ModelAdmin):
 
     @admin.action(description='Відмітити комісії як оплачені')
     def mark_paid(self, request, queryset):
-
         # Оновлюємо всі записи, які відповідають фільтрації
         queryset.update(paid_in_salary_commission=True)
         crud.update_owner_balance()
@@ -95,6 +95,7 @@ class CommissionRatesAdmin(admin.ModelAdmin):
     def edit_link(self, obj):
         return format_html('<a href="{}">Редагувати</a>',
                            reverse('admin:main_commissionrates_change', args=[obj.pk]))
+
     edit_link.allow_tags = True  # Mark the function as safe for rendering HTML
     edit_link.short_description = ' '  # Set a blank column header
 
@@ -151,7 +152,6 @@ class SellersAdmin(ExportActionModelAdmin):
 
     @admin.action(description='Оновити баланс')
     def update_balance(self, request, queryset):
-
         for user_id in queryset.values_list('auth_user_id', flat=True).distinct():
             new_balance = crud.get_balance(user_id)
             logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
@@ -184,7 +184,6 @@ class SellerBalanceFilter(SimpleListFilter):
         elif self.value() == '>500':
             return queryset.filter(seller__balance__gt=500)
         return queryset
-
 
 
 @admin.register(SoldOrders)
@@ -278,7 +277,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
             logger.info(user_id)
             logger.info(f"seller_id__{user_id}")
             if user_id not in excluded_sellers:
-                crud.update_status_paid_in_salary_commission(user_id)
+                commissions_crud.update_status_paid_in_salary_commission(user_id)
                 crud.update_seller_balance(user_id)
 
         self.message_user(
@@ -352,7 +351,7 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         for obj in queryset:
-            new_rate = crud.calculate_seller_total_rate(obj.seller.id, obj.server.id)
+            new_rate = commissions_crud.calculate_seller_total_rate(obj.seller.id, obj.server.id)
             if obj.interest_rate != new_rate:
                 obj.interest_rate = new_rate
                 obj.save(update_fields=['interest_rate'])  # Оновлюємо лише interest_rate
@@ -434,7 +433,7 @@ class AddOrderForm(forms.ModelForm):
                       ('COMPLETED', 'COMPLETED'),
                       ('NOTFOUNDONG2G', 'NOTFOUNDONG2G'),
                       ('CANCELLED', 'CANCELLED'),
-                      ('CANCEL_REQUESTED', 'CANCEL_REQUESTED'),]
+                      ('CANCEL_REQUESTED', 'CANCEL_REQUESTED'), ]
 
     price_unit = forms.DecimalField(
         label="Ціна за одиницю",
@@ -486,7 +485,6 @@ class AddOrderForm(forms.ModelForm):
 
 @admin.register(AddOrder)
 class AddOrderAdmin(admin.ModelAdmin):
-
     form = AddOrderForm  # Використовуємо кастомну форму
     list_display = (
         'id',
@@ -506,7 +504,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'sent_gold',
         'bought_by',
         'price_unit',
-        'comission_fee',  # Note the correct spelling: commission_fee
+        'comission_fee',
         'send_message',
         'path_to_video',
         'download_video_status',
@@ -536,8 +534,9 @@ class AddOrderAdmin(admin.ModelAdmin):
         'seller',
         'status',
         'character_name',
-        'sold_order_number',
         'quantity',
+        'sold_order_number',
+        'total_amount',
         'trade_mode',
         'created_time',
         'sent_gold',
@@ -592,33 +591,15 @@ class AddOrderAdmin(admin.ModelAdmin):
     # Встановлення значень за замовчанням для полів
     def save_model(self, request, obj, form, change):
 
-        # Отримуємо exchange_commission (з останнього запису в таблиці Commission)
-        global_commissions_rates = crud.get_global_commissions_rates()
-        exchange_commission = Decimal(global_commissions_rates['exchange'])
-        technical_commission = Decimal(global_commissions_rates['technical'])
-        owner_commission = Decimal(global_commissions_rates['owner'])
-
         seller_id = obj.seller.id
         server_id = obj.server.id
         order_number = obj.sold_order_number
-        # Отримуємо seller_interest_rate для вказаного продавця та сервера
-        try:
-            seller_interest = SellerServerInterestRate.objects.get(seller=seller_id, server=server_id)
-            seller_interest_rate = Decimal(seller_interest.interest_rate)
-        except SellerServerInterestRate.DoesNotExist:
-            seller_interest_rate = Decimal(0)  # Якщо немає ставки
-            logger.critical(f"Ставка не знайдена для продавця {obj.seller} та сервера {obj.server}")
-
         total_amount = Decimal(obj.total_amount)  # Перетворюємо в Decimal
 
-        # Обчислюємо значення за формулами
-        to_be_earned_without_exchange_commission = total_amount * (Decimal(1) - exchange_commission / Decimal(100))
-        earned_without_service_commission = to_be_earned_without_exchange_commission * (
-                    seller_interest_rate / Decimal(100))
-        technical_commission = to_be_earned_without_exchange_commission * (
-                    technical_commission / Decimal(100))
-        owner_commission = to_be_earned_without_exchange_commission * (
-                    owner_commission / Decimal(100))
+        (to_be_earned_without_exchange_commission, earned_without_service_commission, technical_commission,
+         owner_commission, seller_rate) = commissions_crud.calculate_owner_technical_commissions(seller_id,
+                                                                                                 server_id,
+                                                                                                 total_amount)
 
         # Заповнюємо приховані поля значеннями за замовчанням
         if not change:  # Перевіряємо, що це створення нового об'єкта
@@ -637,12 +618,12 @@ class AddOrderAdmin(admin.ModelAdmin):
             obj.earned_without_admins_commission = earned_without_service_commission
             obj.technical_commission = technical_commission
             obj.owner_commission = owner_commission
-            obj.price_unit = obj.earned_without_admins_commission / obj.quantity if obj.quantity else 0
+            obj.price_unit = obj.earned_without_admins_commission / total_amount if obj.total_amount else 0
 
         # Вивід результатів перед збереженням
         logger.warning(f"Загальна вартість: {obj.total_amount}")
         logger.warning(f"Ставка {obj.seller.auth_user.username}"
-                       f" на сервері {obj.server.server_name}: {seller_interest_rate}")
+                       f" на сервері {obj.server.server_name}: {seller_rate}")
         logger.warning(f"З вирахуванням  комісії біржі: {obj.to_be_earned}")
         logger.warning(f"З вирахуванням адміністративної комісії: {obj.earned_without_admins_commission}")
         logger.warning(f"Комісія власника: {obj.owner_commission}")
@@ -651,6 +632,6 @@ class AddOrderAdmin(admin.ModelAdmin):
 
         # Зберігаємо об'єкт
         super().save_model(request, obj, form, change)
-        crud.calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,
-                                                                      to_be_earned_without_exchange_commission,
-                                                                      order_number)
+        commissions_crud.calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,
+                                                                                  to_be_earned_without_exchange_commission,
+                                                                                  order_number)

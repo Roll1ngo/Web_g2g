@@ -1,3 +1,5 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
@@ -182,7 +184,9 @@ class CommissionRates(models.Model):
 
 
 class CommissionBreakdown(models.Model):
-    order = models.ForeignKey(SoldOrders, on_delete=models.CASCADE, related_name="commissions")
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    order = GenericForeignKey('content_type', 'object_id')
     seller = models.ForeignKey(Sellers, on_delete=models.CASCADE, related_name="commissions")
     service_type = models.CharField(max_length=255)  # Наприклад, "біржа", "оренда", "ментор"
     amount = models.DecimalField(max_digits=10, decimal_places=3, default=0)

@@ -1,5 +1,7 @@
 import json
+
 from django.shortcuts import render
+
 from main.utils.logger_config import logger
 from internal_market import crud as internal_market_crud
 from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
@@ -13,7 +15,6 @@ def main_page(request):
 
 
 def create_order_from_form(request):
-    logger.info("inside create_order_from_form")
-    data = json.loads(request.body)
-    logger.info(f"order_details__{data}")
+    internal_order_data = json.loads(request.body)
+    internal_market_crud.create_order(request.user.id, internal_order_data)
     return JsonResponse({'success': True})
