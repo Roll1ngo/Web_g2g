@@ -1,7 +1,14 @@
+import decimal
+import json
+
+from internal_market.models import InternalOrder
 from main import models as main_models
 from django.db.models import F, Sum, DecimalField, Q
+
+from main.models import Sellers, ServerUrls
 from main.utils.logger_config import logger
 from main import crud as main_crud
+from main import calculate_commissions_crud as commissions_crud
 
 
 def get_lots_for_sale(auth_user_id: int):
@@ -72,9 +79,9 @@ def get_float_price(row):
         seller_id = row.get('sellers')
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
-        rang_exchange = float(main_crud.get_global_commissions_rates()['exchange'])
+        rang_exchange = float(commissions_crud.get_global_commissions_rates()['exchange'])
         logger.info(rang_exchange)
-        interest_rate = main_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
+        interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
         logger.info(f"interest_rate__{interest_rate}")
 
         if not currently_strategy or not server_urls_id:
@@ -89,7 +96,7 @@ def get_float_price(row):
         float_price_without_exchange = float_price * (1 - rang_exchange / 100)
         logger.info(f"source_price__{float_price}, final_price_without_exchange__{float_price_without_exchange}")
 
-        logger.warning(f"Відсутні ціни для сервера {server_urls_id}. Потрібен сеанс парсингу")\
+        logger.warning(f"Відсутні ціни для сервера {server_urls_id}. Потрібен сеанс парсингу") \
             if float_price is None else None
 
         return round(float_price_without_exchange, 3), interest_rate
@@ -100,3 +107,43 @@ def get_float_price(row):
     #     return None, None
     finally:
         pass
+
+
+def create_order(user_id, internal_order_data):
+    internal_buyer_id = Sellers.objects.get(auth_user_id=user_id)
+    internal_order_data['buyer_id'] = internal_buyer_id.id
+    logger.info(f"internal_order_data{internal_order_data}")
+    internal_seller_id = Sellers.objects.get(id=internal_order_data['seller_id'])
+    server_id = ServerUrls.objects.get(id=internal_order_data['server_id'])
+    total_amount = decimal.Decimal(internal_order_data['total_amount'])
+
+    (to_be_earned_without_exchange_commission, earned_without_service_commission, technical_commission,
+     owner_commission, seller_rate) = commissions_crud.calculate_owner_technical_commissions(internal_seller_id,
+                                                                                             server_id.id,
+                                                                                             total_amount,
+                                                                                             exist_exchange_commission=
+                                                                                             False)
+    logger.info(f"to_be_earned_without_exchange_commission__{to_be_earned_without_exchange_commission},"
+                f"earned_without_service_commission__{earned_without_service_commission},"
+                f"technical_commission__{technical_commission}, owner_commission_{owner_commission},"
+                f"seller_rate__{seller_rate}")
+
+    new_internal_order = InternalOrder.objects.create(server=server_id,
+                                                      internal_seller=internal_seller_id,
+                                                      internal_buyer=internal_buyer_id,
+                                                      trade_mode=internal_order_data['delivery_method'],
+                                                      character_name=internal_order_data['character_name'],
+                                                      quantity=internal_order_data['order_quantity'],
+                                                      price_unit=internal_order_data['unit_price'],
+                                                      total_amount=internal_order_data['total_amount'],
+                                                      earned_without_admins_commission=
+                                                      earned_without_service_commission,
+                                                      owner_commission=owner_commission,
+                                                      technical_commission=technical_commission,
+                                                      )
+    new_internal_order.save()
+
+    commissions_crud.calculate_and_record_mentor_renter_recruiter_commissions(internal_seller_id.id, server_id.id,
+                                                                              to_be_earned_without_exchange_commission,
+                                                                              new_internal_order.sold_order_number,
+                                                                              internal_order=True)

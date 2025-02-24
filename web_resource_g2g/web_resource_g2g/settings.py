@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     "import_export",
     "main.apps.MainConfig",
     "users.apps.UsersConfig",
-    "internal_market.apps.InternalMarketConfig",
+    "internal_market.apps.InternalMarketConfig"
 ]
 
 MIDDLEWARE = [
