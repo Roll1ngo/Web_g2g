@@ -329,7 +329,9 @@ def pause_offer(offer_id, action):
 
 def get_order_info(user_id):
     seller_id = Sellers.objects.get(auth_user_id=user_id)
-    order_info = (SoldOrders.objects.filter(seller_id=seller_id, download_video_status=False).
+    order_info = (SoldOrders.objects.filter(seller_id=seller_id,
+                                            download_video_status=False,
+                                            status='DELIVERING').
                   select_related('server').first())
 
     logger.info(f"server_id__{order_info.server_id}, seller_id_{seller_id}") if order_info else None
