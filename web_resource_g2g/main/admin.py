@@ -20,6 +20,7 @@ from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
                          CommissionBreakdown, CommissionRates, VitaliyOrders)
 from main.utils.logger_config import logger
 from main.tg_bot_run import send_messages_sync
+from internal_market import crud as internal_market_crud
 
 
 class CreatedTimeFilter(admin.SimpleListFilter):
@@ -82,7 +83,7 @@ class CommissionBreakdownAdmin(admin.ModelAdmin):
         users_ids = set(queryset.values_list('seller__auth_user_id', flat=True).distinct())
 
         for user_id in users_ids:
-            crud.update_seller_balance(user_id)
+            crud.get_balance(user_id)
 
 
 @admin.register(CommissionRates)
@@ -278,7 +279,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
             logger.info(f"seller_id__{user_id}")
             if user_id not in excluded_sellers:
                 commissions_crud.update_status_paid_in_salary_commission(user_id)
-                crud.update_seller_balance(user_id)
+                crud.get_balance(user_id)
 
         self.message_user(
             request,
@@ -565,28 +566,18 @@ class AddOrderAdmin(admin.ModelAdmin):
     def send_message_to_seller(self, request, queryset):
         for order in queryset:
             seller = order.seller
-            if seller.id_telegram:  # Перевіряємо, чи є у продавця Telegram ID
-                message = str(f"Вітаю, {seller.auth_user.username} для вас замовлення від {order.created_time} \n"
-                              f"Сервер___________{order.server.server_name}\n"
-                              f"Гра___________{order.server.game_name}\n"
-                              f"Кількість___________{order.quantity}\n"
-                              f"Ім'я персонажа___________{order.character_name}\n"
-                              f"Спосіб доставки___________{order.trade_mode}\n"
-                              f"Сума замовлення: {order.earned_without_admins_commission}\n"
-                              )
-                logger.info(message)
-
-                response = send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
-                if response:
-                    SoldOrders.objects.filter(sold_order_number=order.sold_order_number).update(send_message=True)
-                    OffersForPlacement.objects.filter(sellers=seller.id,
-                                                      server_urls=order.server.id).update(order_status=True)
-                else:
-                    "Telegram повідомлення не надіслано"
-
+            message = internal_market_crud.create_order_message(order, order_source='exchange')
+            response = send_messages_sync(seller.id_telegram, seller.auth_user.username, message)
+            if response:
+                SoldOrders.objects.filter(sold_order_number=order.sold_order_number).update(send_message=True)
+                OffersForPlacement.objects.filter(sellers=seller.id,
+                                                  server_urls=order.server.id).update(order_status=True)
             else:
-                self.message_user(request, f"У продавця {seller.auth_user.username} немає Telegram ID.",
-                                  level='WARNING')
+                "Telegram повідомлення не надіслано"
+
+        else:
+            self.message_user(request, f"У продавця {seller.auth_user.username} немає Telegram ID.",
+                              level='WARNING')
 
     # Встановлення значень за замовчанням для полів
     def save_model(self, request, obj, form, change):
