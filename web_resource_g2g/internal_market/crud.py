@@ -5,10 +5,11 @@ from internal_market.models import InternalOrder
 from main import models as main_models
 from django.db.models import F, Sum, DecimalField, Q
 
-from main.models import Sellers, ServerUrls
+from main.models import Sellers, ServerUrls, OffersForPlacement
 from main.utils.logger_config import logger
 from main import crud as main_crud
 from main import calculate_commissions_crud as commissions_crud
+from main.tg_bot_run import send_messages_sync
 
 
 def get_lots_for_sale(auth_user_id: int):
@@ -147,3 +148,31 @@ def create_order(user_id, internal_order_data):
                                                                               to_be_earned_without_exchange_commission,
                                                                               new_internal_order.sold_order_number,
                                                                               internal_order=True)
+
+    OffersForPlacement.objects.filter(sellers=internal_seller_id.id,
+                                      server_urls=new_internal_order.server.id).update(order_status=True)
+    message = create_order_message(new_internal_order, order_source='internal_market')
+
+    send_messages_sync(internal_seller_id.id, internal_seller_id.auth_user.username, message)
+    new_internal_order.send_message = True
+    new_internal_order.save()
+
+
+def create_order_message(order, order_source='exchange'):
+
+    seller = order.seller if order_source == 'exchange' else order.internal_seller
+    if seller.id_telegram:  # Перевіряємо, чи є у продавця Telegram ID
+        message = str(f"Вітаю, {seller.auth_user.first_name} для вас замовлення від {order.created_time.strftime('%Y-%m-%d %H:%M:%S')} \n"
+                      f"Сервер___________{order.server.server_name}\n"
+                      f"Гра___________{order.server.game_name}\n"
+                      f"Кількість___________{order.quantity}\n"
+                      f"Ім'я персонажа___________{order.character_name}\n"
+                      f"Спосіб доставки___________{order.trade_mode}\n"
+                      f"Сума замовлення: {order.earned_without_admins_commission}\n"
+                      )
+        logger.info(message)
+
+    else:
+        logger.warning(f"Продавець {seller.auth_user.username} не має Telegram ID")
+
+    return message
