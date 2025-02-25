@@ -83,6 +83,8 @@ table tr:hover {
                     <td>{{ item.order.sold_order_number }}</td>
                     {% if not item.order.download_video_status %}
                     <td>Очикується завантаження відео</td>
+                    {% elif item.order.status == "CANCEL_REQUESTED" %}
+                    <td>Скасовано</td>
                     {% else %}
                     <td>Завершено</td>
                     {% endif %}
@@ -91,6 +93,8 @@ table tr:hover {
                     <td>Зараховано до оплати</td>
                     {% elif item.order.charged_to_payment and item.order.paid_in_salary %}
                     <td>Виплачено</td>
+                    {% elif item.order.status == "CANCEL_REQUESTED" %}
+                    <td>Скасовано</td>
                     {% else %}
                     <td>Інформація відсутня</td>
                     {% endif %}
