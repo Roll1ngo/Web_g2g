@@ -134,7 +134,7 @@ def show_history_orders(request):
         total_earned += order.earned_without_admins_commission if not order.paid_in_salary else 0
         orders_with_balance.append({
             'order': order,
-            'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення
+            'current_balance': total_earned
         })
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
