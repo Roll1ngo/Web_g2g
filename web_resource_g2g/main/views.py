@@ -3,7 +3,7 @@ import os
 
 from django.conf import settings
 from django.contrib import messages
-from django.http import JsonResponse, HttpResponseNotAllowed
+from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect
 from main import crud
 from main import calculate_commissions_crud as commissions_crud
@@ -104,13 +104,13 @@ def upload_video(request, sold_order_number):
 
             try:
                 # Збереження файлу
-                filename = crud.create_video_filename(request, sold_order_number)
+                filename, sold_order = crud.create_video_filename(request, sold_order_number)
                 filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
                 with open(filepath, 'wb+') as destination:
                     for chunk in video_file.chunks():
                         destination.write(chunk)
                 logger.info(f"filepath__{filepath}")
-                response = crud.update_sold_order_when_video_download(user, sold_order_number, filepath, sent_gold)
+                response = crud.update_sold_order_when_video_download(user, sold_order, filepath, sent_gold)
                 logger.info(f"response__{response}")
 
                 return redirect('main:start_page')
