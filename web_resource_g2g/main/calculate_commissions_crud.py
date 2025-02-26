@@ -194,7 +194,7 @@ def calculate_seller_total_rate(seller_id, server_id):
 
 
 def update_status_charged_to_payment_commission(order_id):
-    CommissionBreakdown.objects.filter(order=order_id).update(charged_to_payment_commission=True)
+    CommissionBreakdown.objects.filter(object_id=order_id).update(charged_to_payment_commission=True)
     logger.info("Status paid_in_salary_commission updated successfully.")
 
 
