@@ -32,14 +32,21 @@ def check_exists_another_order_before_change_order_status(seller_id,
     :return: True, якщо такі замовлення існують, інакше False
     """
     # Виконуємо запит до моделі SoldOrders
-    other_orders_exist = SoldOrders.objects.filter(server_id=server_id,
-                                                   seller_id=seller_id,
-                                                   download_video_status=False
-                                                   ).exclude(
+    other_exchange_orders_exist = SoldOrders.objects.filter(server_id=server_id,
+                                                            seller_id=seller_id,
+                                                            download_video_status=False
+                                                            ).exclude(
         sold_order_number=sold_order_number
     ).exists()
-
-    return other_orders_exist
+    logger.info(f"other_exchange_orders_exist__{other_exchange_orders_exist}")
+    other_internal_market_orders_exist = InternalOrder.objects.filter(server_id=server_id,
+                                                                      internal_seller=seller_id,
+                                                                      download_video_status=False
+                                                                      ).exclude(
+        sold_order_number=sold_order_number
+    ).exists()
+    logger.info(f"other_internal_market_orders_exist__{other_internal_market_orders_exist}")
+    return False if not other_exchange_orders_exist and not other_internal_market_orders_exist else True
 
 
 def get_main_data_from_table(auth_user_id: int):
@@ -100,6 +107,7 @@ def get_main_data_from_table(auth_user_id: int):
             else:
                 row['strategy_price'] = row['price']
                 row['exists_strategy'] = False
+
 
             stock = row['stock']
             if row['price']:
@@ -342,50 +350,45 @@ def get_order_info(user_id):
     return order_info
 
 
-def update_sold_order_when_video_download(user_id, order_number, path_to_video, sent_gold):
-    logger.info(f"sold_order_number__{order_number}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
+def update_sold_order_when_video_download(user_id, sold_order, path_to_video, sent_gold):
+    logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
     seller_id = Sellers.objects.get(auth_user_id=user_id)
     try:
-        with transaction.atomic():  # Забезпечує цілісність транзакції
-            # Оновлюємо статуси у SoldOrders
-            sold_order = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id.id)
-            if sold_order is None:
-                sold_order = InternalOrder.objects.get(sold_order_number=order_number, internal_seller=seller_id.id)
+        sold_order.path_to_video = path_to_video
+        sold_order.sent_gold = sent_gold
+        sold_order.download_video_status = True
+        sold_order.charged_to_payment = True
+        sold_order.save()
+        logger.info('посилання на відео додано до бази даних')
 
-            sold_order.path_to_video = path_to_video
-            sold_order.sent_gold = sent_gold
-            sold_order.download_video_status = True
-            sold_order.charged_to_payment = True
-            sold_order.save()
-            logger.info('посилання на відео додано до бази даних')
+        # Зараховуємо комісії до оплати
+        commissions_crud.update_status_charged_to_payment_commission(sold_order.id)
 
-            # Зараховуємо комісії до оплати
-            commissions_crud.update_status_charged_to_payment_commission(sold_order.id)
+        # Оновлюємо баланс продавця
+        get_balance(user_id)
+        update_owner_balance()
+        update_technical_balance()
 
-            # Оновлюємо баланс продавця
-            get_balance(user_id)
-            update_owner_balance()
-            update_technical_balance()
+        # Перевірка на наявність інших замовлень перед зміною статусу
+        exists_order = check_exists_another_order_before_change_order_status(seller_id,
+                                                                             sold_order.server,
+                                                                             sold_order.sold_order_number)
+        logger.info(f"exists_order__{exists_order}")
+        if not exists_order:
+            # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
+            offer = OffersForPlacement.objects.filter(sellers=seller_id,
+                                                      server_urls=sold_order.server,
+                                                      order_status=True
+                                                      ).first()
 
-            # Перевірка на наявність інших замовлень перед зміною статусу
-            exists_order = check_exists_another_order_before_change_order_status(seller_id,
-                                                                                 sold_order.server,
-                                                                                 order_number)
-            if not exists_order:
-                # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
-                offer = OffersForPlacement.objects.filter(sellers=sold_order.seller,
-                                                          server_urls=sold_order.server,
-                                                          order_status=True
-                                                          ).first()
+            if offer:
+                offer.order_status = False
+            offer.save()
 
-                if offer:
-                    offer.order_status = False
-                offer.save()
-
-                return f'статус активного замовлення на сервері змінено на False.'
-            else:
-                return (f'статус активного замовлення залишається True.'
-                        f' Продавець має ще активні замовлення на цьому сервері')
+            return f'статус активного замовлення на сервері змінено на False.'
+        else:
+            return (f'статус активного замовлення залишається True.'
+                    f' Продавець має ще активні замовлення на цьому сервері')
 
     except SoldOrders.DoesNotExist:
         return f"Замовлення не знайдено"
@@ -416,10 +419,13 @@ def get_server_id(user_id):
 
 def create_video_filename(request, sold_order_number):
     logger.info('inside')
-    sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number, ).select_related('server').first()
-    if sold_order in None:
-        sold_order = (InternalOrder.objects.filter(sold_order_number=sold_order_number, )
+    sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number).select_related('server').first()
+    logger.info(f"sold_order__{sold_order}")
+    if sold_order is None:
+        sold_order = (InternalOrder.objects.filter(sold_order_number=sold_order_number)
                       .select_related('server').first())
+        logger.info(f"sold_order__{sold_order}")
+
     sent_gold = request.POST.get('sent_gold')
     seller = request.user
 
@@ -429,7 +435,7 @@ def create_video_filename(request, sold_order_number):
 
     filename = f"{seller}__{sent_gold}__{server}__{game}__{sold_order_number}__{current_time}.mp4"
     logger.info(filename)
-    return filename
+    return filename, sold_order
 
 
 def get_seller_id_by_user_id(user_id):
@@ -485,7 +491,6 @@ def update_owner_balance():
 
 
 def update_technical_balance():
-
     # Step 1: Calculate the total earned_without_admins_commission for the specific seller
     total_received_from_orders = calculate_seller_owner_technical_earning_from_orders(technical_user_and_seller_id)
 
