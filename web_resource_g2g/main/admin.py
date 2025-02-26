@@ -539,6 +539,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'sold_order_number',
         'total_amount',
         'trade_mode',
+        'total_amount',
         'created_time',
         'sent_gold',
         'bought_by',
