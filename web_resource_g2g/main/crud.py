@@ -66,7 +66,7 @@ def get_main_data_from_table(auth_user_id: int):
             'auction_house',
             'delivery_online_hrs',
             'delivery_offline_hrs',
-            'is_created_lot',
+            'double_minimal_mode_status',
             'reserve_stock',
             'game_name',
             'region',
@@ -97,7 +97,7 @@ def get_main_data_from_table(auth_user_id: int):
             else:
                 row['strategy_price'] = row['price']
                 row['exists_strategy'] = False
-
+            row['stock'] = get_last_record_stock_from_history(row['sellers'], row['server_urls'])
             stock = row['stock']
             if row['price']:
                 new_price, interest_rate = get_float_price(row, auth_user_id)
@@ -114,6 +114,24 @@ def get_main_data_from_table(auth_user_id: int):
             continue  # Пропустити помилковий рядок і перейти до наступного
 
     return main_data_float_price
+
+
+def get_last_record_stock_from_history(seller_id, server_id):
+
+    # Отримуємо останній запис для вказаного продавця та користувача
+    last_record = ChangeStockHistory.objects.filter(
+        seller_id=seller_id,
+        server_id=server_id
+    ).order_by('-created_time').first()
+
+    # Повертаємо значення stock, якщо запис знайдено
+    if last_record:
+        (OffersForPlacement.objects.filter(sellers=seller_id,
+                                           server_urls=server_id)
+         .update(stock=last_record.stock))
+        return last_record.stock
+    else:
+        return 0
 
 
 def get_float_price(row, auth_user_id):
@@ -303,7 +321,7 @@ def add_server_to_db(data):
                                    auction_house=True,
                                    delivery_online_hrs=1,
                                    delivery_offline_hrs=6,
-                                   is_created_lot=True,
+                                   double_minimal_mode_status=False,
                                    reserve_stock=0,
                                    order_status=False,
                                    )
@@ -322,6 +340,7 @@ def pause_offer(offer_id, action):
         setattr(offer, 'active_rate', 0)
     elif action == 'resume':
         setattr(offer, 'active_rate', 1)
+        setattr(offer, 'double_minimal_mode_status', True)
 
     offer.save()
     update_stock_table(offer_id, 'Change status')
@@ -374,6 +393,8 @@ def update_sold_order_when_video_download(user_id, order_number, path_to_video, 
 
                 if offer:
                     offer.order_status = False
+                    offer.reserve_stock -= sold_order.quantity
+
                 offer.save()
 
                 return f'статус активного замовлення на сервері змінено на False.'
