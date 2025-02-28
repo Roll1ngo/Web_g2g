@@ -340,7 +340,7 @@ def pause_offer(offer_id, action):
         setattr(offer, 'active_rate', 0)
     elif action == 'resume':
         setattr(offer, 'active_rate', 1)
-        setattr(offer, 'double_minimal_mode_status', True)
+        setattr(offer, 'double_minimal_mode_status', False)
 
     offer.save()
     update_stock_table(offer_id, 'Change status')
