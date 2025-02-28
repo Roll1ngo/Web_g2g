@@ -406,8 +406,8 @@ class OffersForPlacementForm(forms.ModelForm):
 class OffersForPlacementAdmin(admin.ModelAdmin):
     form = OffersForPlacementForm  # Використовуємо кастомну форму
 
-    list_display = ('sellers', 'server_urls', 'active_rate',
-                    'price', 'stock', 'face_to_face_trade', 'order_status', 'double_minimal_mode_status')
+    list_display = ('sellers', 'server_urls', 'active_rate', 'double_minimal_mode_status',
+                    'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade', 'double_minimal_mode_status')
     list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
     search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
