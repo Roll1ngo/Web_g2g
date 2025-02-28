@@ -73,7 +73,7 @@ class OffersForPlacement(models.Model):
     auction_house = models.BooleanField(default=True)
     delivery_online_hrs = models.IntegerField()
     delivery_offline_hrs = models.IntegerField()
-    double_minimal_mode_status = models.BooleanField(default=True)
+    double_minimal_mode_status = models.BooleanField(default=False)
     reserve_stock = models.IntegerField(default=0)
     order_status = models.BooleanField(default=False, null=True)
 
