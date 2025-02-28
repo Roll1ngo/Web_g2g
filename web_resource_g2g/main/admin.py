@@ -509,6 +509,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'price_unit',
         'comission_fee',  # Note the correct spelling: commission_fee
         'send_message',
+        'send_message_to_buyer_status',
         'path_to_video',
         'download_video_status',
         'send_video_status',
@@ -545,6 +546,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'sent_gold',
         'bought_by',
         'send_message',
+        'send_message_to_buyer_status',
         'path_to_video',
         'download_video_status',
         'send_video_status',
@@ -630,6 +632,7 @@ class AddOrderAdmin(admin.ModelAdmin):
             obj.paid_to_technical = False
             obj.bought_by = 'Vlad_Handle_order'
             obj.send_message = True
+            obj.send_message_to_buyer_status = False
             obj.path_to_video = ''
             obj.download_video_status = False
             obj.send_video_status = False
