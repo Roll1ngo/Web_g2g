@@ -81,10 +81,10 @@ table tr:hover {
                     <td>{{ item.current_balance|floatformat:2}}</td>
                     <td>{{ item.order.created_time }}</td>
                     <td>{{ item.order.sold_order_number }}</td>
-                    {% if not item.order.download_video_status %}
-                    <td>Очикується завантаження відео</td>
-                    {% elif item.order.status == "CANCEL_REQUESTED" %}
+                    {% if item.order.status == "CANCEL_REQUESTED" %}
                     <td>Скасовано</td>
+                    {% elif not item.order.download_video_status %}
+                    <td>Очикується завантаження відео</td>
                     {% else %}
                     <td>Завершено</td>
                     {% endif %}
