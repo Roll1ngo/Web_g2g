@@ -76,7 +76,7 @@ def get_main_data_from_table(auth_user_id: int):
             'auction_house',
             'delivery_online_hrs',
             'delivery_offline_hrs',
-            'is_created_lot',
+            'double_minimal_mode_status',
             'reserve_stock',
             'game_name',
             'region',
@@ -439,7 +439,10 @@ def create_video_filename(request, sold_order_number):
 
 
 def get_seller_id_by_user_id(user_id):
-    seller = Sellers.objects.get(auth_user_id=user_id)
+    try:
+        seller = Sellers.objects.get(auth_user_id=user_id)
+    except Sellers.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
     return seller.id
 
 

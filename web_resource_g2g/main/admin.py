@@ -539,7 +539,6 @@ class AddOrderAdmin(admin.ModelAdmin):
         'character_name',
         'quantity',
         'sold_order_number',
-        'total_amount',
         'trade_mode',
         'total_amount',
         'created_time',
