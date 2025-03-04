@@ -75,7 +75,7 @@ class OffersForPlacement(models.Model):
     auction_house = models.BooleanField(default=True)
     delivery_online_hrs = models.IntegerField()
     delivery_offline_hrs = models.IntegerField()
-    is_created_lot = models.BooleanField(default=False)
+    double_minimal_mode_status = models.BooleanField(default=False)
     reserve_stock = models.IntegerField(default=0)
     order_status = models.BooleanField(default=False, null=True)
 
@@ -107,6 +107,7 @@ class SoldOrders(models.Model):
     path_to_video = models.CharField(max_length=255, blank=True)
     download_video_status = models.BooleanField(default=False, null=True)
     send_video_status = models.BooleanField(default=False, null=True)
+    send_message_to_buyer_status = models.BooleanField(default=False, null=True)
     charged_to_payment = models.BooleanField(default=False)
     paid_in_salary = models.BooleanField(default=False)
     paid_to_owner = models.BooleanField(default=False)

@@ -59,8 +59,8 @@ class CreatedTimeFilter(admin.SimpleListFilter):
 
 @admin.register(VitaliyOrders)
 class VitaliyOrdersAdmin(admin.ModelAdmin):
-    list_display = ('sold_order_number', 'created_time')
-    list_filter = (CreatedTimeFilter,)
+    list_display = ('status', 'sold_order_number', 'created_time')
+    list_filter = (CreatedTimeFilter, 'status')
     ordering = ('created_time',)
 
 
@@ -398,7 +398,7 @@ class OffersForPlacementForm(forms.ModelForm):
         self.fields['percent_offset'].initial = 0
         self.fields['delivery_online_hrs'].initial = 18
         self.fields['delivery_offline_hrs'].initial = 6
-        self.fields['is_created_lot'].initial = True
+        self.fields['double_minimal_mode_status'].initial = False
         self.fields['reserve_stock'].initial = 0
 
 
@@ -406,9 +406,10 @@ class OffersForPlacementForm(forms.ModelForm):
 class OffersForPlacementAdmin(admin.ModelAdmin):
     form = OffersForPlacementForm  # Використовуємо кастомну форму
 
-    list_display = ('sellers', 'server_urls', 'active_rate', 'price', 'stock', 'face_to_face_trade', 'order_status')
-    list_editable = ('order_status', 'active_rate', 'face_to_face_trade')
-    list_filter = ('sellers', 'active_rate', 'order_status')
+    list_display = ('sellers', 'server_urls', 'active_rate', 'double_minimal_mode_status',
+                    'price', 'stock', 'face_to_face_trade', 'order_status')
+    list_editable = ('order_status', 'active_rate', 'face_to_face_trade', 'double_minimal_mode_status')
+    list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
     search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
 
@@ -507,6 +508,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'price_unit',
         'comission_fee',
         'send_message',
+        'send_message_to_buyer_status',
         'path_to_video',
         'download_video_status',
         'send_video_status',
@@ -539,10 +541,12 @@ class AddOrderAdmin(admin.ModelAdmin):
         'sold_order_number',
         'total_amount',
         'trade_mode',
+        'total_amount',
         'created_time',
         'sent_gold',
         'bought_by',
         'send_message',
+        'send_message_to_buyer_status',
         'path_to_video',
         'download_video_status',
         'send_video_status',
@@ -600,6 +604,7 @@ class AddOrderAdmin(admin.ModelAdmin):
             obj.paid_to_technical = False
             obj.bought_by = 'Vlad_Handle_order'
             obj.send_message = True
+            obj.send_message_to_buyer_status = False
             obj.path_to_video = ''
             obj.download_video_status = False
             obj.send_video_status = False
