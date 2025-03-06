@@ -21,6 +21,7 @@ from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
 from main.utils.logger_config import logger
 from main.tg_bot_run import send_messages_sync
 from internal_market import crud as internal_market_crud
+from internal_market.models import InternalOrder
 
 
 class CreatedTimeFilter(admin.SimpleListFilter):
@@ -331,6 +332,55 @@ class SoldOrdersAdmin(admin.ModelAdmin):
         return self._icon(obj, 'paid_to_owner')
 
     paid_to_owner_icon.short_description = 'Власнику сплачено'
+
+
+@admin.register(InternalOrder)
+class InternalOrdersAdmin(admin.ModelAdmin):
+    list_display = ((
+        'id',
+        'server',
+        'internal_seller',
+        'internal_buyer',
+        'status',
+        'character_name',
+        'sold_order_number',
+        'quantity',
+        'sent_gold',
+        'price_unit',
+        'total_amount',
+        'earned_without_admins_commission',
+        'owner_commission',
+        'technical_commission',
+        'trade_mode',
+        'created_time',
+        'send_message',
+        'path_to_video',
+        'download_video_status',
+        'charged_to_payment',
+        'paid_in_salary',
+        'paid_to_owner',
+        'paid_to_technical',
+    ))
+    list_editable = ((
+        'internal_seller',
+        'internal_buyer',
+        'status',
+        'character_name',
+        'quantity',
+        'sent_gold',
+        'price_unit',
+        'total_amount',
+        'earned_without_admins_commission',
+        'trade_mode',
+        'created_time',
+        'send_message',
+        'path_to_video',
+        'download_video_status',
+        'charged_to_payment',
+        'paid_in_salary',
+        'paid_to_owner',
+        'paid_to_technical',
+    ))
 
 
 class ServerUrlsChoiceField(forms.ModelChoiceField):

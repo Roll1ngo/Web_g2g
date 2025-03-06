@@ -123,24 +123,16 @@ def upload_video(request, sold_order_number):
 
 def show_history_orders(request):
     user_id = request.user.id
-    orders_history = crud.get_orders_history(user_id)
-
-    total_earned = 0  # Ініціалізуємо загальну суму
-    orders_with_balance = []
-
-    for order in orders_history:
-        total_earned += order.earned_without_admins_commission if not order.paid_in_salary else 0
-        orders_with_balance.append({
-            'order': order,
-            'current_balance': total_earned
-        })
+    sold_orders = crud.get_sold_orders_for_history(user_id)
+    internal_orders = crud.get_internal_orders_for_history(user_id)
+    orders_with_balance = crud.get_orders_with_balance(user_id, sold_orders, internal_orders)
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
 
 def show_balance(request):
     balance = crud.get_balance(request.user.id)
     logger.info(f"balance__{balance}")
-    return render(request, 'users/base.html', context={'user_balance': balance})
+    return render(request, 'users/base.html', context={'user_balance': round(balance, 3)})
 
 
 def delete_server(request):

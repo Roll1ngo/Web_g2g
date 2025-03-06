@@ -42,7 +42,7 @@ def get_lots_for_sale(auth_user_id: int):
             'auction_house',
             'delivery_online_hrs',
             'delivery_offline_hrs',
-            'is_created_lot',
+            'double_minimal_mode_status',
             'reserve_stock',
             'game_name',
             'region',

@@ -1,3 +1,4 @@
+import decimal
 from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
@@ -107,7 +108,6 @@ def get_main_data_from_table(auth_user_id: int):
             else:
                 row['strategy_price'] = row['price']
                 row['exists_strategy'] = False
-
 
             stock = row['stock']
             if row['price']:
@@ -309,7 +309,7 @@ def add_server_to_db(data):
                                    auction_house=True,
                                    delivery_online_hrs=1,
                                    delivery_offline_hrs=6,
-                                   is_created_lot=True,
+                                   double_minimal_mode_status=False,
                                    reserve_stock=0,
                                    order_status=False,
                                    )
@@ -328,6 +328,7 @@ def pause_offer(offer_id, action):
         setattr(offer, 'active_rate', 0)
     elif action == 'resume':
         setattr(offer, 'active_rate', 1)
+        setattr(offer, 'double_minimal_mode_status', 0)
 
     offer.save()
     update_stock_table(offer_id, 'Change status')
@@ -396,13 +397,86 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
         return f"Помилка: {e}"
 
 
-def get_orders_history(user_id):
+def get_sold_orders_for_history(user_id):
     try:
         seller_id = Sellers.objects.get(auth_user_id=user_id)
-        orders_history = SoldOrders.objects.filter(seller_id=seller_id, ).select_related('server')
+        sold_orders_history = SoldOrders.objects.filter(seller_id=seller_id, ).select_related('server')
     except Sellers.DoesNotExist:
         logger.error(f"Seller with auth_user_id {user_id} does not exist.")
-    return orders_history
+    return sold_orders_history
+
+
+def get_internal_orders_for_history(user_id):
+    try:
+        internal_orders = InternalOrder.objects.filter(
+            Q(internal_seller__auth_user_id=user_id) | Q(internal_buyer__auth_user_id=user_id)
+        ).select_related('server')
+    except InternalOrder.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
+
+    return internal_orders
+
+
+def get_orders_with_balance(user_id, sold_orders, internal_orders):
+    # Об'єднуємо записи в один список
+    all_orders = list(sold_orders) + list(internal_orders)
+
+    # Сортуємо всі записи за часом створення
+    all_orders.sort(key=lambda x: x.created_time)
+
+    total_earned = 0  # Ініціалізуємо загальну суму
+    orders_with_balance = []
+
+    # Проходимо по відсортованих записах і оновлюємо баланс
+    for order in all_orders:
+        if isinstance(order, SoldOrders):
+            # Обробка записів з SoldOrders
+            if order.status == "CANCEL_REQUESTED":
+                # Якщо статус "CANCEL_REQUESTED", пропускаємо зміну балансу
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,  # Записуємо попередній баланс
+                    'type': 'sold_order',  # Додаємо тип для розрізнення записів
+                    'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
+                })
+            else:
+                if not order.paid_in_salary:
+                    total_earned += decimal.Decimal(order.earned_without_admins_commission)
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,
+                    'type': 'sold_order'  # Додаємо тип для розрізнення записів
+                })
+        elif isinstance(order, InternalOrder):
+            # Обробка записів з InternalOrder
+            if order.status == "CANCEL_REQUESTED":
+                # Якщо статус "CANCEL_REQUESTED", пропускаємо зміну балансу
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,  # Записуємо попередній баланс
+                    'type': 'internal_order',  # Додаємо тип для розрізнення записів
+                    'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
+                })
+            else:
+                if order.internal_seller.auth_user_id == user_id:
+                    # Якщо користувач є продавцем, додаємо earned_without_admins_commission
+                    total_earned += decimal.Decimal(order.earned_without_admins_commission)
+                    orders_with_balance.append({
+                        'order': order,
+                        'current_balance': total_earned,
+                        'type': 'internal_order'  # Додаємо тип для розрізнення записів
+                    })
+                elif order.internal_buyer and order.internal_buyer.auth_user_id == user_id:
+                    # Якщо користувач є покупцем, змінюємо total_amount на від'ємне
+                    order.total_amount = decimal.Decimal(-order.total_amount)  # Змінюємо значення на від'ємне
+                    order.earned_without_admins_commission = float(order.total_amount)
+                    total_earned += decimal.Decimal(order.total_amount)  # Додаємо від'ємне значення до балансу
+                    orders_with_balance.append({
+                        'order': order,
+                        'current_balance': total_earned,
+                        'type': 'internal_order'  # Додаємо тип для розрізнення записів
+                    })
+    return orders_with_balance
 
 
 def get_server_id(user_id):
@@ -460,10 +534,12 @@ def get_balance(user_id):
         return 0
 
     total_received_from_orders = calculate_seller_owner_technical_earning_from_orders(seller)
+    spend_internal_market = get_sum_spend_internal_market(seller)
 
     # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
     commission_earned = commissions_crud.get_breakdown_commissions(seller)
-    total_balance = float(total_received_from_orders) + float(commission_earned)
+    total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned) - decimal.Decimal(
+        spend_internal_market)
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
     if total_balance is None:
@@ -472,7 +548,7 @@ def get_balance(user_id):
     Sellers.objects.filter(id=seller).update(balance=total_balance)
 
     logger.info(f"seller_total_balance_{total_balance}")
-    return round(total_balance, 2)
+    return round(total_balance)
 
 
 def update_owner_balance():
@@ -485,12 +561,12 @@ def update_owner_balance():
 
     # 2. Баланс із CommissionBreakdown
     commission_earned = commissions_crud.get_breakdown_commissions(owner_user_and_seller_id)
-    total_balance = float(total_received_from_orders) + float(commission_earned)
+    total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned)
 
     Sellers.objects.filter(id=owner_user_and_seller_id).update(balance=total_balance)
 
     logger.info('Balance updated successfully.')
-    return round(total_balance, 2)
+    return total_balance
 
 
 def update_technical_balance():
@@ -502,11 +578,11 @@ def update_technical_balance():
 
     # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
     commission_earned = commissions_crud.get_breakdown_commissions(technical_user_and_seller_id)
-    total_balance = float(total_received_from_orders) + float(commission_earned)
+    total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned)
 
     Sellers.objects.filter(id=technical_user_and_seller_id).update(balance=total_balance)
 
-    return round(total_balance, 2)
+    return total_balance
 
 
 def update_stock_table(row_id, description):
@@ -555,5 +631,16 @@ def calculate_seller_owner_technical_earning_from_orders(seller_id):
 
     logger.info(f"internal_market_earned__{internal_market_earned}")
 
-    total_balance = float(sold_orders_earned) + float(internal_market_earned)
+    total_balance = decimal.Decimal(sold_orders_earned) + decimal.Decimal(internal_market_earned)
     return total_balance
+
+
+def get_sum_spend_internal_market(seller_id):
+    result = InternalOrder.objects.filter(internal_buyer=seller_id).aggregate(
+        total_spend=Sum('total_amount'))
+    internal_market_spend = result.get('total_spend', 0)
+
+    if internal_market_spend is None:
+        internal_market_spend = 0
+    logger.info(f"internal_market_spend__{internal_market_spend}")
+    return internal_market_spend
