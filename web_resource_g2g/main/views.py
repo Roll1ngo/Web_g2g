@@ -5,15 +5,19 @@ from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect
-from . import crud
+from main import crud
+from main import calculate_commissions_crud as commissions_crud
 from .utils.logger_config import logger
+
+
+from django.shortcuts import render
+import json
 
 
 def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
         all_bets = crud.get_main_data_from_table(user_id)
-        logger.info(f"all_bets__{all_bets}")
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
@@ -22,15 +26,22 @@ def start_page(request):
         grouped_data_db = crud.get_grouped_data(servers)
         grouped_data = json.dumps(grouped_data_db)
 
-        double_add = json.dumps([{'server_name': server['server_name'],
-                                  'game_name': server['game_name']} for server in all_bets])
+        # Перевірка, чи all_bets не є порожнім
+        if all_bets:
+            double_add = [{'server_name': server.get('server_name', ''),
+                           'game_name': server.get('game_name', '')} for server in all_bets]
+        else:
+            double_add = []  # Якщо all_bets порожній, double_add також буде порожнім
 
-        return render(request, 'main/index.html', context={"bets_list": all_bets,
-                                                           'games': games,
-                                                           'regions': regions,
-                                                           'servers_json': grouped_data,
-                                                           'double_add': double_add
-                                                           })
+        context = {
+            "bets_list": all_bets if all_bets else [],  # Перевірка на порожній all_bets
+            'games': games,
+            'regions': regions,
+            'servers_json': grouped_data,
+            'double_add': double_add  # Тепер це список, а не JSON-рядок
+        }
+
+        return render(request, 'main/index.html', context)
 
 
 def update_table_data(request):
@@ -93,13 +104,13 @@ def upload_video(request, sold_order_number):
 
             try:
                 # Збереження файлу
-                filename = crud.create_video_filename(request, sold_order_number)
+                filename, sold_order = crud.create_video_filename(request, sold_order_number)
                 filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
                 with open(filepath, 'wb+') as destination:
                     for chunk in video_file.chunks():
                         destination.write(chunk)
                 logger.info(f"filepath__{filepath}")
-                response = crud.update_sold_order_when_video_download(user, sold_order_number, filepath, sent_gold)
+                response = crud.update_sold_order_when_video_download(user, sold_order, filepath, sent_gold)
                 logger.info(f"response__{response}")
 
                 return redirect('main:start_page')
@@ -112,26 +123,16 @@ def upload_video(request, sold_order_number):
 
 def show_history_orders(request):
     user_id = request.user.id
-    orders_history = crud.get_orders_history(user_id)
-
-    total_earned = 0  # Ініціалізуємо загальну суму
-    orders_with_balance = []
-
-    for order in orders_history:
-        if order.status != "CANCEL_REQUESTED":
-            total_earned += order.earned_without_admins_commission if not order.paid_in_salary else 0  # Додаємо значення до загальної суми
-        orders_with_balance.append({
-            'order': order,
-            'current_balance': total_earned  # Додаємо поточний баланс до кожного замовлення
-        })
+    sold_orders = crud.get_sold_orders_for_history(user_id)
+    internal_orders = crud.get_internal_orders_for_history(user_id)
+    orders_with_balance = crud.get_orders_with_balance(user_id, sold_orders, internal_orders)
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
 
 def show_balance(request):
-
     balance = crud.get_balance(request.user.id)
     logger.info(f"balance__{balance}")
-    return render(request, 'users/base.html', context={'user_balance': balance})
+    return render(request, 'users/base.html', context={'user_balance': round(balance, 3)})
 
 
 def delete_server(request):
@@ -143,9 +144,8 @@ def delete_server(request):
 
 def my_services(request):
     user_id = request.user.id
-    my_service_commission_list = crud.get_my_service_list(user_id)
+    my_service_commission_list = commissions_crud.get_my_service_list(user_id)
     my_clients_provide_service = crud.get_clients_provide_service(user_id)
     logger.info(f"my_clients_provide_service__{my_clients_provide_service}")
     return render(request, 'main/my_services.html', context={"my_services": my_service_commission_list,
                                                              'my_clients_provide_service': my_clients_provide_service})
-
