@@ -226,7 +226,7 @@ def update_price_delivery(data, user_id):
 
         offer.save()
         if field == 'stock':
-            update_stock_table(row_id, 'change stock')
+            update_stock_table(row_id, 'start page change stock')
 
         offer_dict = model_to_dict(offer)
         logger.info(f"offer_dict__{offer_dict}")
@@ -325,7 +325,7 @@ def pause_offer(offer_id, action):
         setattr(offer, 'double_minimal_mode_status', False)
 
     offer.save()
-    update_stock_table(offer_id, 'Change status')
+    update_stock_table(offer_id, 'start page change status')
 
 
 def get_order_info(user_id):
