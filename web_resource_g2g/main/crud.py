@@ -312,6 +312,7 @@ def add_server_to_db(data):
 
 def delete_server_from_list(offer_id):
     offer = OffersForPlacement.objects.get(id=offer_id)
+    update_stock_table(offer_id, ' delete function change status', active_rate=False)
     offer.delete()
 
 
@@ -686,13 +687,13 @@ def update_technical_balance():
     return round(total_balance, 2)
 
 
-def update_stock_table(row_id, description):
+def update_stock_table(row_id, description, active_rate=None):
     offer = OffersForPlacement.objects.get(id=row_id)
     stock_row = ChangeStockHistory.objects.create(
         seller_id=offer.sellers.id,
         server_id=offer.server_urls.id,
         stock=offer.stock,
-        active_rate_record=offer.active_rate,
+        active_rate_record=offer.active_rate if active_rate is None else active_rate,
         description=description,
         created_time=timezone.now()
     )
