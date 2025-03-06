@@ -86,7 +86,7 @@ def get_main_data_from_table(auth_user_id: int):
             ).exclude(sellers=row['sellers']).values_list('price', flat=True).first()
 
             if current_strategy:
-                ballance_strategy_for_all = 'mean10_lot'
+                ballance_strategy_for_all = 'minimal'
                 change_all_strategy = OffersForPlacement.objects.filter(server_urls_id=row['server_urls'])
                 change_all_strategy.update(price=ballance_strategy_for_all, face_to_face_trade=True)
 
