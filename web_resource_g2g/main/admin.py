@@ -442,10 +442,16 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
     list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
     search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
+    actions = ['prepare_to_double_minimal_mode']
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.select_related('sellers', 'server_urls')
+
+    @admin.action(description='Підготувати до переводу в режим перепродажу')
+    def prepare_to_double_minimal_mode(self, request, queryset):
+        queryset.update(active_rate=False, face_to_face_trade=False)
+        self.message_user(request, f" {queryset.count()} лотів підготовлено до переводу в режим перепродажу.")
 
 
 class AddOrder(SoldOrders):
