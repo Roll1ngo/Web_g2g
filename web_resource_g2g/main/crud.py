@@ -30,11 +30,12 @@ def check_exists_another_order_before_change_order_status(seller_id,
     :return: True, якщо такі замовлення існують, інакше False
     """
     # Виконуємо запит до моделі SoldOrders
-    other_orders_exist = SoldOrders.objects.filter(server_id = server_id,
-                                                   seller_id = seller_id,
-                                                   download_video_status = False
+    other_orders_exist = SoldOrders.objects.filter(server_id=server_id,
+                                                   seller_id=seller_id,
+                                                   download_video_status=False,
+                                                   status='DELIVERING'
                                                    ).exclude(
-                                                   sold_order_number = sold_order_number
+                                                   sold_order_number=sold_order_number
                                                    ).exists()
 
     return other_orders_exist
