@@ -620,8 +620,11 @@ def update_stock_table(row_id, description):
 
 def calculate_seller_owner_technical_earning_from_orders(seller_id):
     if seller_id == owner_user_and_seller_id or seller_id == technical_user_and_seller_id:
-        query_filter_sold_orders = Q(charged_to_payment=True) & Q(paid_to_technical=False)
-        query_filter_internal_orders = Q(charged_to_payment=True) & Q(paid_to_technical=False)
+        query_filter_sold_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+
+        query_filter_internal_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
 
         if seller_id == owner_user_and_seller_id:
             target_field = 'owner_commission'
@@ -630,10 +633,12 @@ def calculate_seller_owner_technical_earning_from_orders(seller_id):
     else:
         query_filter_sold_orders = (Q(charged_to_payment=True)
                                     & Q(paid_to_technical=False)
-                                    & Q(seller_id=seller_id))
+                                    & Q(seller_id=seller_id)
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
         query_filter_internal_orders = (Q(charged_to_payment=True)
                                         & Q(paid_to_technical=False)
-                                        & Q(internal_seller=seller_id))
+                                        & Q(internal_seller=seller_id)
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
         target_field = 'earned_without_admins_commission'
 
     sold_orders_earned = SoldOrders.objects.filter(query_filter_sold_orders).aggregate(
