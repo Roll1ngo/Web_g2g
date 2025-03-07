@@ -98,7 +98,7 @@ table tr:hover {
 	</thead>
 	<tbody>
 	{% for lot in lots_for_sale %}
-	<tr id="{{ lot.id }}" class="clickable-row" data-seller-id="{{ lot.sellers }}" data-server-urls="{{ lot.server_urls }}">
+	<tr id="{{ lot.id }}" class="clickable-row" data-seller-id="{{ lot.sellers }}" data-server-urls="{{ lot.server_urls }}" data-face-to-face-trade="{{ lot.face_to_face_trade }}" data-mail-delivery="{{ lot.mail_delivery }}">
 	  <td>{{ forloop.counter }}</td>
 	  <td><input type="text" id="server-{{ lot.id }}" value="{{ lot.server_name }}" title="{{ lot.server_name }}"
 				 readonly></td>
@@ -129,42 +129,58 @@ document.addEventListener("DOMContentLoaded", function () {
       const price = parseFloat(priceString);
       const stockText = row.querySelector(`input[id^="stock-"]`).value;
       const stock = parseInt(stockText.replace("K", "").trim());
+	  const faceToFaceTrade = row.dataset.faceToFaceTrade === "True"; // Отримуємо значення з dataset
+      const mailDelivery = row.dataset.mailDelivery === "True"; // Отримуємо значення з dataset
 
-      showOrderForm(lotId, sellerId, serverName, gameName, price, stock, serverUrls);
+      showOrderForm(lotId, sellerId, serverName, gameName, price, stock, serverUrls, faceToFaceTrade, mailDelivery);
     });
   });
 
-  function showOrderForm(lotId, sellerId, serverName, gameName, price, stock, serverUrls) {
+  function showOrderForm(lotId, sellerId, serverName, gameName, price, stock, serverUrls, faceToFaceTrade, mailDelivery) {
     closeOrderForm();
 
-    const formHtml = `
-      <div id="orderForm" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-       background-image: url('{% static 'images/market_back.jpg' %}'); background-size: cover;
-       background-repeat: no-repeat; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
-        <h3>Замовлення на сервері: ${serverName}</h3><br><br><br>
-        <form id="orderFormContent">
-          <label for="characterName" style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Ім'я персонажа:</label>
-          <input type="text" id="characterName" name="characterName" style="width: 30ch; background-color: #ffffff; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px; border-radius: 4px; font-family: 'Arial', sans-serif;" required><br><br>
 
-          <label for="deliveryMethod" style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Спосіб доставки:</label>
-          <select id="deliveryMethod" name="deliveryMethod" style="background-color: #ffffff; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px; border-radius: 4px; font-family: 'Arial', sans-serif;">
-            <option value="Mail">Mail</option>
-            <option value="Trade">Face to face trade</option>
-          </select><br><br>
+	// Визначаємо доступні способи доставки
+	const deliveryMethods = [];
+	if (faceToFaceTrade) {
+	  deliveryMethods.push({ value: "Trade", label: "Face to face trade" });
+	}
+	if (mailDelivery) {
+	  deliveryMethods.push({ value: "Mail", label: "Mail" });
+	}
 
-          <label for="quantity" style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Кількість золота:</label>
-          <input type="number" id="quantity" name="quantity" min="1" max="${stock}" value="1" style="width: 10ch; background-color: #ffffff; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px; border-radius: 4px; font-family: 'Arial', sans-serif;" required>
+	// Генеруємо HTML для вибору способу доставки
+	const deliveryMethodOptions = deliveryMethods
+	  .map((method) => `<option value="${method.value}">${method.label}</option>`)
+	  .join("");
+
+	const formHtml = `
+	  <div id="orderForm" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+	   background-image: url('{% static 'images/market_back.jpg' %}'); background-size: cover;
+	   background-repeat: no-repeat; padding: 20px; border: 1px solid #ccc; z-index: 1000;">
+		<h3>Замовлення на сервері: ${serverName}</h3><br><br><br>
+		<form id="orderFormContent">
+		  <label for="characterName" style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Ім'я персонажа:</label>
+		  <input type="text" id="characterName" name="characterName" style="width: 30ch; background-color: #ffffff; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px; border-radius: 4px; font-family: 'Arial', sans-serif;" required><br><br>
+
+		  <label for="deliveryMethod" style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Спосіб доставки:</label>
+		  <select id="deliveryMethod" name="deliveryMethod" style="background-color: #ffffff; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px; border-radius: 4px; font-family: 'Arial', sans-serif;">
+			${deliveryMethodOptions}
+		  </select><br><br>
+
+		  <label for="quantity" style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Кількість золота:</label>
+		  <input type="number" id="quantity" name="quantity" min="1" max="${stock}" value="1" style="width: 10ch; background-color: #ffffff; color: #2c3e50; border: 1px solid #bdc3c7; padding: 8px; border-radius: 4px; font-family: 'Arial', sans-serif;" required>
 		  <span style="margin-left: 10px;">Доступно: <span style="color: #545352; font-family: 'Arial', sans-serif; font-size: 1.4em;">${stock}</span></span><br>
-	      <span>Поточна ціна за одиницю: <span style="color: #545352; font-family: 'Arial', sans-serif; font-size: 1.4em;">${price.toFixed(2)}</span></span><br><br>
+		  <span>Поточна ціна за одиницю: <span style="color: #545352; font-family: 'Arial', sans-serif; font-size: 1.4em;">${price.toFixed(2)}</span></span><br><br>
 
-          <label style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Загальна вартість:</label>
-          <span id="totalCost" style="font-size: 2.0em; font-weight: bold; color: #27ae60; text-decoration: underline;">${price.toFixed(2)}</span> <br><br>
+		  <label style="color: #2c3e50; font-family: 'Arial', sans-serif; font-size: 1.1em;">Загальна вартість:</label>
+		  <span id="totalCost" style="font-size: 2.0em; font-weight: bold; color: #27ae60; text-decoration: underline;">${price.toFixed(2)}</span> <br><br>
 
-          <button type="submit" style="background-color: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-family: 'Arial', sans-serif; font-size: 1em; cursor: pointer;">Замовити</button>
-          <button type="button" id="cancelOrder" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-family: 'Arial', sans-serif; font-size: 1em; cursor: pointer;">Скасувати</button>
-        </form>
-      </div>
-    `;
+		  <button type="submit" style="background-color: #27ae60; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-family: 'Arial', sans-serif; font-size: 1em; cursor: pointer;">Замовити</button>
+		  <button type="button" id="cancelOrder" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-family: 'Arial', sans-serif; font-size: 1em; cursor: pointer;">Скасувати</button>
+		</form>
+	  </div>
+	`;
 
     document.body.insertAdjacentHTML("beforeend", formHtml);
 
@@ -237,16 +253,23 @@ document.addEventListener("DOMContentLoaded", function () {
 	})
 	  .then((response) => {
 		if (response.ok) {
-		  alert("Замовлення успішно створено!");
+		  // Відображення повідомлення в залежності від способу доставки
+		  if (deliveryMethod === "Mail") {
+			alert("Замовлення успішно створено! Ви отримаєте сповіщення в телеграм, коли замовлення буде виконано.");
+		  } else if (deliveryMethod === "Trade") {
+			alert("Замовлення успішно створено! Підготуйте кілька речей синього класу для обміну та чекайте біля аукціону центрального міста. Протягом 10 хвилин надійде запрошення на обмін. У разі виникнення питань, звертайтеся до адміністратора.");
+		  } else {
+			alert("Замовлення успішно створено!");
+		  }
 		  closeOrderForm();
 		  closeConfirmationModal();
 		} else {
 		  alert("Помилка при створенні замовлення.");
-		}
-	  })
-	  .catch((error) => {
-		console.error("Помилка:", error);
-		alert("Сталася помилка при відправці запиту.");
+      }
+    })
+    .catch((error) => {
+      console.error("Помилка:", error);
+      alert("Сталася помилка при відправці запиту.");
 	  });
   });
 

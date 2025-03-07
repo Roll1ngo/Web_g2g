@@ -362,24 +362,7 @@ class InternalOrdersAdmin(admin.ModelAdmin):
         'paid_to_technical',
     ))
     list_editable = ((
-        'internal_seller',
-        'internal_buyer',
         'status',
-        'character_name',
-        'quantity',
-        'sent_gold',
-        'price_unit',
-        'total_amount',
-        'earned_without_admins_commission',
-        'trade_mode',
-        'created_time',
-        'send_message',
-        'path_to_video',
-        'download_video_status',
-        'charged_to_payment',
-        'paid_in_salary',
-        'paid_to_owner',
-        'paid_to_technical',
     ))
 
 
