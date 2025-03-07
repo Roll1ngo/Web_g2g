@@ -12,6 +12,8 @@ from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
                      CommissionRates)
 from django.db.models import F, Sum, DecimalField, Q
+
+from .tg_bot_run import send_messages_sync
 from .utils.logger_config import logger
 from main import calculate_commissions_crud as commissions_crud
 from internal_market.models import InternalOrder
@@ -323,13 +325,13 @@ def delete_server_from_list(offer_id):
 
 def pause_offer(offer_id, action):
     offer = OffersForPlacement.objects.get(id=offer_id)
+    server_id = offer.server_urls
 
     if action == 'pause':
         setattr(offer, 'active_rate', 0)
     elif action == 'resume':
         setattr(offer, 'active_rate', 1)
-        setattr(offer, 'double_minimal_mode_status', 0)
-
+        OffersForPlacement.objects.filter(server_urls_id=server_id).update(double_minimal_mode_status=0)
     offer.save()
     update_stock_table(offer_id, 'Change status')
 
@@ -353,12 +355,26 @@ def get_order_info(user_id):
 
 def update_sold_order_when_video_download(user_id, sold_order, path_to_video, sent_gold):
     logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
-    seller_id = Sellers.objects.get(auth_user_id=user_id)
+    seller = Sellers.objects.get(auth_user_id=user_id)
+    seller_id = seller.id
+    logger.info(f"seller_id__{seller_id}")
+    buyer_tg = sold_order.internal_buyer.id_telegram
+    buyer_name = sold_order.internal_buyer.auth_user.username
+    logger.info(f"buyer_name__{buyer_name}")
+    delivery_method = sold_order.trade_mode
+    logger.info(f"buyer_tg__{buyer_tg}, delivery_method__{delivery_method}")
+    class_name = sold_order.__class__.__name__
+
+    message = (f'Замовлення  {sold_order.quantity} золота на сервері {sold_order.server.server_name}'
+               f' - {sold_order.server.game_name} відправлено по ігровій пошті, та надійде протягом години') \
+
     try:
         sold_order.path_to_video = path_to_video
         sold_order.sent_gold = sent_gold
         sold_order.download_video_status = True
         sold_order.charged_to_payment = True
+        if class_name == 'InternalOrder':
+            sold_order.status = 'DELIVERED'
         sold_order.save()
         logger.info('посилання на відео додано до бази даних')
 
@@ -371,7 +387,7 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
         update_technical_balance()
 
         # Перевірка на наявність інших замовлень перед зміною статусу
-        exists_order = check_exists_another_order_before_change_order_status(seller_id,
+        exists_order = check_exists_another_order_before_change_order_status(seller,
                                                                              sold_order.server,
                                                                              sold_order.sold_order_number)
         logger.info(f"exists_order__{exists_order}")
@@ -385,6 +401,9 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
             if offer:
                 offer.order_status = False
             offer.save()
+
+            if delivery_method == 'Mail' and class_name == 'InternalOrder':
+                send_messages_sync(buyer_tg, buyer_name, message)
 
             return f'статус активного замовлення на сервері змінено на False.'
         else:
@@ -548,7 +567,7 @@ def get_balance(user_id):
     Sellers.objects.filter(id=seller).update(balance=total_balance)
 
     logger.info(f"seller_total_balance_{total_balance}")
-    return round(total_balance)
+    return round(total_balance, 2)
 
 
 def update_owner_balance():
@@ -566,7 +585,7 @@ def update_owner_balance():
     Sellers.objects.filter(id=owner_user_and_seller_id).update(balance=total_balance)
 
     logger.info('Balance updated successfully.')
-    return total_balance
+    return round(total_balance, 2)
 
 
 def update_technical_balance():
@@ -582,7 +601,7 @@ def update_technical_balance():
 
     Sellers.objects.filter(id=technical_user_and_seller_id).update(balance=total_balance)
 
-    return total_balance
+    return round(total_balance, 2)
 
 
 def update_stock_table(row_id, description):
