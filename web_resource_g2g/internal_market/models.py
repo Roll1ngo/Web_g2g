@@ -30,7 +30,7 @@ class InternalOrder(models.Model):
     paid_to_technical = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.internal_seller.auth_user.username} №{self.sold_order_number} - {self.total_amount}$"
+        return f"{self.internal_seller.auth_user.username} № {self.sold_order_number} - {self.total_amount}$"
 
     def save(self, *args, **kwargs):
         if not self.sold_order_number:
