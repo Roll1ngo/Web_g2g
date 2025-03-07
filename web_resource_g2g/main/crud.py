@@ -319,14 +319,18 @@ def delete_server_from_list(offer_id):
 
 def pause_offer(offer_id, action):
     offer = OffersForPlacement.objects.get(id=offer_id)
+    server_id = offer.server_urls_id
+    logger.info(f'server_id__{server_id}')
 
     if action == 'pause':
         setattr(offer, 'active_rate', 0)
+        offer.save()
     elif action == 'resume':
         setattr(offer, 'active_rate', 1)
-        setattr(offer, 'double_minimal_mode_status', False)
+        offer.save()
+        OffersForPlacement.objects.filter(server_urls_id=server_id).update(double_minimal_mode_status=False)
 
-    offer.save()
+
     update_stock_table(offer_id, 'start page change status')
 
 
