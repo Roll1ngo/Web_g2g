@@ -60,7 +60,6 @@ def check_exists_another_order_before_change_order_status(seller_id,
 
 def get_main_data_from_table(auth_user_id: int):
     seller_id = get_seller_id_by_user_id(auth_user_id)
-    seller_id = get_seller_id_by_user_id(auth_user_id)
 
     main_data = (
         OffersForPlacement.objects
@@ -248,8 +247,9 @@ def update_price_delivery(data, user_id):
         logger.info(f"offer_dict__{offer_dict}")
 
         try:
+            seller_id = get_seller_id_by_user_id(user_id)
             # Retrieve the TopPrices object
-            show_price, interest_rate = get_float_price(offer_dict, user_id)
+            show_price, interest_rate = get_float_price(offer_dict, seller_id)
         except TopPrices.DoesNotExist:
             # Handle the case where the TopPrices object does not exist
             new_price = 0
