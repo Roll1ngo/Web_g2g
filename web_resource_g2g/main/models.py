@@ -5,6 +5,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+from main.utils.logger_config import logger
+
 
 class Commission(models.Model):
     commission = models.IntegerField(default=0)
@@ -195,7 +197,24 @@ class CommissionBreakdown(models.Model):
     paid_in_salary_commission = models.BooleanField(default=False)
     created_time = models.DateTimeField(default=timezone.now)
 
-
     class Meta:
         verbose_name = "Отримані комісії с замовлень"
         verbose_name_plural = "Отримані комісії с замовлень"
+
+    def __str__(self):
+        return f"Комісія #{self.id} ({self.service_type})"
+
+    # Метод для відображення поля `order`
+    def display_order(self):
+        if self.order:
+            logger.info(f"self.content_type.model__{self.content_type.model}")
+            # Використовуємо content_type для визначення типу замовлення
+            if self.content_type.model == "internalorder":
+                return f"Внутрішнє замовлення: {self.order}"
+            elif self.content_type.model == "soldorders":
+                return f"Зовнішнє: {self.order}"
+            else:
+                return f"Невідомий тип замовлення: {self.order}"
+        return "Немає даних"
+
+    display_order.short_description = "Замовлення"  # Назва колонки в адмін-панелі

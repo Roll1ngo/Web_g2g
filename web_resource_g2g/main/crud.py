@@ -13,8 +13,12 @@ from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      CommissionRates)
 from django.db.models import F, Sum, DecimalField, Q
 
-from .tg_bot_run import send_messages_sync
-from .utils.logger_config import logger
+from main.tg_bot_run import send_messages_sync
+from main.tg_bot_run import send_messages_sync
+
+from main.utils.logger_config import logger
+from main import calculate_commissions_crud as commissions_crud
+from internal_market.models import InternalOrder
 from main import calculate_commissions_crud as commissions_crud
 from internal_market.models import InternalOrder
 
@@ -37,14 +41,16 @@ def check_exists_another_order_before_change_order_status(seller_id,
     # Виконуємо запит до моделі SoldOrders
     other_exchange_orders_exist = SoldOrders.objects.filter(server_id=server_id,
                                                             seller_id=seller_id,
-                                                            download_video_status=False
+                                                            download_video_status=False,
+                                                            status='DELIVERING'
                                                             ).exclude(
         sold_order_number=sold_order_number
     ).exists()
     logger.info(f"other_exchange_orders_exist__{other_exchange_orders_exist}")
     other_internal_market_orders_exist = InternalOrder.objects.filter(server_id=server_id,
                                                                       internal_seller=seller_id,
-                                                                      download_video_status=False
+                                                                      download_video_status=False,
+                                                                      status='DELIVERING'
                                                                       ).exclude(
         sold_order_number=sold_order_number
     ).exists()
@@ -54,6 +60,8 @@ def check_exists_another_order_before_change_order_status(seller_id,
 
 def get_main_data_from_table(auth_user_id: int):
     seller_id = get_seller_id_by_user_id(auth_user_id)
+    seller_id = get_seller_id_by_user_id(auth_user_id)
+
     main_data = (
         OffersForPlacement.objects
         .select_related('server_urls')
@@ -99,7 +107,7 @@ def get_main_data_from_table(auth_user_id: int):
             ).exclude(sellers=row['sellers']).values_list('price', flat=True).first()
 
             if current_strategy:
-                ballance_strategy_for_all = 'mean10_lot'
+                ballance_strategy_for_all = 'minimal'
                 change_all_strategy = OffersForPlacement.objects.filter(server_urls_id=row['server_urls'])
                 change_all_strategy.update(price=ballance_strategy_for_all, face_to_face_trade=True)
 
@@ -234,7 +242,7 @@ def update_price_delivery(data, user_id):
 
         offer.save()
         if field == 'stock':
-            update_stock_table(row_id, 'change stock')
+            update_stock_table(row_id, 'start page change stock')
 
         offer_dict = model_to_dict(offer)
         logger.info(f"offer_dict__{offer_dict}")
@@ -320,20 +328,24 @@ def add_server_to_db(data):
 
 def delete_server_from_list(offer_id):
     offer = OffersForPlacement.objects.get(id=offer_id)
+    update_stock_table(offer_id, ' delete function change status', active_rate=False)
     offer.delete()
 
 
 def pause_offer(offer_id, action):
     offer = OffersForPlacement.objects.get(id=offer_id)
-    server_id = offer.server_urls
+    server_id = offer.server_urls_id
+    logger.info(f'server_id__{server_id}')
 
     if action == 'pause':
         setattr(offer, 'active_rate', 0)
+        offer.save()
     elif action == 'resume':
         setattr(offer, 'active_rate', 1)
-        OffersForPlacement.objects.filter(server_urls_id=server_id).update(double_minimal_mode_status=0)
-    offer.save()
-    update_stock_table(offer_id, 'Change status')
+        offer.save()
+        OffersForPlacement.objects.filter(server_urls_id=server_id).update(double_minimal_mode_status=False)
+
+    update_stock_table(offer_id, 'start page change status')
 
 
 def get_order_info(user_id):
@@ -604,13 +616,13 @@ def update_technical_balance():
     return round(total_balance, 2)
 
 
-def update_stock_table(row_id, description):
+def update_stock_table(row_id, description, active_rate=None):
     offer = OffersForPlacement.objects.get(id=row_id)
     stock_row = ChangeStockHistory.objects.create(
         seller_id=offer.sellers.id,
         server_id=offer.server_urls.id,
         stock=offer.stock,
-        active_rate_record=offer.active_rate,
+        active_rate_record=offer.active_rate if active_rate is None else active_rate,
         description=description,
         created_time=timezone.now()
     )
@@ -620,8 +632,11 @@ def update_stock_table(row_id, description):
 
 def calculate_seller_owner_technical_earning_from_orders(seller_id):
     if seller_id == owner_user_and_seller_id or seller_id == technical_user_and_seller_id:
-        query_filter_sold_orders = Q(charged_to_payment=True) & Q(paid_to_technical=False)
-        query_filter_internal_orders = Q(charged_to_payment=True) & Q(paid_to_technical=False)
+        query_filter_sold_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+
+        query_filter_internal_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
 
         if seller_id == owner_user_and_seller_id:
             target_field = 'owner_commission'
@@ -630,10 +645,12 @@ def calculate_seller_owner_technical_earning_from_orders(seller_id):
     else:
         query_filter_sold_orders = (Q(charged_to_payment=True)
                                     & Q(paid_to_technical=False)
-                                    & Q(seller_id=seller_id))
+                                    & Q(seller_id=seller_id)
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
         query_filter_internal_orders = (Q(charged_to_payment=True)
                                         & Q(paid_to_technical=False)
-                                        & Q(internal_seller=seller_id))
+                                        & Q(internal_seller=seller_id)
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
         target_field = 'earned_without_admins_commission'
 
     sold_orders_earned = SoldOrders.objects.filter(query_filter_sold_orders).aggregate(

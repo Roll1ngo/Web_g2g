@@ -67,11 +67,12 @@ class VitaliyOrdersAdmin(admin.ModelAdmin):
 
 @admin.register(CommissionBreakdown)
 class CommissionBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('order', 'seller', 'service_type', 'amount', 'created_time',
+    list_display = ('display_order', 'seller', 'service_type', 'amount', 'created_time',
                     'charged_to_payment_commission', 'paid_in_salary_commission')
     list_filter = ('seller', 'service_type', 'charged_to_payment_commission',
                    'paid_in_salary_commission', CreatedTimeFilter)
-
+    search_fields = ('seller__auth_user_id', 'service_type')  # Додайте поля для пошуку
+    list_editable = ('charged_to_payment_commission', 'paid_in_salary_commission')  # Дозволити редагування в списку
     actions = ['mark_paid']
 
     @admin.action(description='Відмітити комісії як оплачені')
@@ -217,11 +218,12 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     ordering = ('-created_time',)
 
     # Вказуємо список доступних дій
-    actions = ['update_balance',
+    actions = [
                'mark_paid',
-               'pay_technical_commission',
-               'mark_reviewed',
-               'send_message_to_seller']
+               'pay_technical_and_owner_commission',
+               'update_balance',
+               'send_message_to_seller'
+    ]
 
     # Заборона створення нових замовлень
     def has_add_permission(self, request):
@@ -262,7 +264,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
         crud.update_owner_balance()
         self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
 
-    @admin.action(description='Відмітити як оплачені')
+    @admin.action(description='Оплатити виконання замовлень продавцям')
     def mark_paid(self, request, queryset):
 
         # Отримуємо список унікальних продавців з оновлених замовлень
@@ -287,19 +289,14 @@ class SoldOrdersAdmin(admin.ModelAdmin):
             f"Успішно оновлено {updated_count} записів, встановлено paid_in_salary=True."
         )
 
-    @admin.action(description='Сплатити технічну комісію')
-    def pay_technical_commission(self, request, queryset):
-        updated_count = queryset.update(paid_to_technical=True)
-        crud.update_technical_balance()  # Виклик celery task
+    @admin.action(description='Сплатити технічну комісію та комісію власника')
+    def pay_technical_and_owner_commission(self, request, queryset):
+        updated_count = queryset.update(paid_to_technical=True, paid_to_owner=True)
+        crud.update_technical_balance()
+        crud.update_owner_balance()
+        # Виклик celery task
         self.message_user(request, f"Оновлено записів: {updated_count}."
-                                   f" Встановлено статус 'оплачено технічну комісію'.")
-
-    @admin.action(description='Відмітити як переглянуто')
-    def mark_reviewed(self, request, queryset):
-        updated_count = queryset.update(paid_to_owner=True)
-        for order in queryset:  # Ітерація по оновленим об'єктам
-            crud.update_owner_balance()
-        self.message_user(request, f"Успішно оновлено {updated_count} записів, відмічено як переглянуті.")
+                                   f" Оплачено технічну комісію та комісію власника")
 
     def order_value(self, obj):
         return obj.earned_without_admins_commission
@@ -445,10 +442,16 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
     list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
     search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
+    actions = ['prepare_to_double_minimal_mode']
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
         return queryset.select_related('sellers', 'server_urls')
+
+    @admin.action(description='Підготувати до переводу в режим перепродажу')
+    def prepare_to_double_minimal_mode(self, request, queryset):
+        queryset.update(active_rate=False, face_to_face_trade=False)
+        self.message_user(request, f" {queryset.count()} лотів підготовлено до переводу в режим перепродажу.")
 
 
 class AddOrder(SoldOrders):

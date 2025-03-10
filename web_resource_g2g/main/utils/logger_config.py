@@ -14,14 +14,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # Get the path to the executable file
-executable_path = os.path.abspath(sys.executable)
+# Отримання шляху до кореня проєкту
+root_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Create a log file in the same directory as the executable
-log_file = os.path.join(os.path.dirname(executable_path), "front_server.ans")
+# Формування шляху до файлу логування
+log_file_path = os.path.join(root_path, "front_server.ans")
 
 # Create a file handler using the `logging.handlers` module
 file_handler = logging.handlers.RotatingFileHandler(
-    log_file,
+    log_file_path,
     maxBytes=max_bytes,
     backupCount=backup_count
 )

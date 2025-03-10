@@ -94,6 +94,7 @@ table tr:hover {
 	  <th>Гра</th>
 	  <th>Ціна</th>
 	  <th>Кількість</th>
+	  <th>Доставка</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -102,13 +103,19 @@ table tr:hover {
 	  <td>{{ forloop.counter }}</td>
 	  <td><input type="text" id="server-{{ lot.id }}" value="{{ lot.server_name }}" title="{{ lot.server_name }}"
 				 readonly></td>
-	  <td><input type="text" id="game-{{ lot.id }}" value="{{ lot.game_name }}" title="{{ lot.game_name }}" readonly>
-	  </td>
+	  <td><input type="text" id="game-{{ lot.id }}" value="{{ lot.game_name }}" title="{{ lot.game_name }}" readonly></td>
 	  <td><input type="text" id="price-{{ lot.id }}" value="{{ lot.price }}" readonly></td>
 	  <td><input type="text" id="stock-{{ lot.id }}"
 				 value="{% if lot.game_name == 'Cataclysm' %}{{ lot.stock }}K{% else %}{{ lot.stock }}{% endif %}"
 				 readonly></td>
-
+	  <td>
+		{% if lot.mail_delivery %}
+		  <i class="fas fa-envelope" style="font-size: 150%; color: lightblue;"  title="Mail"></i>
+		{% endif %}
+		{% if lot.face_to_face_trade %}
+		  <i class="fa-solid fa-people-carry-box" style="font-size: 150%; color: #3CB371;" title="Trade"></i>
+		{% endif %}
+	  </td>
 	</tr>
 	{% endfor %}
 	</tbody>
@@ -263,6 +270,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		  }
 		  closeOrderForm();
 		  closeConfirmationModal();
+		  window.location.reload(); // Оновлення сторінки
+
 		} else {
 		  alert("Помилка при створенні замовлення.");
       }
