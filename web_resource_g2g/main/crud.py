@@ -1,3 +1,4 @@
+import decimal
 from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
@@ -8,10 +9,18 @@ from django.forms import model_to_dict
 from django.utils import timezone
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
-                     SoldOrders, Commission, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
+                     SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
                      CommissionRates)
 from django.db.models import F, Sum, DecimalField, Q
-from .utils.logger_config import logger
+
+from main.tg_bot_run import send_messages_sync
+from main.tg_bot_run import send_messages_sync
+
+from main.utils.logger_config import logger
+from main import calculate_commissions_crud as commissions_crud
+from internal_market.models import InternalOrder
+from main import calculate_commissions_crud as commissions_crud
+from internal_market.models import InternalOrder
 
 owner_user_and_seller_id = 1
 technical_user_and_seller_id = 2
@@ -30,18 +39,28 @@ def check_exists_another_order_before_change_order_status(seller_id,
     :return: True, якщо такі замовлення існують, інакше False
     """
     # Виконуємо запит до моделі SoldOrders
-    other_orders_exist = SoldOrders.objects.filter(server_id=server_id,
-                                                   seller_id=seller_id,
-                                                   download_video_status=False,
-                                                   status='DELIVERING'
-                                                   ).exclude(
-                                                   sold_order_number=sold_order_number
-                                                   ).exists()
-
-    return other_orders_exist
+    other_exchange_orders_exist = SoldOrders.objects.filter(server_id=server_id,
+                                                            seller_id=seller_id,
+                                                            download_video_status=False,
+                                                            status='DELIVERING'
+                                                            ).exclude(
+        sold_order_number=sold_order_number
+    ).exists()
+    logger.info(f"other_exchange_orders_exist__{other_exchange_orders_exist}")
+    other_internal_market_orders_exist = InternalOrder.objects.filter(server_id=server_id,
+                                                                      internal_seller=seller_id,
+                                                                      download_video_status=False,
+                                                                      status='DELIVERING'
+                                                                      ).exclude(
+        sold_order_number=sold_order_number
+    ).exists()
+    logger.info(f"other_internal_market_orders_exist__{other_internal_market_orders_exist}")
+    return False if not other_exchange_orders_exist and not other_internal_market_orders_exist else True
 
 
 def get_main_data_from_table(auth_user_id: int):
+    seller_id = get_seller_id_by_user_id(auth_user_id)
+
     main_data = (
         OffersForPlacement.objects
         .select_related('server_urls')
@@ -101,7 +120,7 @@ def get_main_data_from_table(auth_user_id: int):
 
             stock = row['stock']
             if row['price']:
-                new_price, interest_rate = get_float_price(row, auth_user_id)
+                new_price, interest_rate = get_float_price(row, seller_id)
                 row['price'] = new_price
                 row['interest_rate'] = interest_rate
                 row['full_cost'] = round(new_price * stock, 3)
@@ -117,14 +136,14 @@ def get_main_data_from_table(auth_user_id: int):
     return main_data_float_price
 
 
-def get_float_price(row, auth_user_id):
+def get_float_price(row, seller_id):
     try:
         # Перевірка наявності ключів у `row`
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
-        rang_exchange = float(get_global_commissions_rates()['exchange'])
+        rang_exchange = float(commissions_crud.get_global_commissions_rates()['exchange'])
         logger.info(rang_exchange)
-        interest_rate = get_interest_rate_by_user_id(auth_user_id, server_urls_id)
+        interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
         logger.info(f"interest_rate__{interest_rate}")
 
         if not currently_strategy or not server_urls_id:
@@ -156,11 +175,6 @@ def get_float_price(row, auth_user_id):
     #     return None, None
     finally:
         pass
-
-
-def get_my_service_list(user_id):
-    my_services = CommissionBreakdown.objects.filter(seller__auth_user_id=user_id)
-    return my_services
 
 
 def get_clients_provide_service(user_id):
@@ -233,8 +247,9 @@ def update_price_delivery(data, user_id):
         logger.info(f"offer_dict__{offer_dict}")
 
         try:
+            seller_id = get_seller_id_by_user_id(user_id)
             # Retrieve the TopPrices object
-            show_price, interest_rate = get_float_price(offer_dict, user_id)
+            show_price, interest_rate = get_float_price(offer_dict, seller_id)
         except TopPrices.DoesNotExist:
             # Handle the case where the TopPrices object does not exist
             new_price = 0
@@ -330,7 +345,6 @@ def pause_offer(offer_id, action):
         offer.save()
         OffersForPlacement.objects.filter(server_urls_id=server_id).update(double_minimal_mode_status=False)
 
-
     update_stock_table(offer_id, 'start page change status')
 
 
@@ -340,55 +354,73 @@ def get_order_info(user_id):
                                             download_video_status=False,
                                             status='DELIVERING').
                   select_related('server').first())
-
+    logger.info(f"order_info__{order_info}")
+    if order_info is None:
+        order_info = (InternalOrder.objects.filter(internal_seller=seller_id,
+                                                   download_video_status=False,
+                                                   status='DELIVERING').
+                      select_related('server').first())
     logger.info(f"server_id__{order_info.server_id}, seller_id_{seller_id}") if order_info else None
 
     return order_info
 
 
-def update_sold_order_when_video_download(user_id, order_number, path_to_video, sent_gold):
-    logger.info(f"sold_order_number__{order_number}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
-    seller_id = Sellers.objects.get(auth_user_id=user_id)
+def update_sold_order_when_video_download(user_id, sold_order, path_to_video, sent_gold):
+    logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
+    seller = Sellers.objects.get(auth_user_id=user_id)
+    seller_id = seller.id
+    logger.info(f"seller_id__{seller_id}")
+    buyer_tg = sold_order.internal_buyer.id_telegram
+    buyer_name = sold_order.internal_buyer.auth_user.username
+    logger.info(f"buyer_name__{buyer_name}")
+    delivery_method = sold_order.trade_mode
+    logger.info(f"buyer_tg__{buyer_tg}, delivery_method__{delivery_method}")
+    class_name = sold_order.__class__.__name__
+
+    message = (f'Замовлення  {sold_order.quantity} золота на сервері {sold_order.server.server_name}'
+               f' - {sold_order.server.game_name} відправлено по ігровій пошті, та надійде протягом години') \
+
     try:
-        with transaction.atomic():  # Забезпечує цілісність транзакції
-            # Оновлюємо статуси у SoldOrders
-            sold_order = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id.id)
-            sold_order.path_to_video = path_to_video
-            sold_order.sent_gold = sent_gold
-            sold_order.download_video_status = True
-            sold_order.charged_to_payment = True
-            sold_order.save()
-            logger.info('посилання на відео додано до бази даних')
+        sold_order.path_to_video = path_to_video
+        sold_order.sent_gold = sent_gold
+        sold_order.download_video_status = True
+        sold_order.charged_to_payment = True
+        if class_name == 'InternalOrder':
+            sold_order.status = 'DELIVERED'
+        sold_order.save()
+        logger.info('посилання на відео додано до бази даних')
 
-            # Зараховуємо комісії до оплати
-            update_status_charged_to_payment_commission(sold_order.id)
+        # Зараховуємо комісії до оплати
+        commissions_crud.update_status_charged_to_payment_commission(sold_order.id)
 
-            # Оновлюємо баланс продавця
-            update_seller_balance(user_id)
-            update_owner_balance()
-            update_technical_balance()
+        # Оновлюємо баланс продавця
+        get_balance(user_id)
+        update_owner_balance()
+        update_technical_balance()
 
-            # Перевірка на наявність інших замовлень перед зміною статусу
-            exists_order = check_exists_another_order_before_change_order_status(seller_id,
-                                                                                 sold_order.server,
-                                                                                 order_number)
-            if not exists_order:
-                # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
-                offer = OffersForPlacement.objects.filter(sellers=sold_order.seller,
-                                                          server_urls=sold_order.server,
-                                                          order_status=True
-                                                          ).first()
+        # Перевірка на наявність інших замовлень перед зміною статусу
+        exists_order = check_exists_another_order_before_change_order_status(seller,
+                                                                             sold_order.server,
+                                                                             sold_order.sold_order_number)
+        logger.info(f"exists_order__{exists_order}")
+        if not exists_order:
+            # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
+            offer = OffersForPlacement.objects.filter(sellers=seller_id,
+                                                      server_urls=sold_order.server,
+                                                      order_status=True
+                                                      ).first()
 
-                if offer:
-                    offer.order_status = False
-                    offer.reserve_stock -= sold_order.quantity
+            if offer:
+                offer.order_status = False
+            offer.save()
 
-                offer.save()
+            if delivery_method == 'Mail' and class_name == 'InternalOrder':
+                send_messages_sync(buyer_tg, buyer_name, message)
 
-                return f'статус активного замовлення на сервері змінено на False.'
-            else:
-                return (f'статус активного замовлення залишається True.'
-                        f' Продавець має ще активні замовлення на цьому сервері')
+            return f'статус активного замовлення на сервері змінено на False.'
+        else:
+            return (f'статус активного замовлення залишається True.'
+                    f' Продавець має ще активні замовлення на цьому сервері')
 
     except SoldOrders.DoesNotExist:
         return f"Замовлення не знайдено"
@@ -396,13 +428,86 @@ def update_sold_order_when_video_download(user_id, order_number, path_to_video, 
         return f"Помилка: {e}"
 
 
-def get_orders_history(user_id):
+def get_sold_orders_for_history(user_id):
     try:
         seller_id = Sellers.objects.get(auth_user_id=user_id)
-        orders_history = SoldOrders.objects.filter(seller_id=seller_id, ).select_related('server')
+        sold_orders_history = SoldOrders.objects.filter(seller_id=seller_id, ).select_related('server')
     except Sellers.DoesNotExist:
         logger.error(f"Seller with auth_user_id {user_id} does not exist.")
-    return orders_history
+    return sold_orders_history
+
+
+def get_internal_orders_for_history(user_id):
+    try:
+        internal_orders = InternalOrder.objects.filter(
+            Q(internal_seller__auth_user_id=user_id) | Q(internal_buyer__auth_user_id=user_id)
+        ).select_related('server')
+    except InternalOrder.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
+
+    return internal_orders
+
+
+def get_orders_with_balance(user_id, sold_orders, internal_orders):
+    # Об'єднуємо записи в один список
+    all_orders = list(sold_orders) + list(internal_orders)
+
+    # Сортуємо всі записи за часом створення
+    all_orders.sort(key=lambda x: x.created_time)
+
+    total_earned = 0  # Ініціалізуємо загальну суму
+    orders_with_balance = []
+
+    # Проходимо по відсортованих записах і оновлюємо баланс
+    for order in all_orders:
+        if isinstance(order, SoldOrders):
+            # Обробка записів з SoldOrders
+            if order.status == "CANCEL_REQUESTED":
+                # Якщо статус "CANCEL_REQUESTED", пропускаємо зміну балансу
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,  # Записуємо попередній баланс
+                    'type': 'sold_order',  # Додаємо тип для розрізнення записів
+                    'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
+                })
+            else:
+                if not order.paid_in_salary:
+                    total_earned += decimal.Decimal(order.earned_without_admins_commission)
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,
+                    'type': 'sold_order'  # Додаємо тип для розрізнення записів
+                })
+        elif isinstance(order, InternalOrder):
+            # Обробка записів з InternalOrder
+            if order.status == "CANCEL_REQUESTED":
+                # Якщо статус "CANCEL_REQUESTED", пропускаємо зміну балансу
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,  # Записуємо попередній баланс
+                    'type': 'internal_order',  # Додаємо тип для розрізнення записів
+                    'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
+                })
+            else:
+                if order.internal_seller.auth_user_id == user_id:
+                    # Якщо користувач є продавцем, додаємо earned_without_admins_commission
+                    total_earned += decimal.Decimal(order.earned_without_admins_commission)
+                    orders_with_balance.append({
+                        'order': order,
+                        'current_balance': total_earned,
+                        'type': 'internal_order'  # Додаємо тип для розрізнення записів
+                    })
+                elif order.internal_buyer and order.internal_buyer.auth_user_id == user_id:
+                    # Якщо користувач є покупцем, змінюємо total_amount на від'ємне
+                    order.total_amount = decimal.Decimal(-order.total_amount)  # Змінюємо значення на від'ємне
+                    order.earned_without_admins_commission = float(order.total_amount)
+                    total_earned += decimal.Decimal(order.total_amount)  # Додаємо від'ємне значення до балансу
+                    orders_with_balance.append({
+                        'order': order,
+                        'current_balance': total_earned,
+                        'type': 'internal_order'  # Додаємо тип для розрізнення записів
+                    })
+    return orders_with_balance
 
 
 def get_server_id(user_id):
@@ -419,7 +524,13 @@ def get_server_id(user_id):
 
 def create_video_filename(request, sold_order_number):
     logger.info('inside')
-    sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number, ).select_related('server').first()
+    sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number).select_related('server').first()
+    logger.info(f"sold_order__{sold_order}")
+    if sold_order is None:
+        sold_order = (InternalOrder.objects.filter(sold_order_number=sold_order_number)
+                      .select_related('server').first())
+        logger.info(f"sold_order__{sold_order}")
+
     sent_gold = request.POST.get('sent_gold')
     seller = request.user
 
@@ -429,235 +540,59 @@ def create_video_filename(request, sold_order_number):
 
     filename = f"{seller}__{sent_gold}__{server}__{game}__{sold_order_number}__{current_time}.mp4"
     logger.info(filename)
-    return filename
+    return filename, sold_order
+
+
+def get_seller_id_by_user_id(user_id):
+    try:
+        seller = Sellers.objects.get(auth_user_id=user_id)
+    except Sellers.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
+    return seller.id
 
 
 def get_balance(user_id):
+    logger.info("inside get_balance")
     if user_id == owner_user_and_seller_id:
         return update_owner_balance()
     if user_id == technical_user_and_seller_id:
         return update_technical_balance()
-
     try:
-        seller_id = Sellers.objects.get(auth_user_id=user_id)
+        seller = get_seller_id_by_user_id(user_id)
+        logger.info(f"user_id__{user_id}, seller_id__{seller}")
     except Sellers.DoesNotExist:
         logger.error(f"Seller with auth_user_id {user_id} does not exist.")
         return 0
 
-    total_earned = SoldOrders.objects.filter(
-        seller_id=seller_id,
-        charged_to_payment=True,
-        paid_in_salary=False,
-    ).aggregate(total_earned=Sum('earned_without_admins_commission'))['total_earned']
-
-    if total_earned is None:
-        total_earned = 0
-    elif not isinstance(total_earned, (int, float)):
-        try:
-            total_earned = float(total_earned)
-        except (ValueError, TypeError):
-            total_earned = 0
+    total_received_from_orders = calculate_seller_owner_technical_earning_from_orders(seller)
+    spend_internal_market = get_sum_spend_internal_market(seller)
 
     # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
-    commission_earned = CommissionBreakdown.objects.filter(
-        seller=seller_id,
-        charged_to_payment_commission=True,
-        paid_in_salary_commission=False
-    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
-    total_balance = float(total_earned) + float(commission_earned)
+    commission_earned = commissions_crud.get_breakdown_commissions(seller)
+    total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned) - decimal.Decimal(
+        spend_internal_market)
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
     if total_balance is None:
         total_balance = 0
 
-    Sellers.objects.filter(id=seller_id.id).update(balance=total_balance)
+    Sellers.objects.filter(id=seller).update(balance=total_balance)
 
-    logger.info(f"technical_sum_total_earned__{total_balance}")
+    logger.info(f"seller_total_balance_{total_balance}")
     return round(total_balance, 2)
 
 
-def get_global_commissions_rates():
-    rates = CommissionRates.objects.first()
-    commissions = {
-        "exchange": rates.exchange,
-        "renter_lvl1": rates.renter_lvl1,
-        "renter_lvl2": rates.renter_lvl2,
-        "mentor": rates.mentor,
-        "owner": rates.owner,
-        "technical": rates.technical,
-        "recruiter": rates.recruiter
-    }
-    return commissions
-
-
-def get_interest_rate_by_user_id(auth_user_id, server_id):
-    logger.info(f"auth_user_id__{auth_user_id}, server_id__{server_id}")
-    # Отримання `interest_rate` з `Sellers`
-    try:
-        seller_id = Sellers.objects.get(auth_user_id=auth_user_id)
-        logger.info(f"seller_id__{seller_id}")
-        seller_rate = SellerServerInterestRate.objects.filter(seller_id=seller_id, server_id=server_id).first()
-        if not seller_rate or seller_rate.interest_rate is None:
-            interest_rate = 0
-            logger.info(f"Ставка відсутня для seller_id={seller_id} та server_id={server_id}.")
-            return interest_rate
-    except ObjectDoesNotExist:
-        logger.error(f"Запис SellerServerInterestRate не знайдено для seller_id={seller_id} та server_id={server_id}.")
-        return None
-    return seller_rate.interest_rate
-
-
-def get_renter_info(seller_id, server_id):
-    try:
-        renter_info = SellerServerInterestRate.objects.get(seller=seller_id, server=server_id)
-
-        # Перетворюємо об'єкт на словник
-        renter_info_dict = model_to_dict(renter_info)
-
-        lvl1 = renter_info_dict.get('renter_lvl1')
-        lvl2 = renter_info_dict.get('renter_lvl2')
-        if lvl1:
-            return {'renter_lvl1': lvl1}
-        elif lvl2:
-            return {'renter_lvl2': lvl2}
-        else:
-            return {}
-    except SellerServerInterestRate.DoesNotExist:
-        logger.error(f"Запис SellerServerInterestRate не знайдено для seller_id={seller_id} та server_id={server_id}.")
-
-
-def calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,
-                                                             quantity_cost, order_number):
-    # Отримуємо словник з інформацією про послуги якими користується продавець та кто їх надає
-    seller_services_info = get_seller_services_info(seller_id, server_id)
-    logger.info(f"seller_services_info__{seller_services_info}")
-
-    # Отримуємо словник для продавця з послугами та вартістю кожної для цього замовлення
-    commissions_service_providers = calculate_commissions_for_service_providers(seller_services_info,
-                                                                                quantity_cost)
-    logger.info(f"commissions_values__{commissions_service_providers}")
-
-    # Чистий відсоток продавця після віднімання комісій
-    seller_total_rate = calculate_seller_total_rate(seller_id, server_id)
-    logger.info(f"seller_total_rate__{seller_total_rate}")
-
-    record_commissions_service_providers(seller_services_info, commissions_service_providers,
-                                         order_number, seller_id)
-
-
-def calculate_commissions_for_service_providers(seller_services_info, quantity_cost):
-    # Отримуємо словник з комісіями за послуги
-    commissions = get_global_commissions_rates()
-
-    # Створюємо словник для збереження комісій
-    commissions_service_providers = {}
-
-    # Обчислюємо комісії для кожного сервісного провайдера
-    if seller_services_info.get('mentor') is not None:
-        mentor_commission = commissions.get('mentor', Decimal('0.0'))
-        commissions_service_providers['mentor'] = round(quantity_cost * mentor_commission / Decimal('100.0'), 6)
-
-    if seller_services_info.get('renter_lvl1') is not None:
-        renter_lvl1_commission = commissions.get('renter_lvl1', Decimal('0.0'))
-        commissions_service_providers['renter_lvl1'] = round(quantity_cost * renter_lvl1_commission / Decimal('100.0'),
-                                                             6)
-
-    if seller_services_info.get('renter_lvl2') is not None:
-        renter_lvl2_commission = commissions.get('renter_lvl2', Decimal('0.0'))
-        commissions_service_providers['renter_lvl2'] = round(quantity_cost * renter_lvl2_commission / Decimal('100.0'),
-                                                             6)
-
-    if seller_services_info.get('recruiter') is not None:
-        recruiter_commission = commissions.get('recruiter', Decimal('0.0'))
-        commissions_service_providers['recruiter'] = round(quantity_cost * recruiter_commission / Decimal('100.0'), 6)
-
-    return commissions_service_providers
-
-
-def get_seller_services_info(seller_id, server_id):
-    renter_info = get_renter_info(seller_id, server_id)
-
-    mentor_recruiter_from_seller = Sellers.objects.get(id=seller_id)
-    if mentor_recruiter_from_seller is None:
-        logger.warning(f"No seller found with ID: {seller_id}")
-        return None  # Or raise an exception if appropriate
-
-    mentor_recruiter_from_seller_info_dict = model_to_dict(mentor_recruiter_from_seller)
-    mentor_recruiter_from_seller_info_dict.update(renter_info)
-
-    return mentor_recruiter_from_seller_info_dict
-
-
-def calculate_seller_total_rate(seller_id, server_id):
-    seller_services_info = get_seller_services_info(seller_id, server_id)
-    commissions = get_global_commissions_rates()
-
-    # Початкова комісія (100%)
-    seller_total_rate = Decimal('100.0')
-
-    # Віднімаємо обов'язкові комісії (власник та технічна комісія)
-    seller_total_rate -= commissions.get('owner', Decimal('0.0'))
-    seller_total_rate -= commissions.get('technical', Decimal('0.0'))
-
-    # Віднімаємо комісії, якщо вони існують
-    if seller_services_info.get('mentor') is not None:
-        seller_total_rate -= commissions.get('mentor', Decimal('0.0'))
-
-    if seller_services_info.get('renter_lvl1') is not None:
-        seller_total_rate -= commissions.get('renter_lvl1', Decimal('0.0'))
-
-    if seller_services_info.get('renter_lvl2') is not None:
-        seller_total_rate -= commissions.get('renter_lvl2', Decimal('0.0'))
-
-    if seller_services_info.get('recruiter') is not None:
-        seller_total_rate -= commissions.get('recruiter', Decimal('0.0'))
-
-    return seller_total_rate
-
-
-def record_commissions_service_providers(seller_services_info, commissions_service_providers,
-                                         order_number, seller_id):
-    order_id = SoldOrders.objects.get(sold_order_number=order_number, seller_id=seller_id)
-    logger.info(f"order_id__{order_id}")
-    logger.info(f"seller_services_info__{seller_services_info}")
-    logger.info(f"commissions_service_providers__{commissions_service_providers}")
-    for service_provider, commission in commissions_service_providers.items():
-        seller = Sellers.objects.get(id=seller_services_info[service_provider])
-        new_record = CommissionBreakdown.objects.create(order=order_id,
-                                                        seller=seller,
-                                                        service_type=service_provider,
-                                                        amount=commission,
-                                                        charged_to_payment_commission=False,
-                                                        paid_in_salary_commission=False,
-                                                        created_time=timezone.now())
-        new_record.save()
-
-
-def update_seller_balance(user_id):
-    get_balance(user_id)
-
-    return 'Seller balance updated successfully.'
-
-
 def update_owner_balance():
-    target_field = 'owner_commission'
     # Step 1: Calculate the total earned_without_admins_commission for the specific seller
-    total_earned = SoldOrders.objects.filter(
-        charged_to_payment=True,
-        paid_to_owner=False
-    ).aggregate(total_earned=Sum(target_field, output_field=DecimalField()))['total_earned']
+    total_received_from_orders = calculate_seller_owner_technical_earning_from_orders(owner_user_and_seller_id)
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
-    total_earned = 0 if total_earned is None else total_earned
-    logger.info(f"technical_sum_total_earned__{total_earned}")
+    total_received_from_orders = 0 if total_received_from_orders is None else total_received_from_orders
+    logger.info(f"total_received_from_orders{total_received_from_orders}")
 
     # 2. Баланс із CommissionBreakdown
-    commission_earned = CommissionBreakdown.objects.filter(
-        seller=owner_user_and_seller_id,
-        charged_to_payment_commission=True,
-        paid_in_salary_commission=False
-    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
-    total_balance = float(total_earned) + float(commission_earned)
+    commission_earned = commissions_crud.get_breakdown_commissions(owner_user_and_seller_id)
+    total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned)
 
     Sellers.objects.filter(id=owner_user_and_seller_id).update(balance=total_balance)
 
@@ -666,29 +601,18 @@ def update_owner_balance():
 
 
 def update_technical_balance():
-    target_field = 'technical_commission'
-
     # Step 1: Calculate the total earned_without_admins_commission for the specific seller
-    total_earned = SoldOrders.objects.filter(
-        charged_to_payment=True,
-        paid_to_technical=False
-    ).aggregate(total_earned=Sum(target_field, output_field=DecimalField()))['total_earned']
+    total_received_from_orders = calculate_seller_owner_technical_earning_from_orders(technical_user_and_seller_id)
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
-    total_earned = 0 if total_earned is None else total_earned
-    logger.info(f"technical_sum_total_earned__{total_earned}")
+    total_received_from_orders = 0 if total_received_from_orders is None else total_received_from_orders
 
     # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
-    commission_earned = CommissionBreakdown.objects.filter(
-        seller=technical_user_and_seller_id,
-        charged_to_payment_commission=True,
-        paid_in_salary_commission=False
-    ).aggregate(total_commission=Sum('amount'))['total_commission'] or 0
-    total_balance = float(total_earned) + float(commission_earned)
+    commission_earned = commissions_crud.get_breakdown_commissions(technical_user_and_seller_id)
+    total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned)
 
     Sellers.objects.filter(id=technical_user_and_seller_id).update(balance=total_balance)
 
-    logger.info('Balance updated successfully.')
     return round(total_balance, 2)
 
 
@@ -706,12 +630,53 @@ def update_stock_table(row_id, description, active_rate=None):
     logger.info("New record to stock table created.")
 
 
-def update_status_paid_in_salary_commission(user_id):
-    seller_id = Sellers.objects.get(auth_user_id=user_id)
-    CommissionBreakdown.objects.filter(seller_id=seller_id).update(paid_in_salary_commission=True)
-    logger.info("Status paid_in_salary_commission updated successfully.")
+def calculate_seller_owner_technical_earning_from_orders(seller_id):
+    if seller_id == owner_user_and_seller_id or seller_id == technical_user_and_seller_id:
+        query_filter_sold_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+
+        query_filter_internal_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+
+        if seller_id == owner_user_and_seller_id:
+            target_field = 'owner_commission'
+        elif seller_id == technical_user_and_seller_id:
+            target_field = 'technical_commission'
+    else:
+        query_filter_sold_orders = (Q(charged_to_payment=True)
+                                    & Q(paid_to_technical=False)
+                                    & Q(seller_id=seller_id)
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+        query_filter_internal_orders = (Q(charged_to_payment=True)
+                                        & Q(paid_to_technical=False)
+                                        & Q(internal_seller=seller_id)
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+        target_field = 'earned_without_admins_commission'
+
+    sold_orders_earned = SoldOrders.objects.filter(query_filter_sold_orders).aggregate(
+        total_earned=Sum(target_field))['total_earned']
+    if sold_orders_earned is None:
+        sold_orders_earned = 0
+
+    logger.info(f"sold_orders_earned__{sold_orders_earned}")
+
+    internal_market_earned = InternalOrder.objects.filter(query_filter_internal_orders).aggregate(
+        total_earned=Sum(target_field))['total_earned']
+    if internal_market_earned is None:
+        internal_market_earned = 0
+
+    logger.info(f"internal_market_earned__{internal_market_earned}")
+
+    total_balance = decimal.Decimal(sold_orders_earned) + decimal.Decimal(internal_market_earned)
+    return total_balance
 
 
-def update_status_charged_to_payment_commission(order_id):
-    CommissionBreakdown.objects.filter(order=order_id).update(charged_to_payment_commission=True)
-    logger.info("Status paid_in_salary_commission updated successfully.")
+def get_sum_spend_internal_market(seller_id):
+    result = InternalOrder.objects.filter(internal_buyer=seller_id).aggregate(
+        total_spend=Sum('total_amount'))
+    internal_market_spend = result.get('total_spend', 0)
+
+    if internal_market_spend is None:
+        internal_market_spend = 0
+    logger.info(f"internal_market_spend__{internal_market_spend}")
+    return internal_market_spend
