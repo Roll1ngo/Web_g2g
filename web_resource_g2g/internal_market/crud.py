@@ -117,6 +117,10 @@ def create_order(user_id, internal_order_data):
     internal_seller_id = Sellers.objects.get(id=internal_order_data['seller_id'])
     server_id = ServerUrls.objects.get(id=internal_order_data['server_id'])
     total_amount = decimal.Decimal(internal_order_data['total_amount'])
+    quantity = internal_order_data['order_quantity']
+
+    # Оновлюємо сток та додаєм запис до таблиці StockHistory
+    main_crud.change_offer_stock_when_create_order(server_id, internal_seller_id, quantity)
 
     (to_be_earned_without_exchange_commission, earned_without_service_commission, technical_commission,
      owner_commission, seller_rate) = commissions_crud.calculate_owner_technical_commissions(internal_seller_id,
@@ -134,7 +138,7 @@ def create_order(user_id, internal_order_data):
                                                       internal_buyer=internal_buyer_id,
                                                       trade_mode=internal_order_data['delivery_method'],
                                                       character_name=internal_order_data['character_name'],
-                                                      quantity=internal_order_data['order_quantity'],
+                                                      quantity=quantity,
                                                       price_unit=internal_order_data['unit_price'],
                                                       total_amount=internal_order_data['total_amount'],
                                                       earned_without_admins_commission=

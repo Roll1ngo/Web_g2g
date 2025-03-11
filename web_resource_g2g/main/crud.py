@@ -241,7 +241,7 @@ def update_price_delivery(data, user_id):
 
         offer.save()
         if field == 'stock':
-            update_stock_table(row_id, 'start page change stock')
+            create_record_to_stock_history_table(row_id, 'start page change stock')
 
         offer_dict = model_to_dict(offer)
         logger.info(f"offer_dict__{offer_dict}")
@@ -328,7 +328,7 @@ def add_server_to_db(data):
 
 def delete_server_from_list(offer_id):
     offer = OffersForPlacement.objects.get(id=offer_id)
-    update_stock_table(offer_id, ' delete function change status', active_rate=False)
+    create_record_to_stock_history_table(offer_id, ' delete function change status', active_rate=False)
     offer.delete()
 
 
@@ -345,7 +345,7 @@ def pause_offer(offer_id, action):
         offer.save()
         OffersForPlacement.objects.filter(server_urls_id=server_id).update(double_minimal_mode_status=False)
 
-    update_stock_table(offer_id, 'start page change status')
+    create_record_to_stock_history_table(offer_id, 'start page change status')
 
 
 def get_order_info(user_id):
@@ -615,7 +615,15 @@ def update_technical_balance():
     return round(total_balance, 2)
 
 
-def update_stock_table(row_id, description, active_rate=None):
+def change_offer_stock_when_create_order(server_id, seller_id, order_quantity):
+    offer = OffersForPlacement.objects.get(server_urls_id=server_id, sellers_id=seller_id)
+    offer.stock -= order_quantity
+    offer.save()
+    logger.info("Stock updated successfully.")
+    create_record_to_stock_history_table(offer.id, 'change stock from order')
+
+
+def create_record_to_stock_history_table(row_id, description, active_rate=None):
     offer = OffersForPlacement.objects.get(id=row_id)
     stock_row = ChangeStockHistory.objects.create(
         seller_id=offer.sellers.id,

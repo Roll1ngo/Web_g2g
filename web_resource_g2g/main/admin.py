@@ -14,7 +14,7 @@ from import_export.admin import ExportActionModelAdmin
 from import_export import resources
 
 from main import calculate_commissions_crud as commissions_crud
-from main import crud
+from main import crud as main_crud
 from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
                          ServerUrls, ChangeStockHistory, OffersForPlacement,
                          CommissionBreakdown, CommissionRates, VitaliyOrders)
@@ -79,13 +79,13 @@ class CommissionBreakdownAdmin(admin.ModelAdmin):
     def mark_paid(self, request, queryset):
         # Оновлюємо всі записи, які відповідають фільтрації
         queryset.update(paid_in_salary_commission=True)
-        crud.update_owner_balance()
+        main_crud.update_owner_balance()
 
         # Отримуємо список унікальних продавців з оновлених замовлень
         users_ids = set(queryset.values_list('seller__auth_user_id', flat=True).distinct())
 
         for user_id in users_ids:
-            crud.get_balance(user_id)
+            main_crud.get_balance(user_id)
 
 
 @admin.register(CommissionRates)
@@ -156,10 +156,10 @@ class SellersAdmin(ExportActionModelAdmin):
     @admin.action(description='Оновити баланс')
     def update_balance(self, request, queryset):
         for user_id in queryset.values_list('auth_user_id', flat=True).distinct():
-            new_balance = crud.get_balance(user_id)
+            new_balance = main_crud.get_balance(user_id)
             logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
-        crud.update_technical_balance()
-        crud.update_owner_balance()
+        main_crud.update_technical_balance()
+        main_crud.update_owner_balance()
         self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
 
     def get_user_email(self, obj):
@@ -258,10 +258,10 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     def update_balance(self, request, queryset):
 
         for user_id in queryset.values_list('seller__auth_user_id__id', flat=True).distinct():
-            new_balance = crud.get_balance(user_id)
+            new_balance = main_crud.get_balance(user_id)
             logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
-        crud.update_technical_balance()
-        crud.update_owner_balance()
+        main_crud.update_technical_balance()
+        main_crud.update_owner_balance()
         self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
 
     @admin.action(description='Оплатити виконання замовлень продавцям')
@@ -282,7 +282,7 @@ class SoldOrdersAdmin(admin.ModelAdmin):
             logger.info(f"seller_id__{user_id}")
             if user_id not in excluded_sellers:
                 commissions_crud.update_status_paid_in_salary_commission(user_id)
-                crud.get_balance(user_id)
+                main_crud.get_balance(user_id)
 
         self.message_user(
             request,
@@ -292,8 +292,8 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     @admin.action(description='Сплатити технічну комісію та комісію власника')
     def pay_technical_and_owner_commission(self, request, queryset):
         updated_count = queryset.update(paid_to_technical=True, paid_to_owner=True)
-        crud.update_technical_balance()
-        crud.update_owner_balance()
+        main_crud.update_technical_balance()
+        main_crud.update_owner_balance()
         # Виклик celery task
         self.message_user(request, f"Оновлено записів: {updated_count}."
                                    f" Оплачено технічну комісію та комісію власника")
@@ -624,6 +624,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         seller_id = obj.seller.id
         server_id = obj.server.id
         order_number = obj.sold_order_number
+        order_quantity = obj.quantity
         total_amount = Decimal(obj.total_amount)  # Перетворюємо в Decimal
 
         (to_be_earned_without_exchange_commission, earned_without_service_commission, technical_commission,
@@ -666,3 +667,4 @@ class AddOrderAdmin(admin.ModelAdmin):
         commissions_crud.calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,
                                                                                   to_be_earned_without_exchange_commission,
                                                                                   order_number)
+        main_crud.change_offer_stock_when_create_order(server_id, seller_id, order_quantity)
