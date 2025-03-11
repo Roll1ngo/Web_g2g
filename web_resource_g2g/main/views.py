@@ -3,6 +3,7 @@ import os
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect
 from main import crud
@@ -14,6 +15,7 @@ from django.shortcuts import render
 import json
 
 
+@login_required(login_url='users:login')
 def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
@@ -79,6 +81,7 @@ def handle_option_change(request):
     return JsonResponse({'success': True})
 
 
+@login_required(login_url='users:login')
 def show_order_info(request):
     user_id = request.user.id
 
@@ -121,6 +124,7 @@ def upload_video(request, sold_order_number):
             messages.error(request, 'Будь ласка, виберіть файл.')
 
 
+@login_required(login_url='users:login')
 def show_history_orders(request):
     user_id = request.user.id
     sold_orders = crud.get_sold_orders_for_history(user_id)
@@ -142,6 +146,7 @@ def delete_server(request):
     return JsonResponse({"success": True})
 
 
+@login_required(login_url='users:login')
 def my_services(request):
     user_id = request.user.id
     my_service_commission_list = commissions_crud.get_my_service_list(user_id)

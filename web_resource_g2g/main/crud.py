@@ -369,16 +369,9 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
     logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
     seller = Sellers.objects.get(auth_user_id=user_id)
     seller_id = seller.id
-    logger.info(f"seller_id__{seller_id}")
-    buyer_tg = sold_order.internal_buyer.id_telegram
-    buyer_name = sold_order.internal_buyer.auth_user.username
-    logger.info(f"buyer_name__{buyer_name}")
     delivery_method = sold_order.trade_mode
-    logger.info(f"buyer_tg__{buyer_tg}, delivery_method__{delivery_method}")
+    logger.info(f"seller_id__{seller_id}")
     class_name = sold_order.__class__.__name__
-
-    message = (f'Замовлення  {sold_order.quantity} золота на сервері {sold_order.server.server_name}'
-               f' - {sold_order.server.game_name} відправлено по ігровій пошті, та надійде протягом години') \
 
     try:
         sold_order.path_to_video = path_to_video
@@ -415,6 +408,12 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
             offer.save()
 
             if delivery_method == 'Mail' and class_name == 'InternalOrder':
+                message = (f'Замовлення  {sold_order.quantity} золота на сервері {sold_order.server.server_name}'
+                           f' - {sold_order.server.game_name} відправлено по ігровій пошті, та надійде протягом години')
+                buyer_tg = sold_order.internal_buyer.id_telegram
+                buyer_name = sold_order.internal_buyer.auth_user.username
+                logger.info(f"buyer_name__{buyer_name}")
+                logger.info(f"buyer_tg__{buyer_tg}, delivery_method__{delivery_method}")
                 send_messages_sync(buyer_tg, buyer_name, message)
 
             return f'статус активного замовлення на сервері змінено на False.'
