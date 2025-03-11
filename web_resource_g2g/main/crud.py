@@ -522,7 +522,6 @@ def get_server_id(user_id):
 
 
 def create_video_filename(request, sold_order_number):
-    logger.info('inside')
     sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number).select_related('server').first()
     logger.info(f"sold_order__{sold_order}")
     if sold_order is None:
@@ -551,7 +550,6 @@ def get_seller_id_by_user_id(user_id):
 
 
 def get_balance(user_id):
-    logger.info("inside get_balance")
     if user_id == owner_user_and_seller_id:
         return update_owner_balance()
     if user_id == technical_user_and_seller_id:
@@ -651,13 +649,13 @@ def calculate_seller_owner_technical_earning_from_orders(seller_id):
             target_field = 'technical_commission'
     else:
         query_filter_sold_orders = (Q(charged_to_payment=True)
-                                    & Q(paid_to_technical=False)
+                                    & Q(paid_in_salary=False)
                                     & Q(seller_id=seller_id)
-                                    & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+                                    & (Q(status='DELIVERED') | Q(status='COMPLETED') | Q(status='DELIVERING')))
         query_filter_internal_orders = (Q(charged_to_payment=True)
-                                        & Q(paid_to_technical=False)
+                                        & Q(paid_in_salary=False)
                                         & Q(internal_seller=seller_id)
-                                        & (Q(status='DELIVERED') | Q(status='COMPLETED')))
+                                        & (Q(status='DELIVERED') | Q(status='COMPLETED') | Q(status='DELIVERING')))
         target_field = 'earned_without_admins_commission'
 
     sold_orders_earned = SoldOrders.objects.filter(query_filter_sold_orders).aggregate(
