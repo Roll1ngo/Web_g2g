@@ -650,7 +650,7 @@ class AddOrderAdmin(admin.ModelAdmin):
             obj.earned_without_admins_commission = earned_without_service_commission
             obj.technical_commission = technical_commission
             obj.owner_commission = owner_commission
-            obj.price_unit = obj.earned_without_admins_commission / total_amount if obj.total_amount else 0
+            obj.price_unit = earned_without_service_commission / order_quantity if order_quantity else 0
 
         # Вивід результатів перед збереженням
         logger.warning(f"Загальна вартість: {obj.total_amount}")
