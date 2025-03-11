@@ -77,7 +77,7 @@ WSGI_APPLICATION = "web_resource_g2g.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.abspath(r"C:\Users\admin\Desktop\Django_and_G2G_Servers\Common_database_to_web_and_server\G2G.sqlite")
+        "NAME": os.path.abspath(r"E:\Common_database_to_web_and_server\G2G.sqlite")
     }
 }
 
