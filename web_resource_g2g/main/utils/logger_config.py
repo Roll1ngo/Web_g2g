@@ -33,6 +33,7 @@ file_formatter = logging.Formatter(
     ' \033[1;33m%(module)s\033[1;32m.\033[1;34m%(funcName)s\033[1;32m:%(lineno)d - %(message)s\033[0m'
 )
 file_handler.setFormatter(file_formatter)
+file_handler.stream.reconfigure(encoding='utf-8')
 
 # Add the file handler to the logger
 logger.addHandler(file_handler)

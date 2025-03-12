@@ -4,33 +4,36 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramNetworkError
 from dotenv import load_dotenv
 
+from main.utils.logger_config import logger
+
 load_dotenv()
 BOT_TOKEN = os.getenv('TG_TOKEN')
 
 
-async def send_messages_to_users(seller_tg_id, seller_name, message):
+async def send_messages_to_users(seller_tg, seller_name, message):
     bot = Bot(token=BOT_TOKEN)
 
     # ID отримувачів
-    recipients = {190861163: 'Vlad', seller_tg_id: seller_name}   # 822070279: 'Vitaliy'
+    recipients = {190861163: 'Vlad', seller_tg: seller_name, 822070279: 'Vitaliy'}   # 822070279: 'Vitaliy'
+    logger.info(f"recipients__{recipients}")
 
     try:
-        for tg_id, name in recipients.items():
-            await bot.send_message(chat_id=tg_id, text=message)
-            print(f"✅ Повідомлення надіслано до {name}")
-            await asyncio.sleep(2)  # Затримка між відправками (не обов’язково)
+        for tg, name in recipients.items():
+            await bot.send_message(chat_id=tg, text=message)
+            logger.warning(f"Повідомлення надіслано до {name}")
+            await asyncio.sleep(2)
         return True
     except TelegramNetworkError as e:
-        print(f"❌ Помилка мережі: {e}")
+        logger.error(f"Помилка мережі: {e}")
     except Exception as e:
-        print(f"❌ Помилка надсилання повідомлення: {e}")
+        logger.error(f"Помилка надсилання повідомлення: {e}")
     finally:
         await bot.session.close()
 
 
-def send_messages_sync(seller_id, seller_name, message):
+def send_messages_sync(seller_tg, seller_name, message):
     """ Виклик асинхронної функції з синхронного коду """
-    response = asyncio.run(send_messages_to_users(seller_id, seller_name, message))
+    response = asyncio.run(send_messages_to_users(seller_tg, seller_name, message))
     return True if response else False
 
 
@@ -38,4 +41,5 @@ def send_messages_sync(seller_id, seller_name, message):
 if __name__ == "__main__":
     test_message = "Тестове повідомлення"
     test_seller_id = 123456789  # Замініть на справжній ID продавця
-    send_messages_sync(test_seller_id, test_message)
+    send_messages_sync(test_seller_id, 'test_name',  test_message)
+

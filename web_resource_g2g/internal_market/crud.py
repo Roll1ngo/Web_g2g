@@ -171,7 +171,9 @@ def create_order(user_id, internal_order_data):
 
     message = create_order_message(new_internal_order, order_source='internal_market')
 
-    send_messages_sync(internal_seller_id.id, internal_seller_id.auth_user.username, message)
+    send_messages_sync(internal_seller_id.id_telegram,
+                       internal_seller_id.auth_user.username,
+                       message)
     new_internal_order.send_message = True
     new_internal_order.save()
     return {'success': True}
