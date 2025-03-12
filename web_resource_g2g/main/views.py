@@ -127,9 +127,29 @@ def upload_video(request, sold_order_number):
 @login_required(login_url='users:login')
 def show_history_orders(request):
     user_id = request.user.id
+    payment_status = request.GET.get('payment_status', '')  # Отримуємо параметр фільтрації
+
+    # Отримуємо замовлення з урахуванням фільтрації
     sold_orders = crud.get_sold_orders_for_history(user_id)
     internal_orders = crud.get_internal_orders_for_history(user_id)
     orders_with_balance = crud.get_orders_with_balance(user_id, sold_orders, internal_orders)
+    logger.info(f"orders_with_balance__{orders_with_balance}")
+
+    # Фільтрація за статусом виплати
+    if payment_status:
+        if payment_status == "charged_to_payment":
+            orders_with_balance = [order for order in orders_with_balance if order['order'].charged_to_payment
+                                   and not order['order'].paid_in_salary]
+        elif payment_status == "paid_in_salary":
+            orders_with_balance = [order for order in orders_with_balance if order['order'].charged_to_payment
+                                   and order['order'].paid_in_salary]
+        elif payment_status == "cancelled":
+            orders_with_balance = [order for order in orders_with_balance
+                                   if order['order'].status == "CANCEL_REQUESTED"]
+        elif payment_status == "no_info":
+            orders_with_balance = [order for order in orders_with_balance
+                                   if not order['order'].charged_to_payment and not order['order'].paid_in_salary]
+
     return render(request, 'main/show_history.html', context={"orders_history": orders_with_balance})
 
 

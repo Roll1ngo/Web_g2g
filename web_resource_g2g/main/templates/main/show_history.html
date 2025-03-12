@@ -46,6 +46,17 @@ table tr:hover {
 }
 </style>
 <div class="center-container">
+    <form method="get" action="{% url 'main:history_orders' %}" style="margin-bottom: 20px;">
+        <label for="payment_status">Фільтр по статусу виплати:</label>
+        <select name="payment_status" id="payment_status">
+            <option value="">Всі</option>
+            <option value="charged_to_payment">Зараховано до оплати</option>
+            <option value="paid_in_salary">Виплачено</option>
+            <option value="cancelled">Скасовано</option>
+            <option value="no_info">Інформація відсутня</option>
+        </select>
+        <button type="submit">Застосувати</button>
+    </form>
     <table>
         <thead>
             <tr>
