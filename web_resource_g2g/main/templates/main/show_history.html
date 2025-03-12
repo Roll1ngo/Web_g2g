@@ -49,13 +49,13 @@ table tr:hover {
     <form method="get" action="{% url 'main:history_orders' %}" style="margin-bottom: 20px;">
         <label for="payment_status">Фільтр по статусу виплати:</label>
         <select name="payment_status" id="payment_status">
-            <option value="">Всі</option>
-            <option value="charged_to_payment">Зараховано до оплати</option>
-            <option value="paid_in_salary">Виплачено</option>
-            <option value="cancelled">Скасовано</option>
-            <option value="no_info">Інформація відсутня</option>
+            <option value="" {% if not request.GET.payment_status %}selected{% endif %}>Всі</option>
+            <option value="charged_to_payment" {% if request.GET.payment_status == "charged_to_payment" %}selected{% endif %}>Зараховано до оплати</option>
+            <option value="paid_in_salary" {% if request.GET.payment_status == "paid_in_salary" %}selected{% endif %}>Виплачено</option>
+            <option value="cancelled" {% if request.GET.payment_status == "cancelled" %}selected{% endif %}>Скасовано</option>
+            <option value="no_info" {% if request.GET.payment_status == "no_info" %}selected{% endif %}>Інформація відсутня</option>
         </select>
-        <button type="submit">Застосувати</button>
+        <button type="submit">Фільтрувати</button>
     </form>
     <table>
         <thead>
