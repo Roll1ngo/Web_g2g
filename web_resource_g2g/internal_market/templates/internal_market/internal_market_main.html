@@ -258,8 +258,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	  },
 	  body: JSON.stringify(orderData),
 	})
-	  .then((response) => {
-		if (response.ok) {
+	.then(response => response.json())
+	.then(data => {
+        if (data.success) {
 		  // Відображення повідомлення в залежності від способу доставки
 		  if (deliveryMethod === "Mail") {
 			alert("Замовлення успішно створено! Ви отримаєте сповіщення в телеграм, коли замовлення буде виконано.");
@@ -273,7 +274,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		  window.location.reload(); // Оновлення сторінки
 
 		} else {
-		  alert("Помилка при створенні замовлення.");
+            // Виводимо повідомлення про помилку
+            if (data.message) {
+                alert(data.message);
+            } else {
+                alert("Виникла помилка. Спробуйте ще раз.");
+            }
       }
     })
     .catch((error) => {
