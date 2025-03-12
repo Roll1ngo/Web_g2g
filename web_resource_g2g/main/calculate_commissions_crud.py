@@ -39,7 +39,6 @@ def get_global_commissions_rates():
 def get_interest_rate_by_seller_id(seller_id, server_id):
     # Отримання `interest_rate` з `Sellers`
     try:
-        logger.info(f"seller_id__{seller_id}")
         seller_rate = SellerServerInterestRate.objects.filter(seller_id=seller_id, server_id=server_id).first()
         if not seller_rate or seller_rate.interest_rate is None:
             interest_rate = 0

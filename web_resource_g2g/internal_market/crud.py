@@ -81,9 +81,7 @@ def get_float_price(row):
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
         rang_exchange = float(commissions_crud.get_global_commissions_rates()['exchange'])
-        logger.info(rang_exchange)
         interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
-        logger.info(f"interest_rate__{interest_rate}")
 
         if not currently_strategy or not server_urls_id:
             logger.error("Missing 'price' or 'server_urls' in row.")
@@ -95,7 +93,6 @@ def get_float_price(row):
         ).first()
         # Віднімаєм відсоток біржі від повної вартості
         float_price_without_exchange = float_price * (1 - rang_exchange / 100)
-        logger.info(f"source_price__{float_price}, final_price_without_exchange__{float_price_without_exchange}")
 
         logger.warning(f"Відсутні ціни для сервера {server_urls_id}. Потрібен сеанс парсингу") \
             if float_price is None else None
@@ -118,6 +115,22 @@ def create_order(user_id, internal_order_data):
     server_id = ServerUrls.objects.get(id=internal_order_data['server_id'])
     total_amount = decimal.Decimal(internal_order_data['total_amount'])
     quantity = internal_order_data['order_quantity']
+
+    offer = OffersForPlacement.objects.filter(sellers=internal_seller_id.id,
+                                              server_urls=server_id.id)
+    if not offer.exists():
+        logger.warning(f"Сервер {server_id.server_urls.server_name} не знайдено у таблиці для продаж")
+        return {
+            'success': False,
+            'message': 'Сервер не знайдено'
+        }
+
+    if offer.filter(order_status=True).exists():
+        logger.warning(f"На сервері {server_id.server_name} активний статус продажі ")
+        return {
+            'success': False,
+            'message': 'На цьому сервері наразі ведеться продаж. Спробуйте за кілька хвилин.'
+        }
 
     # Оновлюємо сток та додаєм запис до таблиці StockHistory
     main_crud.change_offer_stock_when_create_order(server_id, internal_seller_id, quantity)
@@ -155,11 +168,13 @@ def create_order(user_id, internal_order_data):
 
     OffersForPlacement.objects.filter(sellers=internal_seller_id.id,
                                       server_urls=new_internal_order.server.id).update(order_status=True)
+
     message = create_order_message(new_internal_order, order_source='internal_market')
 
     send_messages_sync(internal_seller_id.id, internal_seller_id.auth_user.username, message)
     new_internal_order.send_message = True
     new_internal_order.save()
+    return {'success': True}
 
 
 def create_order_message(order, order_source='exchange'):

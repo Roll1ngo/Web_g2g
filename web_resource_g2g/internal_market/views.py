@@ -18,5 +18,6 @@ def main_page(request):
 
 def create_order_from_form(request):
     internal_order_data = json.loads(request.body)
-    internal_market_crud.create_order(request.user.id, internal_order_data)
-    return JsonResponse({'success': True})
+    response = internal_market_crud.create_order(request.user.id, internal_order_data)
+    return JsonResponse(response)
+
