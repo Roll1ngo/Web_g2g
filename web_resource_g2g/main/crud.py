@@ -367,8 +367,7 @@ def get_order_info(user_id):
 
 def update_sold_order_when_video_download(user_id, sold_order, path_to_video, sent_gold):
     logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
-    seller = Sellers.objects.get(auth_user_id=user_id)
-    seller_id = seller.id
+    seller_id = get_seller_id_by_user_id(user_id)
     delivery_method = sold_order.trade_mode
     logger.info(f"seller_id__{seller_id}")
     class_name = sold_order.__class__.__name__
@@ -392,7 +391,7 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
         update_technical_balance()
 
         # Перевірка на наявність інших замовлень перед зміною статусу
-        exists_order = check_exists_another_order_before_change_order_status(seller,
+        exists_order = check_exists_another_order_before_change_order_status(sold_order.seller,
                                                                              sold_order.server,
                                                                              sold_order.sold_order_number)
         logger.info(f"exists_order__{exists_order}")
@@ -522,10 +521,15 @@ def get_server_id(user_id):
 
 
 def create_video_filename(request, sold_order_number):
-    sold_order = SoldOrders.objects.filter(sold_order_number=sold_order_number).select_related('server').first()
+    seller_id = get_seller_id_by_user_id(request.user.id)
+    sold_order = (SoldOrders.objects.filter(sold_order_number=sold_order_number,
+                                            seller_id=seller_id)
+                  .select_related('server').first())
     logger.info(f"sold_order__{sold_order}")
+
     if sold_order is None:
-        sold_order = (InternalOrder.objects.filter(sold_order_number=sold_order_number)
+        sold_order = (InternalOrder.objects.filter(sold_order_number=sold_order_number,
+                                                   internal_seller=seller_id)
                       .select_related('server').first())
         logger.info(f"sold_order__{sold_order}")
 
