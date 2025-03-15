@@ -142,9 +142,7 @@ def get_float_price(row, seller_id):
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
         rang_exchange = float(commissions_crud.get_global_commissions_rates()['exchange'])
-        logger.info(rang_exchange)
         interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
-        logger.info(f"interest_rate__{interest_rate}")
 
         if not currently_strategy or not server_urls_id:
             logger.error("Missing 'price' or 'server_urls' in row.")
@@ -162,10 +160,6 @@ def get_float_price(row, seller_id):
 
         total_percent = interest_rate - rang_exchange
         float_price_without_exchange = float_price * (total_percent / 100)
-
-        logger.info(f"float_price__{float_price}, rang_exchange__{rang_exchange},"
-                    f" interest_rate__{interest_rate} float_price_without_exchange__{float_price_without_exchange},"
-                    f" total_percent__{total_percent}")
 
         return round(float_price_without_exchange, 3), interest_rate
 
@@ -369,7 +363,8 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
     logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
     seller_id = get_seller_id_by_user_id(user_id)
     delivery_method = sold_order.trade_mode
-    logger.info(f"seller_id__{seller_id}")
+    order_number = sold_order.sold_order_number
+    logger.info(f"seller_id__{seller_id}, order_number__{order_number}")
     class_name = sold_order.__class__.__name__
 
     try:
@@ -391,7 +386,7 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
         update_technical_balance()
 
         # Перевірка на наявність інших замовлень перед зміною статусу
-        exists_order = check_exists_another_order_before_change_order_status(sold_order.seller,
+        exists_order = check_exists_another_order_before_change_order_status(seller_id,
                                                                              sold_order.server,
                                                                              sold_order.sold_order_number)
         logger.info(f"exists_order__{exists_order}")
