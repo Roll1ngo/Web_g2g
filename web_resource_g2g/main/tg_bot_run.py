@@ -8,17 +8,18 @@ from main.utils.logger_config import logger
 
 load_dotenv()
 BOT_TOKEN = os.getenv('TG_TOKEN')
+admins_tgs = {'Vlad': 190861163, 'Vitaliy': 822070279}
 
 
 async def send_messages_to_users(seller_tg, seller_name, message):
     bot = Bot(token=BOT_TOKEN)
+    recipients = admins_tgs.copy()  # Створюємо копію словника, щоб не змінювати оригінал
 
-    # ID отримувачів
-    recipients = {190861163: 'Vlad', seller_tg: seller_name, 822070279: 'Vitaliy'}   # 822070279: 'Vitaliy'
-    logger.info(f"recipients__{recipients}")
+    if seller_tg != admins_tgs['Vitaliy']:
+        recipients.update({seller_name: seller_tg})
 
     try:
-        for tg, name in recipients.items():
+        for name, tg in recipients.items():
             await bot.send_message(chat_id=tg, text=message)
             logger.warning(f"Повідомлення надіслано до {name}")
             await asyncio.sleep(2)
