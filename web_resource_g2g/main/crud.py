@@ -442,26 +442,23 @@ def get_internal_orders_for_history(user_id):
 
 
 def get_orders_with_balance(user_id, sold_orders, internal_orders):
-    # Об'єднуємо записи в один список
+    # Об'єднуємо всі замовлення в один список
     all_orders = list(sold_orders) + list(internal_orders)
 
-    # Сортуємо всі записи за часом створення
-    all_orders.sort(key=lambda x: x.created_time)
+    # Сортуємо за часом створення (від найстарішого до найновішого)
+    all_orders.sort(key=lambda x: x.created_time, reverse=False)
 
-    total_earned = 0  # Ініціалізуємо загальну суму
+    total_earned = 0  # Початковий баланс
     orders_with_balance = []
 
-    # Проходимо по відсортованих записах і оновлюємо баланс
     for order in all_orders:
         if isinstance(order, SoldOrders):
-            # Обробка записів з SoldOrders
             if order.status == "CANCEL_REQUESTED":
-                # Якщо статус "CANCEL_REQUESTED", пропускаємо зміну балансу
                 orders_with_balance.append({
                     'order': order,
-                    'current_balance': total_earned,  # Записуємо попередній баланс
-                    'type': 'sold_order',  # Додаємо тип для розрізнення записів
-                    'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
+                    'current_balance': total_earned,
+                    'type': 'sold_order',
+                    'status': 'CANCEL_REQUESTED'
                 })
             else:
                 if not order.paid_in_salary:
@@ -469,38 +466,38 @@ def get_orders_with_balance(user_id, sold_orders, internal_orders):
                 orders_with_balance.append({
                     'order': order,
                     'current_balance': total_earned,
-                    'type': 'sold_order'  # Додаємо тип для розрізнення записів
+                    'type': 'sold_order'
                 })
         elif isinstance(order, InternalOrder):
-            # Обробка записів з InternalOrder
             if order.status == "CANCEL_REQUESTED":
-                # Якщо статус "CANCEL_REQUESTED", пропускаємо зміну балансу
                 orders_with_balance.append({
                     'order': order,
-                    'current_balance': total_earned,  # Записуємо попередній баланс
-                    'type': 'internal_order',  # Додаємо тип для розрізнення записів
-                    'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
+                    'current_balance': total_earned,
+                    'type': 'internal_order',
+                    'status': 'CANCEL_REQUESTED'
                 })
             else:
-                if order.internal_seller.auth_user_id == user_id and order.paid_in_salary is False:
-                    # Якщо користувач є продавцем, додаємо earned_without_admins_commission
+                if order.internal_seller.auth_user_id == user_id and not order.paid_in_salary:
                     total_earned += decimal.Decimal(order.earned_without_admins_commission)
                     orders_with_balance.append({
                         'order': order,
                         'current_balance': total_earned,
-                        'type': 'internal_order'  # Додаємо тип для розрізнення записів
+                        'type': 'internal_order'
                     })
                 elif (order.internal_buyer and order.internal_buyer.auth_user_id == user_id
-                      and order.paid_in_salary is False):
-                    # Якщо користувач є покупцем, змінюємо total_amount на від'ємне
-                    order.total_amount = decimal.Decimal(-order.total_amount)  # Змінюємо значення на від'ємне
+                      and not order.paid_in_salary):
+                    order.total_amount = decimal.Decimal(-order.total_amount)
                     order.earned_without_admins_commission = float(order.total_amount)
-                    total_earned += decimal.Decimal(order.total_amount)  # Додаємо від'ємне значення до балансу
+                    total_earned += decimal.Decimal(order.total_amount)
                     orders_with_balance.append({
                         'order': order,
                         'current_balance': total_earned,
-                        'type': 'internal_order'  # Додаємо тип для розрізнення записів
+                        'type': 'internal_order'
                     })
+
+    # Реверсуємо список, щоб найновіше замовлення було першим
+    orders_with_balance.reverse()
+
     return orders_with_balance
 
 
