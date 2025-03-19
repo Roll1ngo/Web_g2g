@@ -482,7 +482,7 @@ def get_orders_with_balance(user_id, sold_orders, internal_orders):
                     'status': 'CANCEL_REQUESTED'  # Додаємо статус для інформації
                 })
             else:
-                if order.internal_seller.auth_user_id == user_id:
+                if order.internal_seller.auth_user_id == user_id and order.paid_in_salary is False:
                     # Якщо користувач є продавцем, додаємо earned_without_admins_commission
                     total_earned += decimal.Decimal(order.earned_without_admins_commission)
                     orders_with_balance.append({
@@ -490,7 +490,8 @@ def get_orders_with_balance(user_id, sold_orders, internal_orders):
                         'current_balance': total_earned,
                         'type': 'internal_order'  # Додаємо тип для розрізнення записів
                     })
-                elif order.internal_buyer and order.internal_buyer.auth_user_id == user_id:
+                elif (order.internal_buyer and order.internal_buyer.auth_user_id == user_id
+                      and order.paid_in_salary is False):
                     # Якщо користувач є покупцем, змінюємо total_amount на від'ємне
                     order.total_amount = decimal.Decimal(-order.total_amount)  # Змінюємо значення на від'ємне
                     order.earned_without_admins_commission = float(order.total_amount)
