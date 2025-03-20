@@ -674,7 +674,9 @@ def calculate_seller_owner_technical_earning_from_orders(seller_id):
 
 
 def get_sum_spend_internal_market(seller_id):
-    result = InternalOrder.objects.filter(internal_buyer=seller_id).aggregate(
+    result = InternalOrder.objects.filter(internal_buyer=seller_id,
+                                          charged_to_payment=True,
+                                          paid_in_salary=False).aggregate(
         total_spend=Sum('total_amount'))
     internal_market_spend = result.get('total_spend', 0)
 
@@ -682,3 +684,23 @@ def get_sum_spend_internal_market(seller_id):
         internal_market_spend = 0
     logger.info(f"internal_market_spend__{internal_market_spend}")
     return internal_market_spend
+
+
+def mark_orders_and_commissions_as_paid(seller_ids):
+    # Оновлюємо замовлення та комісії тільки для виділених продавців
+    (SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_technical=False)
+     .update(paid_to_technical=True))
+    (SoldOrders.objects.filter(seller_id__in=seller_ids, paid_in_salary=False)
+     .update(paid_in_salary=True))
+    (SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_owner=False)
+     .update(paid_to_owner=True))
+    (InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_technical=False)
+     .update(paid_to_technical=True))
+    (InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_in_salary=False)
+     .update(paid_in_salary=True))
+    (InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_owner=False)
+     .update(paid_to_owner=True))
+    (CommissionBreakdown.objects.filter(seller_id__in=seller_ids, paid_in_salary_commission=False)
+     .update(paid_in_salary_commission=True))
+
+

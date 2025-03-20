@@ -5,6 +5,7 @@ from decimal import Decimal
 from django import forms
 from django.contrib import admin
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.models import User
 
 from django.templatetags.static import static
 from django.urls import reverse
@@ -151,9 +152,18 @@ class SellersAdmin(ExportActionModelAdmin):
 
     list_editable = ('mentor', 'recruiter')
 
-    actions = ['export_as_txt', 'update_balance']  # Додаємо власну дію до списку дій
+    actions = ['complete_orders_and_clear_balance',
+               'update_balance']
 
-    @admin.action(description='Оновити баланс')
+    @admin.action(description='Позначити замовлення та комісії як оплачені та скинути баланси')
+    def complete_orders_and_clear_balance(self, request, queryset):
+        # Отримуємо ID виділених продавців
+        seller_ids = queryset.values_list('id', flat=True)
+        main_crud.mark_orders_and_commissions_as_paid(seller_ids)
+        self.message_user(request, f"Замовлення та комісії позначені як оплачені для {queryset.count()} продавців.")
+        self.update_balance(request, queryset)
+
+    @admin.action(description='Оновити поточний баланс')
     def update_balance(self, request, queryset):
         for user_id in queryset.values_list('auth_user_id', flat=True).distinct():
             new_balance = main_crud.get_balance(user_id)
@@ -161,6 +171,20 @@ class SellersAdmin(ExportActionModelAdmin):
         main_crud.update_technical_balance()
         main_crud.update_owner_balance()
         self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
+
+    # Перевизначаємо метод get_actions для зміни порядку дій
+    def get_actions(self, request):
+        # Отримуємо всі дії за замовчуванням
+        actions = super().get_actions(request)
+
+        # Видаляємо стандартну дію "Видалити обрані продавці" зі списку
+        if 'delete_selected' in actions:
+            delete_action = actions.pop('delete_selected')
+
+            # Додаємо її назад у кінець списку
+            actions['delete_selected'] = delete_action
+
+        return actions
 
     def get_user_email(self, obj):
         return obj.auth_user.email
