@@ -11,12 +11,12 @@ BOT_TOKEN = os.getenv('TG_TOKEN')
 admins_tgs = {'Vlad': 190861163, 'Vitaliy': 822070279}
 
 
-async def send_messages_to_users(seller_tg, seller_name, message):
+async def send_messages_to_users(telegram_id, name, message):
     bot = Bot(token=BOT_TOKEN)
     recipients = admins_tgs.copy()  # Створюємо копію словника, щоб не змінювати оригінал
 
-    if seller_tg != admins_tgs['Vitaliy']:
-        recipients.update({seller_name: seller_tg})
+    if telegram_id != admins_tgs['Vitaliy']:
+        recipients.update({name: telegram_id})
 
     try:
         for name, tg in recipients.items():
@@ -32,9 +32,9 @@ async def send_messages_to_users(seller_tg, seller_name, message):
         await bot.session.close()
 
 
-def send_messages_sync(seller_tg, seller_name, message):
+def send_messages_sync(telegram_id, name, message):
     """ Виклик асинхронної функції з синхронного коду """
-    response = asyncio.run(send_messages_to_users(seller_tg, seller_name, message))
+    response = asyncio.run(send_messages_to_users(telegram_id, name, message))
     return True if response else False
 
 
