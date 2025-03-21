@@ -35,7 +35,6 @@ class InternalOrder(models.Model):
     def save(self, *args, **kwargs):
         if not self.sold_order_number:
             now = timezone.now()
-            # Форматуємо дату та час у потрібний формат: ддммррггххссмм
             self.sold_order_number = int(now.strftime('%d%m%H%M%S%f')[:-4])
         super().save(*args, **kwargs)
 
