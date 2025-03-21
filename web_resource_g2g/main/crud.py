@@ -397,6 +397,7 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
                                                       order_status=True
                                                       ).first()
 
+            # Змінюємо статус наявності замовлень на False у OffersForPlacement
             if offer:
                 offer.order_status = False
             offer.save()
