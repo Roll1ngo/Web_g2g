@@ -49,7 +49,7 @@ class CreatedTimeFilter(admin.SimpleListFilter):
         elif self.value() == 'last_7_days':
             seven_days_ago = timezone.now() - datetime.timedelta(days=7)
             return queryset.filter(created_time__gte=seven_days_ago)
-        elif self.value() == 'last_10_days':
+        elif self.value() == 'last_15_days':
             fifteen_days_ago = timezone.now() - datetime.timedelta(days=15)
             return queryset.filter(created_time__gte=fifteen_days_ago)
         elif self.value() == 'last_30_days':
@@ -230,12 +230,11 @@ class SoldOrdersAdmin(admin.ModelAdmin):
     )
 
     # Фільтрація за цими полями
-    list_filter = ('seller__auth_user__username',
+    list_filter = ('seller__auth_user__username', CreatedTimeFilter,
                    ('paid_in_salary', admin.BooleanFieldListFilter),
                    ('charged_to_payment', admin.BooleanFieldListFilter),
                    ('paid_to_technical', admin.BooleanFieldListFilter),
                    ('paid_to_owner', admin.BooleanFieldListFilter),
-                   CreatedTimeFilter,
                    SellerBalanceFilter)
 
     # Сортування за замовчуванням
@@ -363,9 +362,9 @@ class InternalOrdersAdmin(admin.ModelAdmin):
         'internal_seller',
         'internal_buyer',
         'status',
+        'quantity',
         'character_name',
         'sold_order_number',
-        'quantity',
         'sent_gold',
         'price_unit',
         'total_amount',
@@ -385,6 +384,9 @@ class InternalOrdersAdmin(admin.ModelAdmin):
     list_editable = ((
         'status',
     ))
+    list_filter = ('internal_seller__auth_user__username', CreatedTimeFilter,
+                   ('paid_in_salary', admin.BooleanFieldListFilter),
+                   ('charged_to_payment', admin.BooleanFieldListFilter))
 
 
 class ServerUrlsChoiceField(forms.ModelChoiceField):
