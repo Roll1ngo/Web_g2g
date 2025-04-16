@@ -207,7 +207,6 @@ class CommissionBreakdown(models.Model):
     # Метод для відображення поля `order`
     def display_order(self):
         if self.order:
-            logger.info(f"self.content_type.model__{self.content_type.model}")
             # Використовуємо content_type для визначення типу замовлення
             if self.content_type.model == "internalorder":
                 return f"Внутрішнє замовлення: {self.order}"

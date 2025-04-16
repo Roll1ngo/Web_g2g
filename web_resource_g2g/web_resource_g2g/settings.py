@@ -15,12 +15,19 @@ print(os.getpid())
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', 'able-above-monitor.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1',
+                 'able-above-monitor.ngrok-free.app',
+                 'http://fastsalesservice.pp.ua',
+                 'fastsalesservice.pp.ua',
+                 'http://rolmf802.z2t.testforhost.com']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://able-above-monitor.ngrok-free.app'
+    'https://able-above-monitor.ngrok-free.app',
+    'http://fastsalesservice.pp.ua',
+    'fastsalesservice.pp.ua',
+    'http://rolmf802.z2t.testforhost.com'
 ]
 
 
@@ -50,6 +57,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "web_resource_g2g.urls"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 TEMPLATES = [
     {
@@ -76,10 +85,19 @@ WSGI_APPLICATION = "web_resource_g2g.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.abspath(r"/home/roll1ng/Документи/Python_projects/Common_database_to_web_and_server/G2G.sqlite")
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "h70472c_g2g",
+        "USER": "h70472c_admin",
+        "PASSWORD": "ZgYpbpXAUq",
+        "HOST": "localhost",
+        "PORT": "3306",
+        "OPTIONS": {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "charset": "utf8mb4",
+        },# стандартний порт MySQL
+        }
     }
-}
+
 
 
 # Password validation
@@ -115,11 +133,16 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'main/static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
+
+# Для HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

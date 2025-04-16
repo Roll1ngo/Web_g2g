@@ -1,0 +1,14 @@
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "rolmf802_service",
+        "USER": "rolmf802_rolmf802",
+        "PASSWORD": "C!X1Zd1!KE!iCMA4Oc1is",
+        "HOST": "localhost",
+        "PORT": "3306",  # стандартний порт MySQL
+        "OPTIONS": {
+            "charset": "utf8mb4",  # для підтримки emoji та 4-байтних UTF-8 символів
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",  # строгий режим
+        }
+    }
+}
