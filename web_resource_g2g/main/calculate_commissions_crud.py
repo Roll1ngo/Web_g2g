@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 
+from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
@@ -246,3 +247,8 @@ def record_commissions_service_providers(seller_services_info, commissions_servi
     except Exception as e:
         logger.error(f"An error occurred: {e}")
 
+def remove_commission_record(sold_order_id):
+    logger.info(f"sold_order_id: {sold_order_id}")
+    content_type = ContentType.objects.get_for_model(SoldOrders)
+    CommissionBreakdown.objects.filter(object_id=sold_order_id,
+                                       content_type = content_type).delete()

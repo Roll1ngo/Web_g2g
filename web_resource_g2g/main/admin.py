@@ -3,9 +3,10 @@ import datetime
 from decimal import Decimal
 
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 
 from django.templatetags.static import static
 from django.urls import reverse
@@ -578,7 +579,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'paid_to_technical',
     )
     list_filter = ('seller', CreatedTimeFilter, 'paid_in_salary', 'status', 'download_video_status')
-    actions = ['send_message_to_seller']
+    actions = ['send_message_to_seller', 'delete_selected_orders']
 
     # Поля для відображення у формі створення замовлення
     add_fields = (
@@ -624,6 +625,22 @@ class AddOrderAdmin(admin.ModelAdmin):
     # Дозволяємо створення нових замовлень
     def has_add_permission(self, request):
         return True
+
+    @admin.action(description="Повне видалення")
+    def delete_selected_orders(self, request, queryset):
+        for obj in queryset:
+            sold_order_id = obj.id
+            seller_id = obj.seller
+            server_id = obj.server
+            # Видаляємо комісію на замовлення, якщо вона є
+            commissions_crud.remove_commission_record(sold_order_id)
+            # Змінюємо статус лота для торгів на вільно та анулюємо резерв
+            main_crud.order_status_set_status(seller_id, server_id, status=False, reset_reserve=True)
+
+
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f"Успішно видалено {count} замовлень.", messages.SUCCESS)
 
     @admin.action(description='Надіслати повідомлення продавцю')
     def send_message_to_seller(self, request, queryset):

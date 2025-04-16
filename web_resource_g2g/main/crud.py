@@ -362,6 +362,7 @@ def get_order_info(user_id):
 def update_sold_order_when_video_download(user_id, sold_order, path_to_video, sent_gold):
     logger.info(f"sold_order_number__{sold_order}, path_to_video__{path_to_video}, sent_gold__{sent_gold}")
     seller_id = get_seller_id_by_user_id(user_id)
+    server_id = sold_order.server
     delivery_method = sold_order.trade_mode
     order_number = sold_order.sold_order_number
     logger.info(f"seller_id__{seller_id}, order_number__{order_number}")
@@ -387,20 +388,12 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
 
         # Перевірка на наявність інших замовлень перед зміною статусу
         exists_order = check_exists_another_order_before_change_order_status(seller_id,
-                                                                             sold_order.server,
+                                                                             server_id,
                                                                              sold_order.sold_order_number)
         logger.info(f"exists_order__{exists_order}")
         if not exists_order:
-            # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders
-            offer = OffersForPlacement.objects.filter(sellers=seller_id,
-                                                      server_urls=sold_order.server,
-                                                      order_status=True
-                                                      ).first()
-
-            # Змінюємо статус наявності замовлень на False у OffersForPlacement
-            if offer:
-                offer.order_status = False
-            offer.save()
+            # Знаходимо запис у OffersForPlacement, пов'язаний із SoldOrders та змінюємо статус з замовленно на вільно
+            order_status_set_status(seller_id, server_id, status='False')
 
             if delivery_method == 'Mail' and class_name == 'InternalOrder':
                 message = (f'Замовлення  {sold_order.quantity} золота на сервері {sold_order.server.server_name}'
@@ -703,5 +696,18 @@ def mark_orders_and_commissions_as_paid(seller_ids):
      .update(paid_to_owner=True))
     (CommissionBreakdown.objects.filter(seller_id__in=seller_ids, paid_in_salary_commission=False)
      .update(paid_in_salary_commission=True))
+
+def order_status_set_status(seller_id, server_id, status, reset_reserve=None):
+    offer = (OffersForPlacement.objects.filter(sellers=seller_id,
+                                              server_urls=server_id)
+             .first())
+
+    # Змінюємо статус наявності замовлень на False у OffersForPlacement
+    if offer:
+        offer.order_status = status
+        if reset_reserve:
+            offer.reserve_stock = 0
+
+    offer.save()
 
 
