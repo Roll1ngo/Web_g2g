@@ -386,6 +386,7 @@ class InternalOrdersAdmin(admin.ModelAdmin):
     list_editable = ((
         'status',
     ))
+    list_filter = ('internal_seller', CreatedTimeFilter, 'status', 'paid_in_salary', 'download_video_status')
 
 
 class ServerUrlsChoiceField(forms.ModelChoiceField):
