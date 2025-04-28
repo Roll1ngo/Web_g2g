@@ -247,8 +247,14 @@ def record_commissions_service_providers(seller_services_info, commissions_servi
     except Exception as e:
         logger.error(f"An error occurred: {e}")
 
-def remove_commission_record(sold_order_id):
-    logger.info(f"sold_order_id: {sold_order_id}")
-    content_type = ContentType.objects.get_for_model(SoldOrders)
-    CommissionBreakdown.objects.filter(object_id=sold_order_id,
-                                       content_type = content_type).delete()
+
+def remove_commission_record(order_id, order_type='SoldOrders'):
+    logger.info(f"order_id: {order_id}, order_type: {order_type}")
+
+    if order_type == 'SoldOrders':
+        content_type = ContentType.objects.get_for_model(SoldOrders)
+    elif order_type == 'Internal_order':
+        content_type = ContentType.objects.get_for_model(InternalOrder)
+
+    CommissionBreakdown.objects.filter(object_id=order_id,
+                                       content_type=content_type).delete()

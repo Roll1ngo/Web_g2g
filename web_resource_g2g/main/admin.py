@@ -386,7 +386,70 @@ class InternalOrdersAdmin(admin.ModelAdmin):
     list_editable = ((
         'status',
     ))
-    list_filter = ('internal_seller', CreatedTimeFilter, 'status', 'paid_in_salary', 'download_video_status')
+    list_filter = ('internal_seller',
+                   CreatedTimeFilter,
+                   'status',
+                   'paid_in_salary',
+                   'download_video_status')
+
+    actions = ['delete_selected_orders', 'mark_order_is_completed']
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    @admin.action(description="Видалення разом з комісіями та  повернення статусів")
+    def delete_selected_orders(self, request, queryset):
+        for obj in queryset:
+            server_obj = obj.server
+            seller_obj = obj.internal_seller
+            order_id = obj.id
+            seller_tg_id = obj.internal_seller.id_telegram
+            seller_name = obj.internal_seller.auth_user.username
+            order_quantity = obj.quantity
+            obj.save()
+            # Видаляємо комісію на замовлення, якщо вона є
+            commissions_crud.remove_commission_record(order_id, order_type='Internal_order')
+            # Змінюємо статус лота для торгів на вільно та анулюємо резерв
+            main_crud.order_status_set_status(seller_obj, server_obj, status=False, reset_reserve=True)
+            # Відправляємо повідомлення продавцю про скасування замовлення
+            message_for_tg = (f"Замовлення на сервері {server_obj.server_name} - {server_obj.game_name}"
+                              f" у кількості {order_quantity} скасовано замовником")
+            send_messages_sync(seller_tg_id, seller_name, message_for_tg)
+
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f"Успішно видалено {count} замовлень.", messages.SUCCESS)
+
+    @admin.action(description="Позначити замовлення як виконане")
+    def mark_order_is_completed(self, request, queryset):
+        for obj in queryset:
+            server_obj = obj.server
+            seller_obj = obj.internal_seller
+            order_id = obj.id
+            seller_tg_id = obj.internal_seller.id_telegram
+            seller_name = obj.internal_seller.auth_user.username
+            order_quantity = obj.quantity
+            obj.status = 'DELIVERED'
+            obj.sent_gold = obj.quantity
+            obj.download_video_status = True
+            obj.path_to_video = 'mark completed from admin panel'
+            obj.charged_to_payment = True
+            obj.send_video_status = True
+            obj.save()
+
+        # Позначаємо запис про комісію як зараховано до оплати
+        commissions_crud.update_status_charged_to_payment_commission(order_id)
+
+        # Змінюємо статус процесу виконання замовлення на False(виконання замовлення завершено) та анулюємо резерв
+        main_crud.order_status_set_status(seller_obj, server_obj, status=False, reset_reserve=True)
+
+        # Відправляємо повідомлення продавцю про віддалене виконання замовлення
+        message_for_tg = (f"Замовлення на сервері {server_obj.server_name} - {server_obj.game_name}"
+                          f" у кількості {order_quantity} було виконане Віталієм.")
+        send_messages_sync(seller_tg_id, seller_name, message_for_tg)
 
 
 class ServerUrlsChoiceField(forms.ModelChoiceField):
@@ -627,7 +690,14 @@ class AddOrderAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return True
 
-    @admin.action(description="Повне видалення")
+    # Видаляємо за списку стандартну дію видалення обраних рядків
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    @admin.action(description="Видалення разом з комісіями та змінами статусів")
     def delete_selected_orders(self, request, queryset):
         for obj in queryset:
             sold_order_id = obj.id
