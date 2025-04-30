@@ -50,7 +50,7 @@ class CreatedTimeFilter(admin.SimpleListFilter):
         elif self.value() == 'last_7_days':
             seven_days_ago = timezone.now() - datetime.timedelta(days=7)
             return queryset.filter(created_time__gte=seven_days_ago)
-        elif self.value() == 'last_10_days':
+        elif self.value() == 'last_15_days':
             fifteen_days_ago = timezone.now() - datetime.timedelta(days=15)
             return queryset.filter(created_time__gte=fifteen_days_ago)
         elif self.value() == 'last_30_days':
