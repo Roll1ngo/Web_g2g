@@ -529,9 +529,9 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
                     'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade', 'double_minimal_mode_status')
     list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
-    search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
+    search_fields = ('sellers__name', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
-    actions = ['prepare_to_double_minimal_mode']
+    actions = ['prepare_to_double_minimal_mode', 'update_double_minimal_prices']
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -541,6 +541,10 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
     def prepare_to_double_minimal_mode(self, request, queryset):
         queryset.update(active_rate=False, face_to_face_trade=False)
         self.message_user(request, f" {queryset.count()} лотів підготовлено до переводу в режим перепродажу.")
+
+    @admin.action(description='Оновити ціни в режимі перепродажу')
+    def update_double_minimal_prices(self, request, queryset):
+        queryset.update(double_minimal_mode_status=False)
 
 
 class AddOrder(SoldOrders):
