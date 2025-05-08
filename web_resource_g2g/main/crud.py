@@ -21,6 +21,7 @@ from main import calculate_commissions_crud as commissions_crud
 from internal_market.models import InternalOrder
 from main import calculate_commissions_crud as commissions_crud
 from internal_market.models import InternalOrder
+import config
 
 owner_user_and_seller_id = 1
 technical_user_and_seller_id = 2
@@ -106,14 +107,16 @@ def get_main_data_from_table(auth_user_id: int):
             ).exclude(sellers=row['sellers']).values_list('price', flat=True).first()
 
             if current_strategy:
-                ballance_strategy_for_all = 'minimal'
+                balance_strategy_for_all = config.joint_trade_strategy
+                f2f_delivery_status = config.f2f_for_joint_trade
                 change_all_strategy = OffersForPlacement.objects.filter(server_urls_id=row['server_urls'])
-                change_all_strategy.update(price=ballance_strategy_for_all, face_to_face_trade=True)
+                change_all_strategy.update(price=balance_strategy_for_all,
+                                           face_to_face_trade=f2f_delivery_status)
 
-                row['strategy_price'] = ballance_strategy_for_all
-                row['price'] = ballance_strategy_for_all
+                row['strategy_price'] = balance_strategy_for_all
+                row['price'] = balance_strategy_for_all
                 row['exists_strategy'] = True
-                row['face_to_face_trade'] = False
+                row['face_to_face_trade'] = f2f_delivery_status
             else:
                 row['strategy_price'] = row['price']
                 row['exists_strategy'] = False
