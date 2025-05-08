@@ -45,7 +45,9 @@
               <td ><input type="text" style="width: 100px" value="{{ row.stock}}" id="stock-field-{{row.id}}" name="stock" onkeypress="return isNumberKey(event)"></td>
               <td><input type="text" style="width: 100px" value="{{ row.full_cost }}" id="full-cost-{{row.id}}" readonly></td>
 
-                 {% if row.exists_strategy == True %}
+                 {% if row.exists_strategy == True and row.strategy_price == 'mean10_lot' %}
+               <td><input type="text" style="width: 80px; background-color: #b3b3b3;" value="Баланс" readonly></td>
+                 {% elif row.exists_strategy == True and row.strategy_price == 'minimal' %}
                <td><input type="text" style="width: 80px; background-color: #b3b3b3;" value="Швидко" readonly></td>
                  {% else %}
               <td>
