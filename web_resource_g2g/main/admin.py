@@ -50,7 +50,7 @@ class CreatedTimeFilter(admin.SimpleListFilter):
         elif self.value() == 'last_7_days':
             seven_days_ago = timezone.now() - datetime.timedelta(days=7)
             return queryset.filter(created_time__gte=seven_days_ago)
-        elif self.value() == 'last_10_days':
+        elif self.value() == 'last_15_days':
             fifteen_days_ago = timezone.now() - datetime.timedelta(days=15)
             return queryset.filter(created_time__gte=fifteen_days_ago)
         elif self.value() == 'last_30_days':
@@ -386,6 +386,70 @@ class InternalOrdersAdmin(admin.ModelAdmin):
     list_editable = ((
         'status',
     ))
+    list_filter = ('internal_seller',
+                   CreatedTimeFilter,
+                   'status',
+                   'paid_in_salary',
+                   'download_video_status')
+
+    actions = ['delete_selected_orders', 'mark_order_is_completed']
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    @admin.action(description="Видалення разом з комісіями та  повернення статусів")
+    def delete_selected_orders(self, request, queryset):
+        for obj in queryset:
+            server_obj = obj.server
+            seller_obj = obj.internal_seller
+            order_id = obj.id
+            seller_tg_id = obj.internal_seller.id_telegram
+            seller_name = obj.internal_seller.auth_user.username
+            order_quantity = obj.quantity
+            obj.save()
+            # Видаляємо комісію на замовлення, якщо вона є
+            commissions_crud.remove_commission_record(order_id, order_type='Internal_order')
+            # Змінюємо статус лота для торгів на вільно та анулюємо резерв
+            main_crud.order_status_set_status(seller_obj, server_obj, status=False, reset_reserve=True)
+            # Відправляємо повідомлення продавцю про скасування замовлення
+            message_for_tg = (f"Замовлення на сервері {server_obj.server_name} - {server_obj.game_name}"
+                              f" у кількості {order_quantity} скасовано замовником")
+            send_messages_sync(seller_tg_id, seller_name, message_for_tg)
+
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f"Успішно видалено {count} замовлень.", messages.SUCCESS)
+
+    @admin.action(description="Позначити замовлення як виконане")
+    def mark_order_is_completed(self, request, queryset):
+        for obj in queryset:
+            server_obj = obj.server
+            seller_obj = obj.internal_seller
+            order_id = obj.id
+            seller_tg_id = obj.internal_seller.id_telegram
+            seller_name = obj.internal_seller.auth_user.username
+            order_quantity = obj.quantity
+            obj.status = 'DELIVERED'
+            obj.sent_gold = obj.quantity
+            obj.download_video_status = True
+            obj.path_to_video = 'mark completed from admin panel'
+            obj.charged_to_payment = True
+            obj.send_video_status = True
+            obj.save()
+
+        # Позначаємо запис про комісію як зараховано до оплати
+        commissions_crud.update_status_charged_to_payment_commission(order_id)
+
+        # Змінюємо статус процесу виконання замовлення на False(виконання замовлення завершено) та анулюємо резерв
+        main_crud.order_status_set_status(seller_obj, server_obj, status=False, reset_reserve=True)
+
+        # Відправляємо повідомлення продавцю про віддалене виконання замовлення
+        message_for_tg = (f"Замовлення на сервері {server_obj.server_name} - {server_obj.game_name}"
+                          f" у кількості {order_quantity} було виконане Віталієм.")
+        send_messages_sync(seller_tg_id, seller_name, message_for_tg)
 
 
 class ServerUrlsChoiceField(forms.ModelChoiceField):
@@ -465,9 +529,9 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
                     'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade', 'double_minimal_mode_status')
     list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
-    search_fields = ('sellers__name', 'currency', 'description', 'server__server_name', 'server__game_name')
+    search_fields = ('sellers__name', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
-    actions = ['prepare_to_double_minimal_mode']
+    actions = ['prepare_to_double_minimal_mode', 'update_double_minimal_prices']
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -477,6 +541,10 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
     def prepare_to_double_minimal_mode(self, request, queryset):
         queryset.update(active_rate=False, face_to_face_trade=False)
         self.message_user(request, f" {queryset.count()} лотів підготовлено до переводу в режим перепродажу.")
+
+    @admin.action(description='Оновити ціни в режимі перепродажу')
+    def update_double_minimal_prices(self, request, queryset):
+        queryset.update(double_minimal_mode_status=False)
 
 
 class AddOrder(SoldOrders):
@@ -626,7 +694,14 @@ class AddOrderAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return True
 
-    @admin.action(description="Повне видалення")
+    # Видаляємо за списку стандартну дію видалення обраних рядків
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    @admin.action(description="Видалення разом з комісіями та змінами статусів")
     def delete_selected_orders(self, request, queryset):
         for obj in queryset:
             sold_order_id = obj.id

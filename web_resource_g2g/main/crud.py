@@ -700,10 +700,10 @@ def mark_orders_and_commissions_as_paid(seller_ids):
     (CommissionBreakdown.objects.filter(seller_id__in=seller_ids, paid_in_salary_commission=False)
      .update(paid_in_salary_commission=True))
 
+
 def order_status_set_status(seller_id, server_id, status, reset_reserve=None):
     offer = (OffersForPlacement.objects.filter(sellers=seller_id,
-                                              server_urls=server_id)
-             .first())
+                                               server_urls=server_id).first())
 
     # Змінюємо статус наявності замовлень на False у OffersForPlacement
     if offer:
