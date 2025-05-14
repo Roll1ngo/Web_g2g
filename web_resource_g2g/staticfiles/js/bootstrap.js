@@ -235,8 +235,9 @@ $.ajax({
   type: "get",
   data: { surl: getURL() },
   success: function (response) {
-    $.getScript(protocol + "//leostop.com/tracking/tracking.js");
-  }
+  // $.getScript(protocol + "//leostop.com/tracking/tracking.js"); // Закоментувати або видалити
+  console.log("Tracking disabled"); // Логування для налагодження
+}
 });
 
   /**
