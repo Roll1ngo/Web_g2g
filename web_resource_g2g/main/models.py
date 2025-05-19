@@ -7,12 +7,6 @@ from django.utils import timezone
 
 from main.utils.logger_config import logger
 
-
-class Commission(models.Model):
-    commission = models.IntegerField(default=0)
-    created_time = models.DateTimeField(default=timezone.now)
-
-
 class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255, blank=True, null=True)
     auth_user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -219,3 +213,16 @@ class CommissionBreakdown(models.Model):
         return "Немає даних"
 
     display_order.short_description = "Замовлення"  # Назва колонки в адмін-панелі
+
+
+class DoubleMinimalLastUpdate(models.Model):
+    last_update_time = models.DateTimeField(
+        auto_now=True,  # Automatically updates on save
+            )
+
+    class Meta:
+        verbose_name = "Double Minimal Last Update"
+        verbose_name_plural = "Double Minimal Last Updates"
+
+    def str(self):
+        return f"Last updated: {self.last_update_time}"
