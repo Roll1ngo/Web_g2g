@@ -97,14 +97,13 @@ def get_float_price(row):
         logger.warning(f"Відсутні ціни для сервера {server_urls_id}. Потрібен сеанс парсингу") \
             if float_price is None else None
 
-        return round(float_price_without_exchange, 3), interest_rate
+        return round(float_price_without_exchange, 6), interest_rate
 
-    # except Exception as e:
-    #     # Логування будь-якої несподіваної помилки
-    #     logger.error(f"Unexpected error in get_float_price: {e}", exc_info=True)
-    #     return None, None
-    finally:
-        pass
+    except Exception as e:
+        # Логування будь-якої несподіваної помилки
+        logger.error(f"Unexpected error in get_float_price: {e}", exc_info=True)
+        return None, None
+
 
 
 def create_order(user_id, internal_order_data):
