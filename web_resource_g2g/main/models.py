@@ -226,3 +226,14 @@ class DoubleMinimalLastUpdate(models.Model):
 
     def str(self):
         return f"Last updated: {self.last_update_time}"
+
+class G2GIdentifiers(models.Model):
+    server_url = models.ForeignKey(
+        ServerUrls,
+        on_delete=models.CASCADE,
+        db_column='server_url_id'  # Якщо потрібно точно вказати ім'я колонки
+    )
+    g2g_id = models.CharField(max_length=255)  # або IntegerField()
+
+    class Meta:
+        db_table = 'g2g_identifiers'  # Замініть на реальну назву таблиці
