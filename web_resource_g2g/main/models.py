@@ -87,7 +87,8 @@ class SoldOrders(models.Model):
     status = models.CharField(max_length=255)
     bought_by = models.CharField(max_length=255)
     character_name = models.CharField(max_length=255)
-    sold_order_number = models.IntegerField()
+    sold_order_number = models.CharField(max_length=255,
+                                         db_index=True, blank=True, null=True, default=None)
     quantity = models.IntegerField()
     sent_gold = models.IntegerField(null=True, db_default=0)
     price_unit = models.DecimalField(max_digits=10, decimal_places=3, default=0)
