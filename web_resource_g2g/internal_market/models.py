@@ -11,7 +11,7 @@ class InternalOrder(models.Model):
                                        null=True, blank=True, related_name='internal_buyer')
     status = models.CharField(max_length=255, default='DELIVERING')
     character_name = models.CharField(max_length=255)
-    sold_order_number = models.BigIntegerField(unique=True)
+    sold_order_number = models.CharField(max_length=255, unique=True)
     quantity = models.IntegerField()
     sent_gold = models.IntegerField(null=True, blank=True, db_default=0)
     price_unit = models.DecimalField(max_digits=10, decimal_places=3, default=0)

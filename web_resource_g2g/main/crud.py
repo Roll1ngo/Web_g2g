@@ -414,8 +414,8 @@ def update_sold_order_when_video_download(user_id, sold_order, path_to_video, se
 
     except SoldOrders.DoesNotExist:
         return f"Замовлення не знайдено"
-    except Exception as e:
-        return f"Помилка: {e}"
+    # except Exception as e:
+    #     return f"Помилка: {e}"
 
 
 def get_sold_orders_for_history(user_id):
