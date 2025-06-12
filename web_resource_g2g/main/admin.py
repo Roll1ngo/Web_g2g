@@ -92,10 +92,10 @@ class CommissionBreakdownAdmin(admin.ModelAdmin):
 
 @admin.register(CommissionRates)
 class CommissionRatesAdmin(admin.ModelAdmin):
-    list_display = ('exchange', 'renter_lvl1', 'renter_lvl2',
+    list_display = ('exchange', 'internal_exchange_percent', 'renter_lvl1', 'renter_lvl2',
                     'mentor', 'owner', 'technical', 'recruiter', 'edit_link')  # Add a column for the link
 
-    fields = ('exchange', 'renter', 'mentor', 'owner', 'technical', 'recruiter')
+    fields = ('exchange', 'internal_exchange_percent', 'renter', 'mentor', 'owner', 'technical', 'recruiter')
 
     def edit_link(self, obj):
         return format_html('<a href="{}">Редагувати</a>',

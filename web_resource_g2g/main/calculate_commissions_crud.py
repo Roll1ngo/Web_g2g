@@ -26,6 +26,7 @@ def get_my_service_list(user_id):
 def get_global_commissions_rates():
     rates = CommissionRates.objects.first()
     commissions = {
+        "internal_exchange_percent": rates.internal_exchange_percent,
         "exchange": rates.exchange,
         "renter_lvl1": rates.renter_lvl1,
         "renter_lvl2": rates.renter_lvl2,
