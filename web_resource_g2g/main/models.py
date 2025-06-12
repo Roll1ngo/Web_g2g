@@ -166,6 +166,7 @@ class ChangeStockHistory(models.Model):
 
 class CommissionRates(models.Model):
     exchange = models.DecimalField(max_digits=5, decimal_places=3, default=0.07)  # Біржа
+    internal_exchange_percent = models.DecimalField(max_digits=5, decimal_places=3, default=7)
     renter_lvl1 = models.DecimalField(max_digits=5, decimal_places=3, default=0.05, verbose_name="Renter 10%")
     renter_lvl2 = models.DecimalField(max_digits=5, decimal_places=3, default=0.10, verbose_name="Renter 5%")  # Оренда персонажа
     mentor = models.DecimalField(max_digits=5, decimal_places=3, default=0.05)  # Ментор

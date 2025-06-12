@@ -80,7 +80,7 @@ def get_float_price(row):
         seller_id = row.get('sellers')
         currently_strategy = row.get('price')
         server_urls_id = row.get('server_urls')
-        rang_exchange = float(commissions_crud.get_global_commissions_rates()['exchange'])
+        rang_exchange = float(commissions_crud.get_global_commissions_rates()['internal_exchange_percent'])
         interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller_id, server_urls_id)
 
         if not currently_strategy or not server_urls_id:
