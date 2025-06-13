@@ -13,6 +13,7 @@ class Sellers(models.Model):
     balance = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     mentor = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="mentees")
     recruiter = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True, related_name="recruits")
+    negative_balance_permission = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'sellers'
