@@ -13,21 +13,22 @@ from main.tg_bot_run import send_messages_sync
 
 
 def get_lots_for_sale(auth_user_id: int):
-    seller_id = main_crud.get_seller_id_by_user_id(auth_user_id)
 
     main_data = (
         main_models.OffersForPlacement.objects
-        .select_related('server_urls')
+        .select_related('server_urls', 'sellers')
         .annotate(
             game_name=F('server_urls__game_name'),
             region=F('server_urls__region'),
             server_name=F('server_urls__server_name'),
+            negative_balance_permission=F('sellers__negative_balance_permission'),
         ).exclude(sellers__auth_user__id=auth_user_id)
         .filter(active_rate=True, order_status=False)
         .order_by('server_name')
         .values(
             'id',
             'sellers',
+            'negative_balance_permission',
             'server_urls',
             'currency',
             'description',
@@ -196,3 +197,9 @@ def create_order_message(order, order_source='exchange'):
         logger.warning(f"Продавець {seller.auth_user.username} не має Telegram ID")
 
     return message
+
+def get_permission_for_negative_balance(user_id):
+    seller = Sellers.objects.get(auth_user_id=user_id)
+    return seller.negative_balance_permission
+
+

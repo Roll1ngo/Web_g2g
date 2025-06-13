@@ -149,9 +149,9 @@ class SellersResource(resources.ModelResource):
 class SellersAdmin(ExportActionModelAdmin):
     resource_class = SellersResource
     list_display = ('auth_user', 'get_user_email',
-                    'mentor', 'recruiter', 'balance')
+                    'mentor', 'recruiter', 'balance', 'negative_balance_permission')
 
-    list_editable = ('mentor', 'recruiter')
+    list_editable = ('mentor', 'recruiter', 'negative_balance_permission')
 
     actions = ['complete_orders_and_clear_balance',
                'update_balance']
