@@ -1,3 +1,6 @@
+import secrets
+import string
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -240,3 +243,14 @@ class G2GIdentifiers(models.Model):
 
     class Meta:
         db_table = 'g2g_identifiers'  # Замініть на реальну назву таблиці
+
+class TemporaryPassword(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    raw_password = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_confirmed = models.BooleanField(default=False)
+
+    @classmethod
+    def generate_password(cls, length=12):
+        chars = string.ascii_letters + string.digits + "!@#$%^&*"
+        return ''.join(secrets.choice(chars) for _ in range(length))

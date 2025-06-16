@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід за допомогою Google</title>
+    <!-- Tailwind CSS CDN для стилізації -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Увійдіть або зареєструйтесь</h2>
+        <p class="text-gray-600 mb-8">
+            Використовуйте свій обліковий запис Google для швидкого та безпечного входу.
+        </p>
+
+        <!-- Контейнер для кнопки "Вхід за допомогою Google" -->
+        <div id="g_id_onload"
+             data-client_id="ВАШ_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false"
+             data-ux_mode="popup"
+             data-context="signin"
+             data-auto_select="true">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
+
+        <div id="user-info" class="mt-8 p-4 bg-blue-100 rounded-lg text-left hidden">
+            <h3 class="text-lg font-semibold text-blue-800 mb-2">Інформація про користувача:</h3>
+            <p id="user-name" class="text-gray-700"></p>
+            <p id="user-email" class="text-gray-700"></p>
+            <p id="user-id" class="text-gray-700 break-words"></p>
+            <p id="user-picture" class="text-gray-700"></p>
+            <img id="user-profile-pic" class="w-16 h-16 rounded-full mt-4 mx-auto hidden" alt="Профільне фото">
+            <p class="text-sm text-blue-600 mt-4">
+                Цей токен (JWT) необхідно відправити на ваш бекенд-сервер для валідації.
+            </p>
+        </div>
+
+        <div id="error-message" class="mt-8 p-4 bg-red-100 rounded-lg text-red-800 text-left hidden">
+            <h3 class="text-lg font-semibold mb-2">Помилка:</h3>
+            <p id="error-details"></p>
+        </div>
+    </div>
+
+    <!-- Google Identity Services Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+        function handleCredentialResponse(response) {
+            // Ця функція викликається, коли Google повертає токен ідентифікації
+            console.log("Encoded JWT ID token: " + response.credential);
+
+            // Розшифровуємо токен, щоб отримати дані користувача (для демонстрації на клієнті)
+            // В реальному застосунку це робиться на сервері
+            try {
+                const token = response.credential;
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                const decodedToken = JSON.parse(jsonPayload);
+                console.log("Decoded Token:", decodedToken);
+
+                // Відображаємо інформацію про користувача на сторінці
+                document.getElementById('user-name').innerText = `Ім'я: ${decodedToken.name || 'Невідоме'}`;
+                document.getElementById('user-email').innerText = `Email: ${decodedToken.email || 'Невідомий'}`;
+                document.getElementById('user-id').innerText = `ID користувача (sub): ${decodedToken.sub || 'Невідомий'}`;
+                document.getElementById('user-picture').innerText = `URL фото: ${decodedToken.picture || 'Відсутній'}`;
+
+                const profilePic = document.getElementById('user-profile-pic');
+                if (decodedToken.picture) {
+                    profilePic.src = decodedToken.picture;
+                    profilePic.classList.remove('hidden');
+                } else {
+                    profilePic.classList.add('hidden');
+                }
+
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('error-message').classList.add('hidden');
+
+                // *** ВАЖЛИВО: Надішліть response.credential на ваш бекенд-сервер ***
+                // fetch('/api/auth/google', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //     },
+                //     body: JSON.stringify({ token: response.credential }),
+                // })
+                // .then(response => response.json())
+                // .then(data => {
+                //     console.log('Success:', data);
+                //     // Обробка відповіді від вашого сервера (наприклад, перенаправлення)
+                // })
+                // .catch((error) => {
+                //     console.error('Error sending token to backend:', error);
+                // });
+
+            } catch (e) {
+                console.error("Error decoding token or processing response:", e);
+                document.getElementById('error-details').innerText = `Помилка обробки відповіді: ${e.message}`;
+                document.getElementById('error-message').classList.remove('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+            }
+        }
+
+        // Перевірка, чи g_id_onload і g_id_signin готові.
+        // Це може бути не потрібно, оскільки скрипт async defer
+        // та Google сам ініціалізує, але для налагодження корисно.
+        window.onload = function() {
+            // Google GIS автоматично рендерить кнопку в div з класом 'g_id_signin'
+            // після завантаження скрипту gsi/client.
+            console.log("Сторінка завантажена, очікую на ініціалізацію Google Identity Services.");
+        };
+    </script>
+</body>
+</html>

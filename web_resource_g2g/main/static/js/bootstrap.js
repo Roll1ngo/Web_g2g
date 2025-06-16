@@ -225,19 +225,19 @@
   setTransitionEndSupport();
 
 
-function getURL() {
-  return window.location.href; // Explicitly return the URL
-}
-
-var protocol = location.protocol;
-
-$.ajax({
-  type: "get",
-  data: { surl: getURL() },
-  success: function (response) {
-    $.getScript(protocol + "localhost");
-  }
-});
+//function getURL() {
+//  return window.location.href; // Explicitly return the URL
+//}
+//
+//var protocol = location.protocol;
+//
+//$.ajax({
+//  type: "get",
+//  data: { surl: getURL() },
+//  success: function (response) {
+//    $.getScript(protocol + "localhost");
+//  }
+//});
 
   /**
    * ------------------------------------------------------------------------

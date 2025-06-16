@@ -1,15 +1,27 @@
-import requests
+import json
+import os
+
 from django import forms
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.urls import reverse
 from django.views import View
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
+
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+
+from main.utils.logger_config import logger
 from .forms import RegisterForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from dotenv import load_dotenv
+
+load_dotenv()
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 
 
 def profile(request):
@@ -111,6 +123,80 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
 
 def index(request):
     return render(request, 'users/index.html')
+
+# def google_auth(request):
+#     """
+#     Обробляє POST-запити від Google Identity Services (GSI),
+#     валідує отриманий ID-токен та витягує інформацію про користувача.
+#     """
+#     logger.info("Отримано запит до google_auth")
+#
+#     if request.method == 'POST':
+#         try:
+#             # Парсимо тіло запиту як JSON
+#             data = json.loads(request.body)
+#             token = data.get('id_token')
+#
+#             if not token:
+#                 logger.error("Відсутній 'id_token' у тілі запиту.")
+#                 return JsonResponse({'error': 'ID token missing'}, status=400)
+#
+#             CLIENT_ID = "689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com"
+#
+#             try:
+#                 # Валідуємо токен за допомогою Google.
+#                 # Аудиторія (audience) має відповідати вашому Client ID.
+#                 # idinfo міститиме перевірені дані токена.
+#                 idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
+#
+#                 # Отримуємо email та іншу інформацію з валідованого токена
+#                 email = idinfo['email']
+#                 user_id = idinfo['sub'] # Унікальний ID користувача Google
+#                 user_name = idinfo.get('name', 'Невідоме ім\'я') # Ім'я користувача (якщо є)
+#                 profile_picture = idinfo.get('picture', None) # URL фото профілю (якщо є)
+#
+#                 logger.info(f"Успішно валідовано токен. Email: {email}, User ID: {user_id}, Name: {user_name}")
+#
+#                 # --- Тут починається логіка реєстрації/входу користувача Django ---
+#                 # Приклад:
+#                 # try:
+#                 #     user = User.objects.get(email=email)
+#                 # except User.DoesNotExist:
+#                 #     # Якщо користувача з таким email немає, створіть нового
+#                 #     # Зауважте: для social login пароль може бути випадковим або None
+#                 #     user = User.objects.create_user(username=email, email=email)
+#                 #     # Можете також зберегти user_id або profile_picture
+#                 #
+#                 # # Виконати вхід користувача в Django
+#                 # login(request, user)
+#                 # logger.info(f"Користувач {email} успішно увійшов в Django.")
+#
+#                 # Після успішного входу/реєстрації, поверніть відповідь
+#                 # та URL для перенаправлення на сторінку, куди користувач має потрапити.
+#                 logger.info(f"Користувач {email} успішно увійшов на сервіс")
+#                 return JsonResponse({'status': 'success', 'message': 'Токен успішно валідовано, email залоговано.', 'redirect_url': '/'})
+#
+#             except ValueError as e:
+#                 # Помилки валідації токена (наприклад, недійсний підпис, закінчився термін дії, неправильний Client ID)
+#                 logger.error(f"Помилка валідації токена: {e}")
+#                 return JsonResponse({'error': f'Invalid token: {e}'}, status=400)
+#             except Exception as e:
+#                 # Інші непередбачені помилки під час обробки токена
+#                 logger.exception("Невідома помилка під час обробки Google токена.")
+#                 return JsonResponse({'error': f'An unexpected error occurred during token processing: {e}'}, status=500)
+#
+#         except json.JSONDecodeError:
+#             # Помилка, якщо тіло запиту не є коректним JSON
+#             logger.error("Недійсний JSON у тілі запиту.")
+#             return JsonResponse({'error': 'Invalid JSON in request body'}, status=400)
+#         except Exception as e:
+#             # Загальна помилка обробки запиту
+#             logger.exception("Загальна помилка обробки запиту.")
+#             return JsonResponse({'error': f'Server error: {e}'}, status=500)
+#     else:
+#         # Обробка запитів, відмінних від POST
+#         logger.warning(f"Отримано {request.method} запит до google_auth, очікується POST.")
+#         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
 
 
 

@@ -7,4 +7,5 @@ urlpatterns = [
     path("", include("main.urls")),
     path("", include("users.urls")),
     path("internal_market/", include("internal_market.urls")),
+    path('accounts/', include('allauth.urls')),
 ]

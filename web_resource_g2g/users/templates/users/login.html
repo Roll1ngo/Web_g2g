@@ -1,40 +1,61 @@
 {% extends 'users/base.html' %}
+{% load socialaccount %}
 
 {% block content %}
-    <div class="container mt-5">
+    <div class="container mt-5 mx-auto p-4 max-w-md"> {# Додано mx-auto та p-4 для центрування та відступів #}
         {% if messages %}
-            <ul class="messages">
+            <ul class="messages mb-4 p-3 rounded bg-blue-100 text-blue-800">
                 {% for message in messages %}
                     {% if message.tags == 'success' %}
-                        <li class="success-message">{{ message }}</li>
+                        <li class="success-message text-green-700">{{ message }}</li>
                     {% elif message.tags == 'error' %}
-                        <li class="error-message">{{ message }}</li>
+                        <li class="error-message text-red-700">{{ message }}</li>
                     {% endif %}
                 {% endfor %}
             </ul>
         {% endif %}
-        <h2>Login</h2>
-        <form method="post">
+
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Увійдіть</h2>
+
+        <!-- Стандартна форма логіну -->
+        <form method="post" class="mb-8 p-6 rounded-lg"> {# Видалено bg-white та shadow-md для прозорості #}
             {% csrf_token %}
             {% if form.non_field_errors %}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger text-red-700 bg-red-100 p-3 rounded mb-4">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
-            <div class="form-group">
-                <label for="username">Username:</label>
+            <div class="form-group mb-4">
+                <label for="id_username" class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
                 {{ form.username }}
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
+            <div class="form-group mb-6">
+                <label for="id_password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
                 {{ form.password }}
             </div>
-            <div class="form-group">
-                <button type="submit">Login</button>
-                <a href="/password_reset" class="recover-password-link">Forgot your password?</a>
-
+            <div class="form-group flex justify-between items-center">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Login</button>
+                <a href="{% url 'users:reset_password' %}" class="text-blue-500 hover:text-blue-800 text-sm">Forgot your password?</a> {# Використовуйте іменований URL #}
             </div>
         </form>
-        <a href="register/" class="recover-password-link">Registration</a>
+
+        <p class="text-center text-gray-600 mb-4 text-lg font-medium">або</p>
+
+        <!-- Інтеграція Google Sign-In (Google Identity Services - GSI / One Tap) -->
+        <div class="google-signin-section p-6 rounded-lg text-center"> {# Прозорий фон #}
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">Увійдіть за допомогою Google</h3>
+            <p class="text-gray-600 mb-6">
+                Використовуйте свій обліковий запис Google для швидкого та безпечного входу.
+            </p>
+
+                <!-- Контейнер для кнопки "Вхід за допомогою Google" -->
+        <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger">
+        <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google Logo" />
+        Увійти через Google</a>
+
+
+        </div>
+
     </div>
+
 {% endblock %}
