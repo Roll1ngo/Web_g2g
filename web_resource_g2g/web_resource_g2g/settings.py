@@ -20,8 +20,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost', 'able-above-monitor.ngrok-free.app']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://able-above-monitor.ngrok-free.app'
-]
+    'https://able-above-monitor.ngrok-free.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000'
+    ]
 
 
 # Application definition
@@ -36,7 +38,12 @@ INSTALLED_APPS = [
     "import_export",
     "main.apps.MainConfig",
     "users.apps.UsersConfig",
-    "internal_market.apps.InternalMarketConfig"
+    "internal_market.apps.InternalMarketConfig",
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google', # Додаємо провайдера Google
 ]
 
 MIDDLEWARE = [
@@ -47,6 +54,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware"
+
 ]
 
 ROOT_URLCONF = "web_resource_g2g.urls"
@@ -138,4 +147,38 @@ PASSWORD_RESET_CONFIRM_URL = 'password_reset_confirm'
 
 MEDIA_URL = '/media/'  # URL для медіа-файлів
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Директорія для зберігання медіа-файлів
-LOGOUT_REDIRECT_URL = '/'
+
+SITE_ID = 1  # Зазвичай 1, якщо у вас один сайт
+
+# Налаштування для allauth
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_VERIFICATION = 'none' # Можете змінити на 'mandatory' або 'optional'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_ADAPTER = 'main.adapters.CustomSocialAccountAdapter'
+
+ACCOUNT_ALLOW_REGISTRATION = True
+SOCIALACCOUNT_AUTO_SIGNUP = True  # Автоматична реєстрація
+LOGIN_REDIRECT_URL = '/'  # Куди перенаправляти після успішного входу
+LOGOUT_REDIRECT_URL = '/login' # Куди перенаправляти після виходу
+
+# Налаштування для соціальних провайдерів
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # Для детальніших налаштувань (наприклад, дозволи)
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+# Це дозволяє allauth використовувати стандартну систему автентифікації Django
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)

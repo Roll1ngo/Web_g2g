@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
-                     CommissionRates)
+                     CommissionRates, TemporaryPassword)
 from django.db.models import F, Sum, DecimalField, Q
 
 from main.tg_bot_run import send_messages_sync
@@ -713,4 +713,11 @@ def order_status_set_status(seller_id, server_id, status, reset_reserve=None):
 
     offer.save()
 
+def check_exist_telegram_id(user_id):
+    seller = Sellers.objects.filter(auth_user_id=user_id).first()
+    return True if seller.id_telegram else False
+
+def get_email_password(user_id):
+     temp_record =TemporaryPassword.objects.get(user_id=user_id)
+     return temp_record.user.email, temp_record.raw_password
 
