@@ -13806,3 +13806,320 @@ django.db.utils.IntegrityError: UNIQUE constraint failed: new__sold_orders.sold_
 [1;32m2025-06-16 19:28:03,406 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:682 - internal_market_spend__0[0m
 [1;32m2025-06-16 19:28:03,408 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__38, commission_earned__0[0m
 [1;32m2025-06-16 19:28:03,409 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:572 - seller_total_balance_0[0m
+[1;32m2025-06-17 09:44:57,640 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 09:44:57,643 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 09:44:57,645 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 09:45:00,835 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 09:45:00,838 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 09:45:00,841 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 09:45:03,901 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 09:45:03,902 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 09:45:03,904 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 09:47:33,835 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 09:47:33,836 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 09:47:33,837 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 09:47:39,933 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 09:47:39,934 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 09:47:39,935 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 09:47:40,929 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 09:47:40,932 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 09:47:40,934 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:31:58,821 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:31:58,822 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:31:58,823 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:32:02,465 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:32:02,466 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:32:02,467 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:12,885 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:12,886 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:12,887 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:14,697 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:14,698 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:14,699 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:20,741 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:20,742 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:20,743 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:23,290 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:23,291 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:23,293 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:27,480 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:27,480 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:27,481 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:38,646 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:38,647 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:38,648 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:34:45,198 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:34:45,199 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:34:45,201 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:35:07,816 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:35:07,817 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:35:07,817 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:37:34,992 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:37:34,993 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:37:34,994 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:37:40,472 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:37:40,473 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:37:40,473 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:41:57,462 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:41:57,464 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:41:57,465 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:42:06,069 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:42:06,071 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:42:06,072 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:43:16,695 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:43:16,697 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:43:16,698 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:52:22,593 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:52:22,594 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:52:22,594 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:52:26,282 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:52:26,283 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:52:26,284 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:52:43,804 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:52:43,805 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:52:43,806 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:53:05,932 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:53:05,933 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:53:05,933 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 10:53:09,588 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 10:53:09,589 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 10:53:09,590 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 12:25:37,381 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 12:25:37,382 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 12:25:37,383 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 12:25:43,485 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 12:25:43,486 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 12:25:43,487 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 12:25:45,476 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 12:25:45,478 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 12:25:45,480 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 13:56:04,409 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 13:56:04,413 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 13:56:04,413 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 14:24:19,051 - CRITICAL - [1;33mlogger_config[1;32m.[1;34mhandle_exception[1;32m:54 - Uncaught exception[0m
+Traceback (most recent call last):
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 22, in <module>
+    main()
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 413, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 459, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/commands/shell.py", line 127, in handle
+    exec(sys.stdin.read(), globals())
+  File "<string>", line 3, in <module>
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/__init__.py", line 88, in send_mail
+    return mail.send()
+           ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/message.py", line 301, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 128, in send_messages
+    new_conn_created = self.open()
+                       ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 95, in open
+    self.connection.login(self.username, self.password)
+  File "/usr/lib/python3.12/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/lib/python3.12/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Incorrect authentication data')
+[1;32m2025-06-17 14:43:30,293 - CRITICAL - [1;33mlogger_config[1;32m.[1;34mhandle_exception[1;32m:54 - Uncaught exception[0m
+Traceback (most recent call last):
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 22, in <module>
+    main()
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 413, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 459, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/commands/shell.py", line 127, in handle
+    exec(sys.stdin.read(), globals())
+  File "<string>", line 15, in <module>
+  File "<string>", line 4, in send_email_test
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/__init__.py", line 88, in send_mail
+    return mail.send()
+           ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/message.py", line 301, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 128, in send_messages
+    new_conn_created = self.open()
+                       ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 95, in open
+    self.connection.login(self.username, self.password)
+  File "/usr/lib/python3.12/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/lib/python3.12/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'Incorrect authentication data')
+[1;32m2025-06-17 14:44:46,354 - CRITICAL - [1;33mlogger_config[1;32m.[1;34mhandle_exception[1;32m:54 - Uncaught exception[0m
+Traceback (most recent call last):
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 22, in <module>
+    main()
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 413, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 459, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/commands/shell.py", line 127, in handle
+    exec(sys.stdin.read(), globals())
+  File "<string>", line 15, in <module>
+  File "<string>", line 4, in send_email_test
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/__init__.py", line 88, in send_mail
+    return mail.send()
+           ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/message.py", line 301, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 128, in send_messages
+    new_conn_created = self.open()
+                       ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 95, in open
+    self.connection.login(self.username, self.password)
+  File "/usr/lib/python3.12/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/lib/python3.12/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Incorrect authentication data [un.20250617.XW1oUeTEFu3s28fY]')
+[1;32m2025-06-17 14:48:16,632 - INFO - [1;33m<string>[1;32m.[1;34m<module>[1;32m:7 - Fast Sale Service <fastsaleservice@ukr.net>[0m
+[1;32m2025-06-17 14:48:57,243 - INFO - [1;33m<string>[1;32m.[1;34m<module>[1;32m:7 - from_email__Fast Sale Service <fastsaleservice@ukr.net>[0m
+[1;32m2025-06-17 14:49:27,794 - INFO - [1;33m<string>[1;32m.[1;34m<module>[1;32m:7 - from_email__Fast Sale Service <fastsaleservice@ukr.net>, <class 'str'>[0m
+[1;32m2025-06-17 14:50:24,854 - INFO - [1;33m<string>[1;32m.[1;34m<module>[1;32m:7 - from_email__Fast Sale Service <fastsaleservice@ukr.net>, <class 'str'>[0m
+[1;32m2025-06-17 14:50:37,803 - CRITICAL - [1;33mlogger_config[1;32m.[1;34mhandle_exception[1;32m:54 - Uncaught exception[0m
+Traceback (most recent call last):
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 22, in <module>
+    main()
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 413, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 459, in execute
+    output = self.handle(*args, **options)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/commands/shell.py", line 127, in handle
+    exec(sys.stdin.read(), globals())
+  File "<string>", line 19, in <module>
+  File "<string>", line 10, in send_email_test
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/__init__.py", line 88, in send_mail
+    return mail.send()
+           ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/message.py", line 301, in send
+    return self.get_connection(fail_silently).send_messages([self])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 128, in send_messages
+    new_conn_created = self.open()
+                       ^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/mail/backends/smtp.py", line 95, in open
+    self.connection.login(self.username, self.password)
+  File "/usr/lib/python3.12/smtplib.py", line 750, in login
+    raise last_exception
+  File "/usr/lib/python3.12/smtplib.py", line 739, in login
+    (code, resp) = self.auth(
+                   ^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 662, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Incorrect authentication data [un.20250617.UPuDpZFQj110Keyz]')
+[1;32m2025-06-17 15:43:40,745 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:43:40,748 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:43:40,749 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:44:03,017 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:44:03,018 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:44:03,019 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:44:03,766 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:44:03,767 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:44:03,768 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:45:56,384 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:45:56,385 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:45:56,386 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:50:39,775 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:50:39,777 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:50:39,778 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:55:04,702 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:55:04,703 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:55:04,704 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:56:35,099 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:56:35,100 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:56:35,101 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 15:59:58,309 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 15:59:58,310 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 15:59:58,312 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:00:57,421 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:00:57,423 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:00:57,425 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:01:23,130 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:01:23,131 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:01:23,132 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:01:27,163 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:01:27,164 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:01:27,165 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:01:38,598 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:01:38,600 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:01:38,602 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:01:39,446 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:01:39,448 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:01:39,449 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:04:25,337 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:04:25,339 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:04:25,341 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:04:26,282 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:04:26,283 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:04:26,285 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:11:31,645 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:11:31,647 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:11:31,648 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:11:44,185 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:11:44,186 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:11:44,187 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:11:45,764 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:11:45,766 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:11:45,767 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:12:12,897 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:12:12,900 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:12:12,901 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:12:14,025 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:12:14,027 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:12:14,029 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:12:24,095 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:12:24,098 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:12:24,100 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:12:24,894 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:12:24,895 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:12:24,896 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:15:01,421 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:15:01,422 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:15:01,423 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-17 16:15:02,242 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:660 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-17 16:15:02,243 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:667 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-17 16:15:02,244 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m

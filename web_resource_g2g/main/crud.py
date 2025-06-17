@@ -721,3 +721,8 @@ def get_email_password(user_id):
      temp_record =TemporaryPassword.objects.get(user_id=user_id)
      return temp_record.user.email, temp_record.raw_password
 
+
+def password_confirmed_status(user_id):
+    temp_record = TemporaryPassword.objects.get(user_id=user_id)
+    return bool(temp_record.is_confirmed)
+

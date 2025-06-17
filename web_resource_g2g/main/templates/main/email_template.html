@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ласкаво просимо до FastSaleService!</title>
+    <style>
+        /* Основні стилі для сумісності з поштовими клієнтами */
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6; /* Дуже світлий сірий фон для зовнішньої частини */
+            color: #374151; /* Темно-сірий текст для основного контенту */
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff; /* Білий фон для основного тіла листа */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легка тінь */
+            border: 1px solid #e5e7eb; /* Тонка рамка */
+        }
+        h1, h3 {
+            color: #1f2937; /* Темні заголовки */
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-align: center; /* Центрування заголовків */
+        }
+        p {
+            margin-bottom: 10px;
+            color: #374151; /* Темно-сірий текст параграфів */
+        }
+        code {
+            background-color: #e5e7eb; /* Світло-сірий фон для коду */
+            color: #1f2937; /* Темний текст для коду */
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        a {
+            color: #3b82f6; /* Сині посилання */
+            text-decoration: underline;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+        .info-box {
+            background-color: #e0f2f7; /* Світло-синій фон для блоку з інфо */
+            border-left: 4px solid #38bdf8; /* Блакитна рамка ліворуч */
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .info-box p, .info-box strong, .info-box span {
+            color: #374151; /* Темно-сірий текст всередині info-box */
+        }
+        .footer {
+            text-align: right;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #6b7280; /* Темніший текст футера */
+        }
+        .footer a {
+             color: #3b82f6; /* Синій колір для посилань у футері */
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 25px;">Ласкаво просимо до FastSaleService!</h1>
+
+        <p style="font-size: 18px; text-align: center; margin-bottom: 25px;">
+            Привіт, <strong style="font-weight: 600;">{{ user_name|default:"Друже" }}</strong>! Ми раді вітати вас у нашій спільноті.
+        </p>
+
+        <div class="info-box">
+            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px;">Ваші дані для входу:</h3>
+            <p style="margin-bottom: 8px;"><strong>Логін (Email):</strong> <code>{{ user_email }}</code></p>
+            <p style="margin-bottom: 8px;">
+                <strong>Пароль:</strong>
+                <code>{{ user_password }}</code>
+                {% if is_social_login %}
+                <br><span style="font-size: 0.85em; color: #4b5563;">
+                    (Цей пароль згенеровано автоматично для входу. Рекомендуємо змінити його після першого входу.)
+                </span>
+                {% endif %}
+            </p>
+            <p style="margin-bottom: 8px;"><strong>Telegram_bot:</strong> <a href="http://t.me/MNLalertbot" target="_blank">http://t.me/MNLalertbot</a></p>
+            <p style="margin-top: 20px; font-size: 0.8em; color: #4b5563; font-weight: 500;">
+                Будь ласка, збережіть ці дані в безпечному місці.
+                Після завершення реєстрації вони будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.
+            </p>
+        </div>
+
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="{{ website_link }}" target="_blank" style="display: inline-block; padding: 12px 25px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                Перейти на сайт FastSaleService
+            </a>
+        </p>
+
+        <p class="footer">
+            З повагою,<br>
+            <strong style="font-size: 1.1em; color: #1f2937;">Команда FastSaleService</strong><br>
+            <a href="{{ website_link }}" target="_blank">{{ website_link }}</a>
+        </p>
+    </div>
+</body>
+</html>

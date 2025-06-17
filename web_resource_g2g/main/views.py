@@ -8,6 +8,7 @@ from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
 from django.shortcuts import render, redirect
 from main import crud
 from main import calculate_commissions_crud as commissions_crud
+from main.utils.send_email import send_massage_to_email
 from .utils.logger_config import logger
 
 
@@ -19,10 +20,9 @@ import json
 def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
-        check_exist_telegram_id = crud.check_exist_telegram_id(user_id)
-        if not check_exist_telegram_id:
-            e_mail, password = crud.get_email_password(user_id)
-
+        e_mail, password = crud.get_email_password(user_id)
+        password_confirmed = crud.password_confirmed_status(user_id)
+        if not password_confirmed:
             return render(request, 'main/add_telegram_id.html', context={"e-mail": e_mail,
                                                                          'temp_password': password})
         all_bets = crud.get_main_data_from_table(user_id)

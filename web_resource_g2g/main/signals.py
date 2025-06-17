@@ -2,10 +2,13 @@
 import secrets
 import string
 
+from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
+from django.conf import settings
+from django.template.loader import render_to_string
 from main.models import Sellers, TemporaryPassword
 from allauth.socialaccount.signals import social_account_added, pre_social_login
 import logging
@@ -61,7 +64,47 @@ def hash_social_user_password(sender, request, sociallogin, **kwargs):
             logger.info(f"Temporary password for user {user.id}: {raw_password}")
 
             # Тут можна додати відправку пароля користувачу
+            # --- Логіка відправки вітального листа ---
+            subject = 'Ласкаво просимо до FastSaleService!'
+            recipient_list = [user.email]
+            from_email = settings.DEFAULT_FROM_EMAIL
 
+            # Контекст для HTML-шаблону листа
+            context = {
+                'user_name': user.first_name if user.first_name else user.email,
+                'user_email': user.email,
+                'user_password': raw_password,
+                'is_social_login': True,  # Щоб відобразити підказку про пароль у листі
+                'telegram_link': 'http://t.me/MNLalertbot',  # !!! ЗАМІНІТЬ !!!
+                'telegram_chat_link': "https://t.me/+cWY33B74-FY2ODFi",  # !!! ЗАМІНІТЬ !!!
+                'support_email': 'https://t.me/VladislavBratus',  # !!! ЗАМІНІТЬ !!! support_email
+                'website_link': 'https://able-above-monitor.ngrok-free.app/admin/main',  # !!! ЗАМІНІТЬ !!!
+            }
+
+            html_message = render_to_string('main/email_template.html', context)
+            plain_message = (
+                f"Привіт, {user.first_name or user.username}!\n\n"
+                f"Ласкаво просимо до FastSaleService!\n\n"
+                f"Ваші дані для входу:\n"
+                f"Логін (Email): {user.email}\n"
+                f"Пароль: {raw_password}\n\n"
+                f"Для прив'язки Telegram: {context['telegram_link']}\n"
+                f"Служба підтримки: {context['support_email']}\n"
+                f"Сайт: {context['website_link']}"
+            )
+
+            try:
+                send_mail(
+                    subject,
+                    plain_message,  # Відправляємо і plain-text, і HTML
+                    from_email,
+                    recipient_list,
+                    html_message=html_message,
+                    fail_silently=False,
+                )
+                logger.info(f"Welcome email sent to {user.email}")
+            except Exception as email_e:
+                logger.error(f"Failed to send welcome email to {user.email}: {email_e}")
         except Exception as e:
             logger.error(f"Password handling failed for {user.email}: {str(e)}")
             raise
