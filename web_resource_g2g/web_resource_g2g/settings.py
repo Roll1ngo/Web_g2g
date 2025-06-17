@@ -4,6 +4,8 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
  # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(os.getpid())
@@ -182,3 +184,13 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+# Налаштування SMTP Ukr.net
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.ukr.net'
+EMAIL_PORT = 465  # Для SSL або 2525 для TLS
+EMAIL_USE_SSL = True  # True для порту 465, False для 2525
+EMAIL_USE_TLS = False  # True для порту 2525
+EMAIL_HOST_USER = 'fastsaleservice@ukr.net'  # Повна адреса
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD  # Пароль для SMTP (не від облікового запису!)
+DEFAULT_FROM_EMAIL = 'Fast Sale Service <fastsaleservice@ukr.net>'  # Відображуване ім'я

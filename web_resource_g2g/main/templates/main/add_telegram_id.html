@@ -1,8 +1,95 @@
 {% extends "users/base.html" %}
+{% block extra_head %} {# Новий блок для стилів у секції head #}
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f3f4f6; /* Light gray background */
+        color: #374151; /* Dark gray text */
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+        color: #1f2937; /* Darker headings */
+    }
+    .section-title {
+        font-weight: 700; /* Bold */
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #1f2937;
+    }
+    .info-box {
+        background-color: #e0f2f7; /* Light blue background */
+        border-left: 4px solid #38bdf8; /* Blue border */
+        padding: 1rem;
+        border-radius: 6px;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+    }
+    ul li {
+        margin-bottom: 0.5rem;
+    }
+    a {
+        color: #3b82f6; /* Blue links */
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+    }
+    a:hover {
+        color: #2563eb; /* Darker blue on hover */
+        text-decoration: underline;
+    }
+    .highlight {
+        color: #ef4444; /* Red highlight */
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
-<a href="https://t.me/MNLalertbot" target="_blank", rel="noopener noreferrer">Telegram_additional</a>
-<span>{{user.email}}</span>
-<span>{{temp_password}}</span>
+  <div class="container">
+	  <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-8">Ласкаво просимо до FastSaleService!</h1>
+
+	  <p class="text-lg mb-4">Привіт, <span class="font-semibold">{{ user.first_name }}</span>!</p>
+
+	  <p class="mb-6">Від щирого серця вітаємо вас у команді FastSaleService – платформі, створеній геймерами для геймерів! Ми раді, що ви приєдналися до нас, щоб розблокувати повний потенціал своїх пригод у World of Warcraft та заробляти на своїх навичках.</p>
+
+	  <h2 class="section-title text-2xl">У FastSaleService ми розуміємо пристрасть до WoW і пропонуємо вам унікальні можливості для розвитку та отримання прибутку:</h2>
+
+	  <ul class="list-disc ml-6 mb-6">
+		  <li class="mb-2"><strong>Продаж ігрового золота WoW:</strong> Швидко та безпечно конвертуйте ваше зароблене золото WoW у реальні гроші. Ми гарантуємо вигідні курси та надійні транзакції.</li>
+		  <li class="mb-2"><strong>Оренда ігрових персонажів:</strong> Шукаєте нового виклику? Орендуйте потужних персонажів для освоєння складного контенту або просто для розваги без тривалого прокачування.</li>
+		  <li class="mb-2"><strong>Послуги менторів:</strong> Навчайтесь у найкращих! Наші досвідчені ментори допоможуть вам освоїти складні рейди, PvP-стратегії чи покращити ігрові навички. Передавайте свої знання та отримуйте винагороду!</li>
+		  <li class="mb-2"><strong>Рекрутерська програма:</strong> Запрошуйте друзів та знайомих до FastSaleService та отримуйте <span class="highlight">відсоток від їхніх продажів</span>! Це чудова можливість збільшити свій дохід, будуючи власну мережу продавців та гравців.</li>
+	  </ul>
+
+	  <div class="info-box">
+ 		  <h3 class="section-title text-xl mb-4">Вхід через Google буде доступним без використання пароля</h3>
+		  <h3 class="section-title text-xl mb-4">Ваші реєстраційні дані для входу на сайт FastSaleService та прив’язки Telegram профілю:</h3>
+		  <p class="mb-2"><strong>Логін (Email):</strong> <code class="bg-gray-100 p-1 rounded">{{ user.email }}</code></p>
+		  <p class="mb-2"><strong>Пароль:</strong> <code class="bg-gray-100 p-1 rounded">{{ temp_password }}</code></p>
+		  <p class="mb-2"><strong>Telegram_bot:</strong> <a href="http://t.me/MNLalertbot" target="_blank" class="font-medium" style="color: #0088cc">http://t.me/MNLalertbot</a></p>
+   		  <p class="mt-4 text-sm font-semibold text-blue-700">Будь ласка, збережіть ці дані в безпечному місці. Після завершення реєстрації вони будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.</p>
+	  </div>
+
+	  <h3 class="section-title text-xl">Прив'язка Telegram профілю:</h3>
+	  <p class="mb-4">Для зручного сповіщення про нові замовлення, оновлення статусу та оперативної комунікації, ми наполегливо рекомендуємо <span class="font-semibold">прив'язати ваш Telegram профіль</span> до облікового запису FastSaleService. Це можна зробити у будь який час за посиланням:</p>
+	  <p class="mb-6"><a href="http://t.me/MNLalertbot" target="_blank" class="font-medium" style="color: #0088cc">http://t.me/MNLalertbot</a></p>
+
+	  <p class="mb-4">Ми прагнемо зробити ваш досвід на FastSaleService максимально приємним та прибутковим. Якщо у вас виникнуть запитання або потрібна допомога, не соромтеся звертатися до нашої <a href="https://t.me/+cWY33B74-FY2ODFi" target="_blank" class="font-medium" style="color: #0088cc">служби підтримки</a> або у нашому <a href="https://t.me/+cWY33B74-FY2ODFi" target="_blank" class="font-medium" style="color: #0088cc">Telegram-чаті</a>.</p>
+
+	  <p class="text-right mt-8 text-lg font-semibold">З повагою,</p>
+	  <p class="text-right text-xl font-bold mb-2">Команда FastSaleService</p>
+	  <p class="text-right text-sm"><a href="[Посилання на ваш сайт, наприклад, https://fastsaleservice.com]" target="_blank">[Посилання на ваш сайт]</a></p>
+  </div>
 {% endif %}
 {% endblock %}
