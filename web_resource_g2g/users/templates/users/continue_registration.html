@@ -1,0 +1,271 @@
+{% extends "users/base.html" %}
+{% load static %} {# Для використання static файлів, якщо потрібні #}
+
+{% block extra_head %}
+    <style>
+        /* Кастомні стилі, які доповнюють або замінюють Bootstrap для цієї сторінки */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light background for overall page */
+            color: #212529; /* Dark text */
+            line-height: 1.6;
+        }
+        .custom-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-lg equivalent */
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1); /* shadow-md equivalent */
+        }
+        .error-message {
+            color: #dc3545; /* Bootstrap danger color */
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .success-message {
+            color: #28a745; /* Bootstrap success color */
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .telegram-info {
+            background-color: #eaf6fa; /* Light blue */
+            border-left: 4px solid #007bff; /* Primary blue */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .telegram-info h3 {
+            color: #007bff; /* Primary blue */
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .telegram-info p {
+            margin-bottom: 0.75rem;
+        }
+        .telegram-info a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .telegram-info code {
+            background-color: #e2f0f4;
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #0c5460;
+        }
+
+        /* Стилі для маркованого списку Telegram */
+        .telegram-instructions ul {
+            list-style: none; /* Прибираємо стандартні маркери */
+            padding-left: 0;
+            margin-top: 1rem;
+        }
+        .telegram-instructions ul li {
+            position: relative;
+            margin-bottom: 0.8rem;
+            padding-left: 1.8rem; /* Відступ для кастомного маркера */
+            font-size: 1rem;
+            font-weight: 500;
+            color: #212529; /* Dark text */
+        }
+        .telegram-instructions ul li::before {
+            content: '✓'; /* Кастомний маркер */
+            position: absolute;
+            left: 0;
+            color: #28a745; /* Green color for checkmark */
+            font-weight: bold;
+            font-size: 1.2em;
+            line-height: 1;
+            top: 0.1em;
+        }
+        .telegram-instructions code {
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        /* Стилі для info-box всередині telegram-info */
+        .telegram-info .info-box {
+            background-color: #d1ecf1; /* Light cyan */
+            border-left: 4px solid #4fd1c5; /* Teal color for border */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .telegram-info .info-box p,
+        .telegram-info .info-box strong,
+        .telegram-info .info-box span {
+            color: #0c5460; /* Darker text for contrast */
+        }
+        .telegram-info .info-box code {
+            background-color: #e9ecef; /* Lighter background for code */
+            color: #0c5460;
+        }
+        .telegram-info .info-box a {
+            color: #007bff; /* Standard blue for links */
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="custom-container"> {# Changed from 'container' to 'custom-container' to avoid conflict with Bootstrap's container #}
+            <h1 class="text-center mb-4 h3">Завершення реєстрації</h1>
+
+            <p class="lead text-center mb-4">
+                Ласкаво просимо, <span class="fw-semibold">{{user.first_name|default:user.username}}</span>!
+                Для повного доступу до сервісу FastSaleService, будь ласка, введіть ім'я користувача та приєднайте профіль Telegram
+            </p>
+
+            {# Нова умова: показувати поле username лише якщо воно ще не встановлено #}
+            {% if not username_already_set %}
+                <form id="registrationForm" class="mb-4">
+                    {% csrf_token %}
+                    <div class="mb-3"> {# form-group mb-4 equivalent #}
+                        <label for="usernameInput" class="form-label">Ім'я користувача:</label>
+                        <input type="text" id="usernameInput" name="username" class="form-control" placeholder="Ваше унікальне ім'я користувача (тільки букви та цифри)" required pattern="[a-zA-Z0-9]+" title="Дозволені лише букви та цифри">
+                        <p id="usernameError" class="error-message d-none">Дозволені лише букви та цифри.</p> {# d-none for hidden #}
+                    </div>
+
+                    {# ВЕСЬ БЛОК telegram-info ТЕПЕР ВСЕРЕДИНІ ФОРМИ #}
+                    <div class="telegram-info">
+                        <h3 class="mb-3">Обов'язкова умова: Приєднання профілю Telegram</h3>
+                        <p>Для отримання важливих сповіщень про замовлення та оперативної підтримки, вам необхідно прив'язати ваш Telegram-профіль до облікового запису FastSaleService.</p>
+                        <p>Будь ласка, перейдіть до нашого Telegram-бота за посиланням та виконайте наступні кроки:</p>
+
+                        <div class="telegram-instructions">
+                            <ul>
+                                <li>У чаті з ботом натисніть кнопку: <p class="text-center fw-bold fs-5 mt-2 mb-2"><code>/Start</code></p></li>
+                                <li>Виберіть команду: <p class="text-center fw-bold fs-5 mt-2 mb-2"><code>/registration</code></p></li>
+                                <li>Далі слідуйте інструкціям бота, щоб ввести ваш логін (email) та пароль від сайту FastSaleService.</li>
+                            </ul>
+                            <div class="info-box"> {# This is the nested info-box #}
+                                <p class="mb-2"><strong>Логін (Email):</strong> <code class="bg-light p-1 rounded">{{ user.email }}</code></p>
+                                <p class="mb-2"><strong>Пароль:</strong> <code class="bg-light p-1 rounded">{{ temp_password }}</code></p>
+                                <p class="mt-4 small fw-semibold text-primary">Будь ласка, збережіть ці дані в безпечному місці. Після завершення реєстрації вони будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.</p>
+                            </div>
+                        </div>
+
+                        <p class="text-center mt-4 mb-4">
+                            <a href="http://t.me/MNLalertbot" target="_blank" class="btn btn-info" style="background-color: #0088cc; color: #ffffff;">Перейти до Telegram-бота</a>
+                        </p>
+                        <p class="small text-muted mt-4">
+                            Цей крок забезпечує безпечну прив'язку вашого облікового запису.
+                        </p>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Завершити реєстрацію</button>
+                    </div>
+                </form>
+            {% else %}
+                {# Повідомлення, якщо ім'я користувача вже встановлено #}
+                <div class="text-center p-4 alert alert-success mb-4">
+                    <p class="fw-semibold fs-5">Ваше ім'я користувача вже встановлено як: <span class="text-success">{{ user.username }}</span>.</p>
+                    <p class="mt-2">Тепер ви можете перейти до свого <a href="{% url 'account_profile' %}" class="text-decoration-underline">профілю</a> або продовжити роботу з сайтом.</p>
+                </div>
+
+                {# Повторюємо блок Telegram-інформації, оскільки він все ще актуальний #}
+                <div class="telegram-info">
+                    <h3 class="mb-3">Обов'язкова умова: Приєднання профілю Telegram</h3>
+                    <p>Для отримання важливих сповіщень про замовлення та оперативної підтримки, вам необхідно прив'язати ваш Telegram-профіль до облікового запису FastSaleService.</p>
+                    <p>Будь ласка, перейдіть до нашого Telegram-бота за посиланням та виконайте наступні кроки:</p>
+
+                    <div class="telegram-instructions">
+                        <ul>
+                            <li>У чаті з ботом натисніть кнопку: <p class="text-center fw-bold fs-5 mt-2 mb-2"><code>/Start</code></p></li>
+                            <li>Виберіть команду: <p class="text-center fw-bold fs-5 mt-2 mb-2"><code>/registration</code></p></li>
+                            <li>Далі слідуйте інструкціям бота, щоб ввести ваш логін (email) та пароль від сайту FastSaleService.</li>
+                        </ul>
+                        <div class="info-box"> {# This is the nested info-box #}
+                            <p class="mb-2"><strong>Логін (Email):</strong> <code class="bg-light p-1 rounded">{{ user.email }}</code></p>
+                            <p class="mb-2"><strong>Пароль:</strong> <code class="bg-light p-1 rounded">{{ temp_password }}</code></p>
+                            <p class="mt-4 small fw-semibold text-primary">Будь ласка, збережіть ці дані в безпечному місці. Після завершення реєстрації вони будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.</p>
+                        </div>
+                    </div>
+
+                    <p class="text-center mt-4 mb-4">
+                        <a href="http://t.me/MNLalertbot" target="_blank" class="btn btn-info" style="background-color: #0088cc; color: #ffffff; text-decoration: none">Перейти до Telegram-бота</a>
+                    </p>
+                    <p class="small text-muted mt-4">
+                        Цей крок забезпечує безпечну прив'язку вашого облікового запису.
+                    </p>
+                </div>
+            {% endif %} {# Кінець умови username_already_set #}
+
+            <p id="responseMessage" class="text-center mt-3 d-none"></p> {# d-none for hidden #}
+
+        </div>
+
+        <script>
+            document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+                event.preventDefault(); // Запобігаємо стандартній відправці форми
+
+                const usernameInput = document.getElementById('usernameInput');
+                const username = usernameInput.value;
+                const usernameError = document.getElementById('usernameError');
+                const responseMessage = document.getElementById('responseMessage');
+
+                // Client-side validation
+                const usernamePattern = /^[a-zA-Z0-9]+$/;
+                if (!username || !usernamePattern.test(username)) {
+                    usernameError.classList.remove('d-none'); // Show error with Bootstrap d-none
+                    usernameInput.focus();
+                    return;
+                } else {
+                    usernameError.classList.add('d-none'); // Hide error with Bootstrap d-none
+                }
+
+                responseMessage.classList.add('d-none'); // Hide previous messages with Bootstrap d-none
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                try {
+                    const response = await fetch('{% url 'users:complete_registration' %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        },
+                        body: JSON.stringify({ username: username })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        responseMessage.classList.remove('d-none'); // Show with Bootstrap d-none
+                        responseMessage.classList.add('text-success'); // Bootstrap success text
+                        responseMessage.classList.remove('text-danger'); // Remove Bootstrap danger text
+                        responseMessage.innerText = data.message;
+
+                        if (data.redirect_url) {
+                            setTimeout(() => {
+                                window.location.href = data.redirect_url;
+                            }, 2000);
+                        }
+                    } else {
+                        responseMessage.classList.remove('d-none'); // Show with Bootstrap d-none
+                        responseMessage.classList.add('text-danger'); // Bootstrap danger text
+                        responseMessage.classList.remove('text-success'); // Remove Bootstrap success text
+                        responseMessage.innerText = data.error || 'Невідома помилка під час завершення реєстрації.';
+                    }
+                } catch (error) {
+                    console.error('Помилка під час відправки даних:', error);
+                    responseMessage.classList.remove('d-none'); // Show with Bootstrap d-none
+                    responseMessage.classList.add('text-danger'); // Bootstrap danger text
+                    responseMessage.classList.remove('text-success'); // Remove Bootstrap success text
+                    responseMessage.innerText = 'Виникла помилка мережі або сервера. Будь ласка, спробуйте ще раз.';
+                }
+            });
+        </script>
+
+    {% else %}
+        <div class="custom-container text-center"> {# Changed to custom-container #}
+            <h1 class="h4 text-danger mb-4">Доступ заборонено</h1>
+            <p class="lead">Будь ласка, <a href="{% url 'account_login' %}" class="text-primary text-decoration-underline">увійдіть</a>, щоб завершити реєстрацію.</p>
+        </div>
+    {% endif %}
+{% endblock %}

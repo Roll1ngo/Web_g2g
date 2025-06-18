@@ -1,5 +1,3 @@
-{% extends "users/base.html" %}
-{% block extra_head %} {# Новий блок для стилів у секції head #}
 <style>
     body {
         font-family: 'Inter', sans-serif;
@@ -53,9 +51,6 @@
         font-weight: 600;
     }
 </style>
-{% endblock %}
-{% block content %}
-{% if user.is_authenticated %}
   <div class="container">
 	  <h1 class="text-3xl sm:text-4xl font-extrabold text-center mb-8">Ласкаво просимо до FastSaleService!</h1>
 
@@ -91,5 +86,4 @@
 	  <p class="text-right text-xl font-bold mb-2">Команда FastSaleService</p>
 	  <p class="text-right text-sm"><a href="[Посилання на ваш сайт, наприклад, https://fastsaleservice.com]" target="_blank">[Посилання на ваш сайт]</a></p>
   </div>
-{% endif %}
-{% endblock %}
+

@@ -3,9 +3,11 @@ from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.utils import timezone
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
@@ -25,6 +27,8 @@ import config
 
 owner_user_and_seller_id = 1
 technical_user_and_seller_id = 2
+User = get_user_model() # Отримуємо поточну модель користувача
+
 
 
 def check_exists_another_order_before_change_order_status(seller_id,
@@ -726,3 +730,23 @@ def password_confirmed_status(user_id):
     temp_record = TemporaryPassword.objects.get(user_id=user_id)
     return bool(temp_record.is_confirmed)
 
+
+def check_exist_username(user_id, username=None):
+    if username is None:
+        username = User.objects.get(id=user_id).username
+        return True if username else False
+
+    bool_exist_username = User.objects.filter(username=username).exclude(id=user_id).exists()
+    if bool_exist_username:
+        return True
+    else:
+        User.objects.filter(id=user_id).update(username=username)
+        logger.info(f"Username {username} for user {user_id} updated successfully.")
+        return False
+
+def confirm_registration_and_delete_raw_password(user_id):
+    temp_record = TemporaryPassword.objects.get(user=user_id)
+    temp_record.is_confirmed = True
+    temp_record.raw_password = 'DELETED'
+    temp_record.save()
+    logger.info(f"TemporaryPassword for user {user_id} deleted successfully.")

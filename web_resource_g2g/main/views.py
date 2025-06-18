@@ -20,11 +20,16 @@ import json
 def start_page(request):
     if request.method == 'GET':
         user_id = request.user.id
-        e_mail, password = crud.get_email_password(user_id)
         password_confirmed = crud.password_confirmed_status(user_id)
+
         if not password_confirmed:
-            return render(request, 'main/add_telegram_id.html', context={"e-mail": e_mail,
-                                                                         'temp_password': password})
+            bool_exist_username = crud.check_exist_username(user_id)
+
+            e_mail, password = crud.get_email_password(user_id)
+
+            return render(request, 'users/continue_registration.html', context={"e-mail": e_mail,
+                                                                         'temp_password': password,
+                                                                         'exist_username': bool_exist_username})
         all_bets = crud.get_main_data_from_table(user_id)
 
         servers = crud.query_servers()
