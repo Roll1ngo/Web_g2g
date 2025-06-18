@@ -78,7 +78,7 @@ def hash_social_user_password(sender, request, sociallogin, **kwargs):
                 'telegram_link': 'http://t.me/MNLalertbot',  # !!! ЗАМІНІТЬ !!!
                 'telegram_chat_link': "https://t.me/+cWY33B74-FY2ODFi",  # !!! ЗАМІНІТЬ !!!
                 'support_email': 'https://t.me/VladislavBratus',  # !!! ЗАМІНІТЬ !!! support_email
-                'website_link': 'https://able-above-monitor.ngrok-free.app/admin/main',  # !!! ЗАМІНІТЬ !!!
+                'website_link': 'https://able-above-monitor.ngrok-free.app',  # !!! ЗАМІНІТЬ !!!
             }
 
             html_message = render_to_string('main/email_template.html', context)

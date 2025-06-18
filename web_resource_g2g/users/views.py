@@ -1,9 +1,13 @@
 import json
 import os
+import re
+from dotenv import load_dotenv
+
 
 from django import forms
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
@@ -11,17 +15,15 @@ from django.urls import reverse
 from django.views import View
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
-
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 
 from main.utils.logger_config import logger
 from .forms import RegisterForm
-from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-from dotenv import load_dotenv
+from main import crud as main_crud
 
 load_dotenv()
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+
 
 
 def profile(request):
@@ -123,6 +125,52 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
 
 def index(request):
     return render(request, 'users/index.html')
+
+@login_required
+def complete_registration(request):
+    logger.info("complete_registration")
+    user_id = request.user.id
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+
+            # Перевірка наявності та валідності username
+            if not username:
+                return JsonResponse({'error': 'Ім\'я користувача є обов\'язковим.'}, status=400)
+
+            # Валідація username: лише букви та цифри
+            if not re.fullmatch(r'^[a-zA-Z0-9]+$', username):
+                return JsonResponse({'error': 'Ім\'я користувача може містити лише букви та цифри.'}, status=400)
+
+            # Перевірка на унікальність username
+            bool_exist_username = main_crud.check_exist_username(user_id,username)
+            if bool_exist_username:
+                return JsonResponse({'error': 'Користувач з таким ім\'ям вже існує.'}, status=400)
+
+           # Перевіряємо чи підключений telegram профіль
+            bool_exist_telegram_id = main_crud.check_exist_telegram_id(user_id)
+            if not bool_exist_telegram_id:
+                return JsonResponse({'error': 'Для завершення реєстрації підключіть будь ласка Telegram профіль.'},
+                                    status=400)
+            # Ставимо позначку про завершення реєстрації
+            main_crud.confirm_registration_and_delete_raw_password(user_id)
+
+            return JsonResponse({
+                'message': 'Реєстрацію успішно завершено!',
+                'redirect_url': '/'  # Куди перенаправляти користувача після завершення
+            }, status=200)
+
+        except json.JSONDecodeError:
+            logger.error("Недійсний JSON у тілі запиту complete_registration.")
+            return JsonResponse({'error': 'Недійсний формат запиту.'}, status=400)
+        except Exception as e:
+            logger.exception("Помилка на бекенді під час завершення реєстрації.")
+            return JsonResponse({'error': f'Виникла внутрішня помилка сервера: {e}'}, status=500)
+    else:
+        # Для GET-запитів рендеримо сторінку завершення реєстрації
+        # Це також потрібно, якщо користувач потрапляє на цю сторінку без POST-запиту
+        return render(request, 'registration_completion_page.html')
 
 # def google_auth(request):
 #     """

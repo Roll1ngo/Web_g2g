@@ -18,10 +18,15 @@
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
-            background-color: #ffffff; /* Білий фон для основного тіла листа */
+            /* Використовуємо змінну з контексту для фонового зображення */
+            background-image: url('{{ background_image_url }}');
+            background-size: cover; /* Зображення покриває всю площу */
+            background-repeat: no-repeat; /* Зображення не повторюється */
+            background-position: center center; /* Центрування зображення */
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Легка тінь */
             border: 1px solid #e5e7eb; /* Тонка рамка */
+            background-color: #FFE34D; /* Світліший жовтий фон для основного тіла листа */
         }
         h1, h3 {
             color: #1f2937; /* Темні заголовки */
@@ -34,28 +39,28 @@
             color: #374151; /* Темно-сірий текст параграфів */
         }
         code {
-            background-color: #e5e7eb; /* Світло-сірий фон для коду */
+            background-color: rgba(255, 255, 255, 0.6); /* Напівпрозорий білий фон для коду */
             color: #1f2937; /* Темний текст для коду */
             padding: 2px 5px;
             border-radius: 4px;
         }
         a {
-            color: #3b82f6; /* Сині посилання */
+            color: #4D89CD; /* Світліші сині посилання */
             text-decoration: underline;
         }
         a:hover {
             text-decoration: none;
         }
         .info-box {
-            background-color: #e0f2f7; /* Світло-синій фон для блоку з інфо */
-            border-left: 4px solid #38bdf8; /* Блакитна рамка ліворуч */
+            background-color: #4D89CD; /* Світліший синій фон для блоку з інфо */
+            border-left: 4px solid #FFE34D; /* Світліша жовта рамка ліворуч */
             padding: 15px;
             border-radius: 6px;
             margin-top: 20px;
             margin-bottom: 20px;
         }
         .info-box p, .info-box strong, .info-box span {
-            color: #374151; /* Темно-сірий текст всередині info-box */
+            color: #ffffff; /* Білий текст всередині синього info-box */
         }
         .footer {
             text-align: right;
@@ -64,7 +69,18 @@
             color: #6b7280; /* Темніший текст футера */
         }
         .footer a {
-             color: #3b82f6; /* Синій колір для посилань у футері */
+             color: #4D89CD; /* Світліші сині посилання у футері */
+        }
+        /* Зміни кольорів тексту для кращої контрастності на світлішому жовтому фоні */
+        .email-container h1, .email-container p, .email-container .footer strong {
+            color: #1f2937; /* Темний текст на жовтому фоні (зберігається) */
+        }
+        .email-container .button {
+            background-color: #4D89CD; /* Світліша синя кнопка на жовтому фоні */
+            color: #ffffff;
+        }
+        .email-container .button:hover {
+            background-color: #336699; /* Темніший синій при наведенні */
         }
     </style>
 </head>
@@ -82,20 +98,17 @@
             <p style="margin-bottom: 8px;">
                 <strong>Пароль:</strong>
                 <code>{{ user_password }}</code>
-                {% if is_social_login %}
-                <br><span style="font-size: 0.85em; color: #4b5563;">
-                    (Цей пароль згенеровано автоматично для входу. Рекомендуємо змінити його після першого входу.)
-                </span>
-                {% endif %}
             </p>
-            <p style="margin-bottom: 8px;"><strong>Telegram_bot:</strong> <a href="http://t.me/MNLalertbot" target="_blank">http://t.me/MNLalertbot</a></p>
-            <p style="margin-top: 20px; font-size: 0.8em; color: #4b5563; font-weight: 500;">
-                Будь ласка, збережіть ці дані в безпечному місці.
-                Після завершення реєстрації вони будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.
+            <p style="margin-bottom: 8px;"><strong>Telegram_bot:</strong> <a href="http://t.me/MNLalertbot" target="_blank" style="color: white">http://t.me/MNLalertbot</a></p>
+            <p style="margin-top: 20px; font-size: 0.8em; color: white; font-weight: 500;">
+                Після завершення реєстраційні дані будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.
             </p>
         </div>
 
         <p style="text-align: center; margin-top: 30px;">
+            <a href="http://t.me/MNLalertbot" target="_blank" style="display: inline-block; padding: 12px 25px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                Підключити телеграм-бот
+            </a>
             <a href="{{ website_link }}" target="_blank" style="display: inline-block; padding: 12px 25px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
                 Перейти на сайт FastSaleService
             </a>

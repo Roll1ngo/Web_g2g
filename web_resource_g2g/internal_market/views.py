@@ -11,6 +11,17 @@ from django.http import JsonResponse
 
 @login_required(login_url='users:login')
 def main_page(request):
+    user_id = request.user.id
+    password_confirmed = main_crud.password_confirmed_status(user_id)
+
+    if not password_confirmed:
+        bool_exist_username = main_crud.check_exist_username(user_id)
+
+        e_mail, password = main_crud.get_email_password(user_id)
+
+        return render(request, 'users/continue_registration.html', context={"e-mail": e_mail,
+                                                                            'temp_password': password,
+                                                                            'exist_username': bool_exist_username})
     lots_for_sale = internal_market_crud.get_lots_for_sale(request.user.id)
     logger.info(f"lots_for_sale__{lots_for_sale}")
     return render(request, 'internal_market/internal_market_main.html',
