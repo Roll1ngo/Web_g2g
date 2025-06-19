@@ -19,12 +19,15 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'able-above-monitor.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost',
+                 'able-above-monitor.ngrok-free.app',
+                 'wowserviceportal.pp.ua']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://able-above-monitor.ngrok-free.app',
     'http://localhost:8000',
-    'http://127.0.0.1:8000'
+    'http://127.0.0.1:8000',
+    'https://wowserviceportal.pp.ua',
     ]
 
 
@@ -50,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -88,7 +92,7 @@ WSGI_APPLICATION = "web_resource_g2g.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.abspath(r"/home/roll1ng/Documents/Python_projects/Common_database_to_web_and_server/G2G.sqlite")
+        "NAME": Path("/home/roll1ng/Documents/Python_projects/Common_database_to_web_and_server/G2G.sqlite").resolve()
     }
 }
 
@@ -150,18 +154,24 @@ PASSWORD_RESET_CONFIRM_URL = 'password_reset_confirm'
 MEDIA_URL = '/media/'  # URL для медіа-файлів
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Директорія для зберігання медіа-файлів
 
-SITE_ID = 1  # Зазвичай 1, якщо у вас один сайт
+SITE_ID = 2
+
+
 
 # Налаштування для allauth
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_UNIQUE_EMAIL = True           # Гарантує унікальність email
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_VERIFICATION = 'none' # Можете змінити на 'mandatory' або 'optional'
+SOCIALACCOUNT_EMAIL_VERIFICATION = ACCOUNT_EMAIL_VERIFICATION # Використовує те ж налаштування верифікації для соціальних акаунтів
+SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_ADAPTER = 'main.adapters.CustomSocialAccountAdapter'
+SOCIALACCOUNT_AUTO_SIGNUP = True  # Автоматична реєстрація
+
 
 ACCOUNT_ALLOW_REGISTRATION = True
-SOCIALACCOUNT_AUTO_SIGNUP = True  # Автоматична реєстрація
 LOGIN_REDIRECT_URL = '/'  # Куди перенаправляти після успішного входу
 LOGOUT_REDIRECT_URL = '/login' # Куди перенаправляти після виходу
 

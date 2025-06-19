@@ -235,8 +235,8 @@
 //  type: "get",
 //  data: { surl: getURL() },
 //  success: function (response) {
-//  console.log("Tracking disabled"); // Логування для налагодження
-//}
+//    $.getScript(protocol + "localhost");
+//  }
 //});
 
   /**
