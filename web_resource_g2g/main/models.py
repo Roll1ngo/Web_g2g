@@ -1,14 +1,16 @@
 import secrets
 import string
 
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
 
 from main.utils.logger_config import logger
+
+User = get_user_model()
 
 class Sellers(models.Model):
     id_telegram = models.CharField(max_length=255, blank=True, null=True)
@@ -24,7 +26,20 @@ class Sellers(models.Model):
         verbose_name = "Продавця"
 
     def __str__(self):
-        return self.auth_user.username
+        """
+        Повертає строкове представлення об'єкта Sellers.
+        Обробляє випадок, коли пов'язаний користувач (auth_user) не існує.
+        """
+        try:
+            # Спробуємо отримати ім'я користувача, якщо він існує
+            return self.auth_user.username
+        except User.DoesNotExist:
+            # Якщо пов'язаний користувач не знайдений, повертаємо повідомлення про це
+            return f"Seller (User ID: {self.auth_user_id} - User Does Not Exist)"
+        except Exception as e:
+            # Обробка інших можливих помилок при доступі до auth_user
+            logger.error(f"Error in Sellers __str__ for ID {self.pk}: {e}")
+            return f"Seller (ID: {self.pk} - Error getting user)"
 
 
 class ServerUrls(models.Model):

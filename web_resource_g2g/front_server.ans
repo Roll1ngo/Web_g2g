@@ -14725,3 +14725,415 @@ smtplib.SMTPAuthenticationError: (535, b'5.7.8 Incorrect authentication data [un
 [1;32m2025-06-18 13:41:48,214 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
 [1;32m2025-06-18 13:41:48,216 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
 [1;32m2025-06-18 13:41:48,216 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:54:36,002 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:54:36,003 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:54:36,004 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:54:36,005 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:54:36,006 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:54:36,006 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:54:38,160 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:54:38,162 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:54:38,163 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:54:38,164 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:54:38,164 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:54:38,165 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:54:48,887 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:54:48,888 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:54:48,889 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:54:48,890 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:54:48,891 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:54:48,892 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:56:45,650 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:56:45,652 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:56:45,653 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:56:45,654 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:56:45,655 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:56:45,655 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:57:52,388 - INFO - [1;33mviews[1;32m.[1;34mcomplete_registration[1;32m:131 - complete_registration[0m
+[1;32m2025-06-18 13:57:52,393 - INFO - [1;33mcrud[1;32m.[1;34mcheck_exist_username[1;32m:744 - Username Vladislava for user 36 updated successfully.[0m
+[1;32m2025-06-18 13:57:52,400 - INFO - [1;33mcrud[1;32m.[1;34mconfirm_registration_and_delete_raw_password[1;32m:752 - TemporaryPassword for user 36 deleted successfully.[0m
+[1;32m2025-06-18 13:57:54,431 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:57:54,434 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:57:54,435 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:57:54,436 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:57:54,437 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:57:54,437 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:57:57,276 - INFO - [1;33mviews[1;32m.[1;34mshow_history_orders[1;32m:147 - orders_with_balance__[][0m
+[1;32m2025-06-18 13:57:57,282 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:57:57,284 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:57:57,286 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:57:57,288 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:57:57,290 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:57:57,290 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:57:58,022 - INFO - [1;33mviews[1;32m.[1;34mmain_page[1;32m:26 - lots_for_sale__[{'id': 285, 'sellers': 27, 'server_urls': 195, 'currency': 'USD', 'description': 'gold', 'price': 0.653201, 'stock': 50, 'min_units_per_order': 0, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Gehennas [EU] - Horde', 'strategy_price': 'minimal', 'interest_rate': 82, 'full_cost': 32.66}, {'id': 200, 'sellers': 19, 'server_urls': 217, 'currency': 'USD', 'description': 'gold', 'price': 0.801965, 'stock': 22, 'min_units_per_order': 12, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Mandokir [ES] - Horde', 'strategy_price': 'minimal', 'interest_rate': 77, 'full_cost': 17.643}, {'id': 283, 'sellers': 19, 'server_urls': 215, 'currency': 'USD', 'description': 'gold', 'price': 0.677367, 'stock': 100, 'min_units_per_order': 0, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Mirage Raceway [EU] - Horde', 'strategy_price': 'mean10_lot', 'interest_rate': 77, 'full_cost': 67.737}, {'id': 278, 'sellers': 3, 'server_urls': 43, 'currency': 'USD', 'description': 'gold', 'price': 0.014794, 'stock': 7400, 'min_units_per_order': 471, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 420, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Era', 'region': 'EU', 'server_name': 'Pyrewood Village [EU] - Alliance', 'strategy_price': 'minimal', 'interest_rate': 82, 'full_cost': 109.476}, {'id': 276, 'sellers': 12, 'server_urls': 23, 'currency': 'USD', 'description': 'gold', 'price': 0.003947, 'stock': 3300, 'min_units_per_order': 941, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'SOD', 'region': 'EU', 'server_name': 'Wild Growth [EU - Seasonal] - Horde', 'strategy_price': 'mean20_lot', 'interest_rate': 92, 'full_cost': 13.025}][0m
+[1;32m2025-06-18 13:57:58,026 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:57:58,028 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:57:58,030 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:57:58,032 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:57:58,033 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:57:58,033 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:58:08,285 - INFO - [1;33mcrud[1;32m.[1;34mget_order_info[1;32m:358 - order_info__None[0m
+[1;32m2025-06-18 13:58:08,292 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:58:08,293 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:58:08,294 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:58:08,295 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:58:08,297 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:58:08,297 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:58:09,883 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:58:09,886 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:58:09,888 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:58:09,890 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:58:09,891 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:58:09,892 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 13:58:51,937 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 13:58:51,940 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 13:58:51,942 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 13:58:51,943 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 13:58:51,944 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 13:58:51,944 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 14:02:24,125 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 14:02:24,128 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 14:02:24,130 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 14:02:24,132 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 14:02:24,133 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 14:02:24,134 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 14:36:34,129 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 14:36:34,130 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 14:36:34,131 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 14:36:34,132 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 14:36:34,133 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 14:36:34,133 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 16:14:22,488 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:14:22,492 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:14:22,493 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 16:14:26,120 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:14:26,122 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:14:26,124 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 16:14:29,557 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:14:29,561 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:14:29,564 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 16:54:32,374 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:54:32,375 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:54:32,376 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 16:54:36,212 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:54:36,213 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:54:36,214 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 16:58:07,322 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:58:07,323 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:58:07,325 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 16:58:28,693 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 16:58:28,697 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 16:58:28,699 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:02:04,542 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:02:04,543 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:02:04,544 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:02:13,361 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:02:13,363 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:02:13,364 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:02:50,301 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:02:50,303 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:02:50,304 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:02:51,798 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:02:51,799 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:02:51,800 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:03:07,384 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 17:03:07,385 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 17:03:07,386 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 17:03:07,387 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 17:03:07,388 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 17:03:07,388 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 17:03:11,475 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 17:03:11,477 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 17:03:11,478 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 17:03:11,479 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 17:03:11,480 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 17:03:11,481 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 17:09:09,218 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 17:09:09,219 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 17:09:09,220 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 17:09:09,221 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 17:09:09,221 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 17:09:09,222 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 17:09:12,075 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-18 17:09:12,076 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-18 17:09:12,077 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-18 17:09:12,078 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-18 17:09:12,079 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-18 17:09:12,080 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-18 17:09:15,005 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:09:15,006 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:09:15,007 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:09:33,612 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:09:33,613 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:09:33,614 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:09:35,597 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:09:35,599 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:09:35,601 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:09:58,302 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:09:58,304 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:09:58,306 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:13:33,353 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:13:33,354 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:13:33,355 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:14:09,116 - INFO - [1;33mviews[1;32m.[1;34mcomplete_registration[1;32m:131 - complete_registration[0m
+[1;32m2025-06-18 17:14:09,119 - INFO - [1;33mcrud[1;32m.[1;34mcheck_exist_username[1;32m:744 - Username Vladislav for user 2 updated successfully.[0m
+[1;32m2025-06-18 17:14:57,301 - INFO - [1;33mviews[1;32m.[1;34mcomplete_registration[1;32m:131 - complete_registration[0m
+[1;32m2025-06-18 17:14:57,305 - INFO - [1;33mcrud[1;32m.[1;34mcheck_exist_username[1;32m:744 - Username Vladislav for user 2 updated successfully.[0m
+[1;32m2025-06-18 17:14:57,310 - INFO - [1;33mcrud[1;32m.[1;34mconfirm_registration_and_delete_raw_password[1;32m:752 - TemporaryPassword for user 2 deleted successfully.[0m
+[1;32m2025-06-18 17:14:59,402 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:14:59,404 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:14:59,407 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:15:03,538 - INFO - [1;33mviews[1;32m.[1;34mshow_history_orders[1;32m:147 - orders_with_balance__[{'order': <SoldOrders: Vladislav №1748867559342YFY8 - 1.450$>, 'current_balance': Decimal('1.216'), 'type': 'sold_order'}][0m
+[1;32m2025-06-18 17:15:03,544 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:15:03,546 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:15:03,548 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:15:06,091 - INFO - [1;33mviews[1;32m.[1;34mmain_page[1;32m:26 - lots_for_sale__[{'id': 285, 'sellers': 27, 'server_urls': 195, 'currency': 'USD', 'description': 'gold', 'price': 0.653201, 'stock': 50, 'min_units_per_order': 0, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Gehennas [EU] - Horde', 'strategy_price': 'minimal', 'interest_rate': 82, 'full_cost': 32.66}, {'id': 200, 'sellers': 19, 'server_urls': 217, 'currency': 'USD', 'description': 'gold', 'price': 0.801965, 'stock': 22, 'min_units_per_order': 12, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Mandokir [ES] - Horde', 'strategy_price': 'minimal', 'interest_rate': 77, 'full_cost': 17.643}, {'id': 283, 'sellers': 19, 'server_urls': 215, 'currency': 'USD', 'description': 'gold', 'price': 0.677367, 'stock': 100, 'min_units_per_order': 0, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Mirage Raceway [EU] - Horde', 'strategy_price': 'mean10_lot', 'interest_rate': 77, 'full_cost': 67.737}, {'id': 278, 'sellers': 3, 'server_urls': 43, 'currency': 'USD', 'description': 'gold', 'price': 0.014794, 'stock': 7400, 'min_units_per_order': 471, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 420, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Era', 'region': 'EU', 'server_name': 'Pyrewood Village [EU] - Alliance', 'strategy_price': 'minimal', 'interest_rate': 82, 'full_cost': 109.476}, {'id': 276, 'sellers': 12, 'server_urls': 23, 'currency': 'USD', 'description': 'gold', 'price': 0.003947, 'stock': 3300, 'min_units_per_order': 941, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'SOD', 'region': 'EU', 'server_name': 'Wild Growth [EU - Seasonal] - Horde', 'strategy_price': 'mean20_lot', 'interest_rate': 92, 'full_cost': 13.025}][0m
+[1;32m2025-06-18 17:15:06,093 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:15:06,094 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:15:06,095 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:15:07,982 - INFO - [1;33mviews[1;32m.[1;34mmy_services[1;32m:185 - my_clients_provide_service__{}[0m
+[1;32m2025-06-18 17:15:07,985 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:15:07,985 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:15:07,986 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:15:08,937 - INFO - [1;33mcrud[1;32m.[1;34mget_order_info[1;32m:358 - order_info__None[0m
+[1;32m2025-06-18 17:15:08,940 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:15:08,941 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:15:08,942 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:15:10,934 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:15:10,935 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:15:10,936 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-18 17:15:12,070 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-18 17:15:12,071 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-18 17:15:12,072 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 09:19:10,900 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 09:19:10,904 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 09:19:10,905 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 09:19:16,387 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 09:19:16,390 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 09:19:16,392 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 09:19:17,161 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 09:19:17,162 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 09:19:17,163 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 10:52:39,583 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:52:39,586 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:52:39,589 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:52:39,591 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:52:39,592 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:52:39,594 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:52:39,620 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:52:39,623 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:52:39,625 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:52:39,627 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:52:39,630 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:52:39,631 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:52:42,117 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:52:42,118 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:52:42,119 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:52:42,120 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:52:42,121 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:52:42,121 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:53:31,214 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:53:31,216 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:53:31,218 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:53:31,219 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:53:31,219 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:53:31,220 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:56:23,398 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:56:23,401 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:56:23,403 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:56:23,404 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:56:23,406 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:56:23,407 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:56:23,497 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:56:23,498 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:56:23,499 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:56:23,500 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:56:23,501 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:56:23,501 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:57:18,978 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-19 10:57:18,979 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:57:18,980 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:57:18,981 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:57:18,982 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-19 10:57:18,982 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:57:19,064 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-19 10:57:19,065 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:57:19,066 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:57:19,067 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:57:19,068 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-19 10:57:19,068 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:57:25,941 - INFO - [1;33mviews[1;32m.[1;34mmain_page[1;32m:26 - lots_for_sale__[{'id': 285, 'sellers': 27, 'server_urls': 195, 'currency': 'USD', 'description': 'gold', 'price': 0.653201, 'stock': 50, 'min_units_per_order': 0, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Gehennas [EU] - Horde', 'strategy_price': 'minimal', 'interest_rate': 82, 'full_cost': 32.66}, {'id': 200, 'sellers': 19, 'server_urls': 217, 'currency': 'USD', 'description': 'gold', 'price': 0.801965, 'stock': 22, 'min_units_per_order': 12, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Mandokir [ES] - Horde', 'strategy_price': 'minimal', 'interest_rate': 77, 'full_cost': 17.643}, {'id': 283, 'sellers': 19, 'server_urls': 215, 'currency': 'USD', 'description': 'gold', 'price': 0.677367, 'stock': 100, 'min_units_per_order': 0, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Cataclysm', 'region': 'EU', 'server_name': 'Mirage Raceway [EU] - Horde', 'strategy_price': 'mean10_lot', 'interest_rate': 77, 'full_cost': 67.737}, {'id': 278, 'sellers': 3, 'server_urls': 43, 'currency': 'USD', 'description': 'gold', 'price': 0.014794, 'stock': 7400, 'min_units_per_order': 471, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 420, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'Era', 'region': 'EU', 'server_name': 'Pyrewood Village [EU] - Alliance', 'strategy_price': 'minimal', 'interest_rate': 82, 'full_cost': 109.476}, {'id': 276, 'sellers': 12, 'server_urls': 23, 'currency': 'USD', 'description': 'gold', 'price': 0.003947, 'stock': 3300, 'min_units_per_order': 941, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': True, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False, 'negative_balance_permission': False, 'game_name': 'SOD', 'region': 'EU', 'server_name': 'Wild Growth [EU - Seasonal] - Horde', 'strategy_price': 'mean20_lot', 'interest_rate': 92, 'full_cost': 13.025}][0m
+[1;32m2025-06-19 10:57:25,943 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__36, seller_id__39[0m
+[1;32m2025-06-19 10:57:25,944 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:57:25,945 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:57:25,946 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:57:25,947 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__39, commission_earned__0[0m
+[1;32m2025-06-19 10:57:25,948 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:58:24,657 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:58:24,659 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:58:24,660 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:58:24,661 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:58:24,662 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:58:24,662 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:58:28,981 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:58:28,982 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:58:28,983 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:58:28,983 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:58:28,984 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:58:28,984 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:58:28,996 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:58:28,997 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:58:28,998 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:58:28,999 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:58:28,999 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:58:29,000 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:59:27,087 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:59:27,090 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:59:27,093 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:59:27,095 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:59:27,097 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:59:27,098 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:59:30,444 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__37, seller_id__40[0m
+[1;32m2025-06-19 10:59:30,446 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 10:59:30,447 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 10:59:30,448 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 10:59:30,449 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__40, commission_earned__0[0m
+[1;32m2025-06-19 10:59:30,449 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 10:59:33,230 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 10:59:33,231 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 10:59:33,232 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 10:59:35,475 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 10:59:35,477 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 10:59:35,479 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 10:59:40,055 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 10:59:40,058 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 10:59:40,059 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:03:48,809 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 11:03:48,810 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 11:03:48,810 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:08:42,145 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 11:08:42,146 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 11:08:42,147 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:12:14,452 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 11:12:14,453 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 11:12:14,454 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:12:33,569 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 11:12:33,571 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 11:12:33,573 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:14:10,717 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 11:14:10,718 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 11:14:10,719 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:14:21,616 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 11:14:21,618 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 11:14:21,618 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 11:14:30,461 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__38, seller_id__41[0m
+[1;32m2025-06-19 11:14:30,462 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 11:14:30,464 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 11:14:30,465 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 11:14:30,466 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__41, commission_earned__0[0m
+[1;32m2025-06-19 11:14:30,466 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 11:14:30,479 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__38, seller_id__41[0m
+[1;32m2025-06-19 11:14:30,480 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 11:14:30,481 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 11:14:30,481 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 11:14:30,482 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__41, commission_earned__0[0m
+[1;32m2025-06-19 11:14:30,482 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 12:13:48,293 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__39, seller_id__42[0m
+[1;32m2025-06-19 12:13:48,295 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 12:13:48,298 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 12:13:48,300 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 12:13:48,301 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__42, commission_earned__0[0m
+[1;32m2025-06-19 12:13:48,302 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 12:13:48,324 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__39, seller_id__42[0m
+[1;32m2025-06-19 12:13:48,326 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 12:13:48,329 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 12:13:48,331 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 12:13:48,332 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__42, commission_earned__0[0m
+[1;32m2025-06-19 12:13:48,334 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 12:18:18,245 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__40, seller_id__43[0m
+[1;32m2025-06-19 12:18:18,248 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 12:18:18,250 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 12:18:18,252 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 12:18:18,253 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__43, commission_earned__0[0m
+[1;32m2025-06-19 12:18:18,254 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 12:18:18,287 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__40, seller_id__43[0m
+[1;32m2025-06-19 12:18:18,290 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 12:18:18,291 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 12:18:18,292 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 12:18:18,293 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__43, commission_earned__0[0m
+[1;32m2025-06-19 12:18:18,293 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 12:24:37,184 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__40, seller_id__43[0m
+[1;32m2025-06-19 12:24:37,185 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__0[0m
+[1;32m2025-06-19 12:24:37,186 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__0[0m
+[1;32m2025-06-19 12:24:37,187 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:686 - internal_market_spend__0[0m
+[1;32m2025-06-19 12:24:37,188 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__43, commission_earned__0[0m
+[1;32m2025-06-19 12:24:37,189 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-19 12:27:04,806 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 12:27:04,809 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 12:27:04,811 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 12:27:04,841 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 12:27:04,842 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 12:27:04,843 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 12:28:53,143 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 12:28:53,144 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 12:28:53,145 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 12:28:56,548 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 12:28:56,549 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 12:28:56,551 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 12:28:56,572 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 12:28:56,573 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 12:28:56,574 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 12:29:10,854 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 12:29:10,855 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 12:29:10,856 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:35:33,871 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:35:33,872 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:35:33,873 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:35:35,128 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:35:35,129 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:35:35,130 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:35:40,574 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:35:40,576 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:35:40,577 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:35:51,027 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:35:51,028 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:35:51,029 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:35:51,063 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:35:51,064 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:35:51,065 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:38:14,737 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:38:14,739 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:38:14,740 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:38:14,762 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:38:14,763 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:38:14,763 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:45:17,879 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:45:17,880 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:45:17,881 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:45:17,917 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:45:17,918 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:45:17,919 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:47:37,530 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:47:37,531 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:47:37,532 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:47:37,556 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:47:37,557 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:47:37,558 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:49:51,509 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:49:51,511 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:49:51,513 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:50:21,129 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:50:21,131 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:50:21,133 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:50:21,156 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:50:21,157 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:50:21,159 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:50:24,176 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:50:24,177 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:50:24,177 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:52:34,500 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:52:34,502 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:52:34,503 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-19 14:52:34,532 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:664 - sold_orders_earned__3.38100000000000[0m
+[1;32m2025-06-19 14:52:34,533 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:671 - internal_market_earned__11.0210000000000[0m
+[1;32m2025-06-19 14:52:34,534 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
