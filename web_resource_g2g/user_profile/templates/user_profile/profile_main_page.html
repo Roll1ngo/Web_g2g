@@ -1,0 +1,609 @@
+{% extends "users/base.html" %} {# Розширюємо ваш базовий шаблон #}
+{% load static %} {# Завантажуємо static для доступу до статичних файлів #}
+
+{% block title %}Мій Кабінет - FastSaleService{% endblock %} {# Заголовок сторінки #}
+
+{% block extra_head %}
+    {# Додаткові стилі, специфічні для цієї сторінки #}
+    <style>
+        /* Загальні стилі для карток в приватному кабінеті */
+        .personal-cabinet-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Трохи прозорий білий фон */
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+            overflow: hidden; /* Щоб border-radius застосовувався до вмісту */
+            transition: transform 0.2s ease-in-out; /* Анімація при наведенні */
+        }
+        .personal-cabinet-card:hover {
+            transform: translateY(-5px); /* Легкий підйом при наведенні */
+        }
+        .personal-cabinet-card .card-header {
+            background-color: #007bff; /* Основний синій колір для заголовків карток */
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: none; /* Прибираємо стандартний нижній бордер */
+            display: flex;
+            align-items: center;
+        }
+        .personal-cabinet-card .card-header i {
+            margin-right: 10px;
+        }
+        .personal-cabinet-card .card-body {
+            padding: 25px 20px;
+        }
+        .text-custom-blue {
+            color: #007bff;
+        }
+        .text-custom-green {
+            color: #28a745;
+        }
+        .text-custom-red {
+            color: #dc3545;
+        }
+
+        /* Стилі для секції балансу */
+        .balance-section .balance-amount {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block; /* Щоб $ був на тому ж рядку */
+        }
+        .balance-section .btn-group .btn {
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .balance-section .btn-group .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Стилі для прогрес-бару профілю */
+        .profile-completeness-bar {
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            background-color: #e9ecef;
+        }
+        .profile-completeness-bar .progress-bar {
+            border-radius: 5px;
+            background-color: #17a2b8; /* Інфо-синій колір */
+            transition: width 0.5s ease-in-out; /* Анімація заповнення */
+        }
+        .profile-status {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Стилі для списку сповіщень/дій */
+        .list-group-item {
+            background-color: transparent;
+            border: none;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            font-size: 1.1rem;
+            color: #343a40;
+        }
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+        .list-group-item i {
+            font-size: 1.2rem;
+            width: 25px; /* Фіксована ширина для іконок */
+            text-align: center;
+            margin-right: 10px;
+        }
+        .badge-notification {
+            background-color: #dc3545; /* Червоний для нових сповіщень */
+            font-size: 0.8rem;
+            padding: 5px 8px;
+            border-radius: 50%;
+        }
+
+        /* Стилі для кнопок швидкого доступу */
+        .quick-access-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            color: #343a40;
+            padding: 15px;
+            text-align: left;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            height: 100%; /* Забезпечує однакову висоту кнопок */
+        }
+        .quick-access-btn:hover {
+            background-color: #e9ecef;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .quick-access-btn i {
+            font-size: 1.8rem;
+            margin-right: 15px;
+            color: #007bff;
+        }
+        .quick-access-btn span {
+            font-weight: 500;
+        }
+
+        /* Стилі для блоків статистики */
+        .statistic-box {
+            background-color: rgba(0, 123, 255, 0.1); /* Прозорий синій фон */
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(0, 123, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .statistic-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+        .statistic-box .stat-icon {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+        .statistic-box .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #343a40;
+        }
+        .statistic-box .stat-label {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+        /* Стиль для секції поточного замовлення */
+        .current-order-section {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .current-order-section h3 {
+            color: #007bff;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        .current-order-section .order-status-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745; /* Green for active */
+        }
+        .current-order-section .order-status-text.pending {
+            color: #ffc107; /* Yellow for pending */
+        }
+        .current-order-section .order-details {
+            font-size: 1.1rem;
+            margin-top: 15px;
+            color: #555;
+        }
+        .current-order-section .btn-view-order {
+            margin-top: 25px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+        }
+
+        /* Стилі для останньої активності */
+        .activity-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #495057;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-item .activity-icon {
+            font-size: 1.1rem;
+            width: 25px;
+            text-align: center;
+            margin-right: 10px;
+            color: #6c757d;
+        }
+        .activity-item .activity-time {
+            font-size: 0.8rem;
+            color: #888;
+            margin-left: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    {# Заголовок приватного кабінету #}
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-10 text-center">
+            <h1 class="display-4 fw-bold cabinet-title" style="color: #343a40; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
+                <i class="fas fa-user-circle me-3 text-custom-blue"></i>
+                Ваш Приватний Кабінет
+            </h1>
+            <p class="lead" style="color: #555;">
+                Ласкаво просимо, <span class="fw-bold text-custom-blue">{{ user.first_name|default:user.username }}</span>!
+                Тут ви можете керувати своїм профілем та переглядати активність.
+            </p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            {# Секція Огляду та Балансу #}
+            <div class="personal-cabinet-card balance-section">
+                <div class="card-header">
+                    <i class="fas fa-money-bill-wave"></i> Огляд Балансу та Профілю
+                </div>
+                <div class="card-body text-center">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <p class="card-text">Поточний баланс:</p>
+                            <span class="balance-amount {% if user_balance < 0 %}text-custom-red{% else %}text-custom-green{% endif %}">
+                                {{ user_balance|default:"0.00" }}$
+                            </span>
+                            <div class="btn-group w-100" role="group" aria-label="Баланс дії">
+                                <a href="{% url 'user_profile:deposit_page' %}" class="btn btn-success"><i class="fas fa-plus-circle me-2"></i> Поповнити</a>
+                                <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning text-dark"><i class="fas fa-minus-circle me-2"></i> Вивести</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Повнота профілю:</h5>
+                            {# Прогрес-бар профілю. Припустимо, profile_completeness_percentage обчислюється у View #}
+                            {% comment %}
+                            Приклад обчислення profile_completeness_percentage у View:
+                            profile_completeness_percentage = 0
+                            if request.user.first_name and request.user.last_name:
+                                profile_completeness_percentage += 30
+                            if request.user.email and request.user.email_verified:
+                                profile_completeness_percentage += 30
+                            if seller_profile.id_telegram:
+                                profile_completeness_percentage += 40
+                            {% endcomment %}
+                            {% with profile_completeness_percentage=75 %} {# Заглушка, замініть на реальну змінну #}
+                            <div class="progress profile-completeness-bar">
+                                <div class="progress-bar" role="progressbar" style="width: {{ profile_completeness_percentage }}%;" aria-valuenow="{{ profile_completeness_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <p class="profile-status mt-2">{{ profile_completeness_percentage }}% заповнено</p>
+                            {% endwith %}
+                            <a href="{% url 'user_profile:profile_main_page' %}" class="btn btn-outline-secondary mt-3">
+                                <i class="fas fa-edit me-2"></i> Редагувати профіль
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Новий блок: Загальна Інформація та Підтримка #}
+            <div class="personal-cabinet-card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i> Загальна Інформація та Підтримка
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-at"></i> Email: <span class="fw-bold text-custom-blue">{{ user.email }}</span>
+
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-user"></i> Ім'я користувача: {{user.username}}
+                            <a href="/" class="btn btn-sm btn-outline-primary">
+                                Змінити <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-key"></i> Зміна пароля:
+                            <a href="{% url 'account_change_password' %}" class="btn btn-sm btn-outline-primary">
+                                Змінити <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-headset"></i> Техпідтримка:
+                            <a href="http://t.me/VladislavBratus" target="_blank" class="btn btn-sm btn-outline-info">
+                                Написати <i class="fab fa-telegram-plane ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-users"></i> Канал спільноти:
+                            <a href="https://t.me/+cWY33B74-FY2ODFi" target="_blank" class="btn btn-sm btn-outline-info">
+                                Приєднатись <i class="fab fa-telegram-plane ms-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+            {# Секція Швидких Посилань #}
+            <div class="personal-cabinet-card">
+                <div class="card-header">
+                    <i class="fas fa-bolt"></i> Швидкі Дії
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'main:my_services' %}" class="quick-access-btn">
+                                <i class="fas fa-concierge-bell"></i>
+                                <span>Мої Послуги</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'internal_market:main_page' %}" class="quick-access-btn">
+                                <i class="fas fa-store-alt"></i>
+                                <span>Внутрішній Ринок</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'main:history_orders' %}" class="quick-access-btn">
+                                <i class="fas fa-history"></i>
+                                <span>Історія Замовлень</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'account_email' %}" class="quick-access-btn">
+                                <i class="fas fa-envelope-open-text"></i>
+                                <span>Налаштування Email</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'account_change_password' %}" class="quick-access-btn">
+                                <i class="fas fa-lock"></i>
+                                <span>Змінити Пароль</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            {# Посилання для прив'язки Telegram #}
+                            {% if not telegram_status %}
+                            <a href="{% url 'users:complete_registration' %}" class="quick-access-btn btn-warning text-dark">
+                                <i class="fab fa-telegram-plane"></i>
+                                <span>Прив'язати Telegram</span>
+                            </a>
+                            {% else %}
+                            <a href="#" class="quick-access-btn text-success" style="cursor: default;">
+                                <i class="fab fa-telegram-plane"></i>
+                                <span>Telegram Прив'язано</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% comment %}
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'main:referral_program' %}" class="quick-access-btn">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Реферальна Програма</span>
+                            </a>
+                        </div>
+                        {% endcomment %}
+                    </div>
+                </div>
+            </div>
+
+            {# Секція Статистики та Сповіщень #}
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="personal-cabinet-card h-100">
+                        <div class="card-header">
+                            <i class="fas fa-chart-line"></i> Ваша Статистика
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <div class="statistic-box">
+                                        <i class="fas fa-concierge-bell stat-icon"></i>
+                                        <div class="stat-value">{{ active_orders_count|default:"0" }}</div>
+                                        <div class="stat-label">Активні Замовлення</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="statistic-box">
+                                        <i class="fas fa-check-circle stat-icon"></i>
+                                        <div class="stat-value">{{ monthly_completed_orders|default:"0" }}</div>
+                                        <div class="stat-label">Завершено (місяць)</div>
+                                    </div>
+                                </div>
+                                {% comment %}
+                                    Можна додати більше статистики, наприклад:
+                                <div class="col-6 mb-3">
+                                    <div class="statistic-box">
+                                        <i class="fas fa-piggy-bank stat-icon"></i>
+                                        <div class="stat-value">{{ total_earned|default:"0.00" }}$</div>
+                                        <div class="stat-label">Загальний Заробіток</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="statistic-box">
+                                        <i class="fas fa-star stat-icon"></i>
+                                        <div class="stat-value">{{ user_rating|default:"5.0" }}</div>
+                                        <div class="stat-label">Ваш Рейтинг</div>
+                                    </div>
+                                </div>
+                                {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="personal-cabinet-card h-100">
+                        <div class="card-header">
+                            <i class="fas fa-bell"></i> Сповіщення
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                {% if new_notifications_count > 0 %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <i class="fas fa-exclamation-circle text-danger"></i>
+                                        У вас {{ new_notifications_count }} нових сповіщень!
+                                        <span class="badge badge-notification">{{ new_notifications_count }}</span>
+                                    </li>
+                                {% endif %}
+                                {# Приклад останніх сповіщень. Припустимо, recent_notifications передається з View #}
+                                {% comment %}
+                                {% if recent_notifications %}
+                                    {% for notification in recent_notifications %}
+                                        <li class="list-group-item">
+                                            <i class="fas fa-info-circle text-info"></i>
+                                            {{ notification.message }}
+                                            <small class="text-muted ms-auto">{{ notification.timestamp|timesince }} тому</small>
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="list-group-item text-center text-muted">
+                                        <i class="fas fa-bell-slash me-2"></i> Поки що немає сповіщень.
+                                    </li>
+                                {% endif %}
+                                {% endcomment %}
+                                <li class="list-group-item text-center text-muted">
+                                    <i class="fas fa-bell-slash me-2"></i> Поки що немає нових сповіщень.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Секція Поточного Замовлення (якщо є) #}
+            {% comment %}
+            Припустимо, у вас є змінна `current_order`, яка є об'єктом замовлення, або `None`.
+            Якщо `current_order` існує, відображаємо інформацію про нього.
+            {% endcomment %}
+            {% with current_order_exists=True current_order_status='pending' current_order_id='XYZ789' %} {# Заглушки #}
+            {% if current_order_exists %}
+            <div class="personal-cabinet-card current-order-section">
+                <h3><i class="fas fa-truck me-2"></i> Ваше Активне Замовлення</h3>
+                <p class="order-status-text {% if current_order_status == 'pending' %}pending{% else %}active{% endif %}">
+                    Статус: {{ current_order_status|capfirst }}
+                </p>
+                <div class="order-details">
+                    <p>Замовлення #{{ current_order_id }}</p>
+                    <p>Послуга: Назва послуги</p> {# Замініть на current_order.service.name #}
+                    <p>Сума: 15.00$</p> {# Замініть на current_order.total_price #}
+                </div>
+                <a href="{% url 'main:show_order_info' %}" class="btn btn-primary btn-view-order">
+                    Переглянути Деталі Замовлення <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {# Секція Останньої Активності #}
+            {% comment %}
+            Припустимо, `recent_activities` - це список об'єктів з полями `icon_class`, `message`, `timestamp`.
+            {% endcomment %}
+            {% with recent_activities=True %} {# Заглушка #}
+            <div class="personal-cabinet-card">
+                <div class="card-header">
+                    <i class="fas fa-history"></i> Остання Активність
+                </div>
+                <div class="card-body">
+                    {% if recent_activities %}
+                        <ul class="list-group list-group-flush">
+                            {# Приклад активності #}
+                            <li class="activity-item">
+                                <i class="fas fa-dollar-sign activity-icon text-success"></i>
+                                <span>Ви поповнили баланс на 10.00$.</span>
+                                <span class="activity-time">10 хвилин тому</span>
+                            </li>
+                            <li class="activity-item">
+                                <i class="fas fa-shopping-cart activity-icon text-primary"></i>
+                                <span>Створено нове замовлення #ABC123.</span>
+                                <span class="activity-time">1 годину тому</span>
+                            </li>
+                            <li class="activity-item">
+                                <i class="fas fa-check-circle activity-icon text-info"></i>
+                                <span>Замовлення #XYZ789 завершено.</span>
+                                <span class="activity-time">2 години тому</span>
+                            </li>
+                            <li class="activity-item">
+                                <i class="fas fa-bell activity-icon text-warning"></i>
+                                <span>Нове сповіщення: перевірте ваш профіль.</span>
+                                <span class="activity-time">Вчора</span>
+                            </li>
+                            {# ... інші активності ... #}
+                        </ul>
+                        <div class="text-center mt-3">
+                        </div>
+                    {% else %}
+                        <p class="text-center text-muted">Немає останніх записів активності.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Новий блок: Довідка та Посібники #}
+            <div class="personal-cabinet-card">
+                <div class="card-header">
+                    <i class="fas fa-book-open"></i> Довідка та Посібники
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-question-circle"></i> Як працює поповнення балансу?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-sync-alt"></i> Як створити замовлення?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-coins"></i> Принципи роботи внутрішнього ринку
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-user-plus"></i> Як працює рекрутинг?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-chalkboard-teacher"></i> Як працює система наставників?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-gamepad"></i> Як працює система оренди персонажів?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-shield-alt"></i> Політика безпеки та конфіденційності
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-file-alt"></i> Правила використання сервісу
+                            <a href="{% url 'user_profile:rules' %}" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% endwith %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

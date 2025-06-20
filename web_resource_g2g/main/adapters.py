@@ -2,12 +2,11 @@ from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 from django.db import transaction
-import logging
-# Додаємо імпорти для моделей Allauth, щоб перевірити їх існування
 from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount
 
-logger = logging.getLogger(__name__)
+from main.utils.logger_config import logger
+
 User = get_user_model()  # Отримуємо поточну модель користувача
 
 

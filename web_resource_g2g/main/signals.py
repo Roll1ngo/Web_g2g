@@ -15,9 +15,8 @@ from allauth.account.models import EmailAddress
 from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.signals import social_account_added, pre_social_login # Залишаємо імпорти сигналів
 
-import logging
+from main.utils.logger_config import logger
 
-logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
@@ -30,7 +29,6 @@ def create_seller_for_user(sender, instance, created, **kwargs):
 
 
 @receiver(social_account_added)
-# Змінено сигнатуру функції для більшої стійкості
 def update_seller_on_social_connect(sender, **kwargs):
     """Створення Seller при підключенні соцмережі."""
     request = kwargs.get('request') # Отримуємо request з kwargs, якщо потрібен
