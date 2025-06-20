@@ -19,53 +19,77 @@
   <meta name="author" content=""/>
 
   <style>
-	.center-container {
-		text-align: center;
-	}
-	table {
-		margin: 0 auto;
-		width: 80%; /* Or set a fixed width if desired */
-		border-collapse: collapse; /* Ensures borders between cells */
-		background-color: rgba(255, 255, 255, 0);
+    /* Застосовуємо фонове зображення до body, фіксуємо його */
+    body {
+       background: url('{% static 'images/background.jpg' %}') no-repeat center center fixed;
+       background-size: cover; /* Зображення покриває всю область */
+       font-family: 'Poppins', sans-serif; /* Використовуємо ваш шрифт */
+       color: #333; /* Базовий колір тексту */
+       min-height: 100vh; /* Забезпечує, що body займає щонайменше висоту вікна перегляду */
+       margin: 0; /* Прибираємо стандартні зовнішні відступи */
+       padding: 0; /* Прибираємо стандартні внутрішні відступи */
+       position: relative; /* Необхідно для коректного позиціонування псевдоелемента */
+       z-index: 1; /* Забезпечує, що вміст body знаходиться над оверлеєм */
+    }
 
-	}
-	th, td {
-		border: 1px solid #ddd; /* Border style and color for cells */
-		padding: 5px; /* Spacing between cell content and borders */
-		background-color: transparent;
+    /* Псевдо-елемент для напівпрозорого оверлею */
+    body::before {
+        content: ''; /* Обов'язкова властивість для псевдоелементів */
+        position: fixed; /* Фіксує оверлей відносно вікна перегляду */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5); /* Білий напівпрозорий колір */
+        z-index: -1; /* Розміщує оверлей під вмістом body, але над фоном */
+    }
 
-	}
-	.price-column {
-		 width: 200px;
-	}
+    .center-container {
+       text-align: center;
+    }
+    table {
+       margin: 0 auto;
+       width: 80%; /* Or set a fixed width if desired */
+       border-collapse: collapse; /* Ensures borders between cells */
+       background-color: rgba(255, 255, 255, 0);
 
-	@keyframes pulse-blink {
-	0% {
-	  background-color: green;
-	  transform: scale(1);
-	}
-	50% {
-	  background-color: yellow;
-	  transform: scale(2);
-	}
-	100% {
-	  background-color: green;
-	  transform: scale(1);
-	}
+    }
+    th, td {
+       border: 1px solid #ddd; /* Border style and color for cells */
+       padding: 5px; /* Spacing between cell content and borders */
+       background-color: transparent;
+
+    }
+    .price-column {
+        width: 200px;
+    }
+
+    @keyframes pulse-blink {
+    0% {
+      background-color: green;
+      transform: scale(1);
+    }
+    50% {
+      background-color: yellow;
+      transform: scale(2);
+    }
+    100% {
+      background-color: green;
+      transform: scale(1);
+    }
   }
 
   .status-circle {
-	display: inline-block;
-	width: 15px;
-	height: 15px;
-	border-radius: 50%;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
   }
 
   .status-circle.blinking {
-	animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
+    animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
   }
 
-}
   </style>
 
 
@@ -86,8 +110,9 @@
   <!--  <link href="{% static 'css/bootstrap.css.map' %}" rel="stylesheet"/>-->
   <!--  <link href="{% static 'css/js/bootstrap.js.map' %}" rel="stylesheet"/>-->
 </head>
-<body style="background-image: url('{% static 'images/background.jpg' %}'); background-size: cover; background-repeat: no-repeat;">
-<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.5);"></div>
+<body> {# Прибираємо inline-стилі з body #}
+{# Видаляємо цей div, оскільки оверлей тепер застосовано через background-image до body #}
+{# <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.5);"></div> #}
 
 <div class="hero_area">
   <!-- header section strats -->
@@ -109,7 +134,7 @@
                                 <a href="{% url 'main:my_services' %}" class="nav-link me-3">Мої послуги</a>
                                 <a href="{% url 'internal_market:main_page' %}" class="nav-link me-3">Внутрішній Ринок</a>
                                 <a href="{% url 'main:history_orders' %}" class="nav-link me-3">Історія замовлень</a>
-                                <a href="/" class="nav-link me-3">{{user.username}}</a>
+                                <a href="{% url 'user_profile:profile_main_page' %}" class="nav-link me-3">{{user.username}}</a>
                                 <form action="{% url 'users:logout' %}" method="post">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-link nav-link">Log Out</button>

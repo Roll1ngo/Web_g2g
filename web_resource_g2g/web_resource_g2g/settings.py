@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
     "users.apps.UsersConfig",
     "internal_market.apps.InternalMarketConfig",
+    "user_profile.apps.UserProfileConfig",
     'django.contrib.sites',
     'allauth',
     'allauth.account',
