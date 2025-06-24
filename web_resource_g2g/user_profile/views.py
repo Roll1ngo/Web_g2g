@@ -16,3 +16,5 @@ def withdraw_page(request):
 
 def deposit_page(request):
     return render(request, 'user_profile/deposit_page.html')
+def create_order_instruction(request):
+    return render(request, 'user_profile/create_order_instruction.html')

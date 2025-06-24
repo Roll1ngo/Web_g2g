@@ -26,6 +26,52 @@ from internal_market import crud as internal_market_crud
 from internal_market.models import InternalOrder
 
 
+class SellerExistingUserFilter(admin.SimpleListFilter):
+    """
+    Кастомний фільтр для відображення у списку лише існуючих продавців (auth_user не видалено).
+    """
+    title = 'Продавець'
+    parameter_name = 'seller_username' # Змінив назву параметра для уникнення конфліктів
+
+    def lookups(self, request, model_admin):
+        """
+        Повертає список кортежів (username, username) для існуючих користувачів.
+        """
+        # Отримуємо унікальні ID auth_user, пов'язаних із SoldOrders
+        # Фільтруємо, щоб отримати тільки тих, у кого seller та auth_user НЕ є NULL
+        # Цей queryset базується на SoldOrders, які вже відображаються,
+        # тому він вже враховує get_queryset SoldOrdersAdmin
+        q_lookup_sellers = SoldOrders.objects.filter(
+            seller__isnull=False,
+            seller__auth_user__isnull=False,
+            seller__auth_user__is_active=True # Опціонально: тільки активні користувачі
+        ).values_list('seller__auth_user__username', flat=True).distinct()
+
+        usernames = sorted(list(set(q_lookup_sellers))) # Перетворюємо на set для унікальності, потім сортуємо
+
+        lookups = []
+        for username in usernames:
+            lookups.append((username, username))
+
+        # Можете додати опцію "Невідомий" або "Видалений", якщо хочете їх явно показувати,
+        # але ваше питання було про *не* відображення.
+        # if SoldOrders.objects.filter(seller__auth_user__isnull=True).exists():
+        #    lookups.append(('__deleted__', _('Видалений користувач')))
+
+        return lookups
+
+    def queryset(self, request, queryset):
+        """
+        Застосовує фільтр до queryset.
+        """
+        if self.value():
+            if self.value() == '__deleted__':
+                return queryset.filter(seller__auth_user__isnull=True)
+            else:
+                return queryset.filter(seller__auth_user__username=self.value())
+        return queryset
+
+
 class CreatedTimeFilter(admin.SimpleListFilter):
     title = 'Час створення'  # Назва фільтра, що відображається в адмін-панелі
     parameter_name = 'created_time'  # Ім'я параметра, що передається в URL
@@ -71,7 +117,7 @@ class VitaliyOrdersAdmin(admin.ModelAdmin):
 class CommissionBreakdownAdmin(admin.ModelAdmin):
     list_display = ('display_order', 'seller', 'service_type', 'amount', 'created_time',
                     'charged_to_payment_commission', 'paid_in_salary_commission')
-    list_filter = ('seller', 'service_type', 'charged_to_payment_commission',
+    list_filter = (SellerExistingUserFilter, 'service_type', 'charged_to_payment_commission',
                    'paid_in_salary_commission', CreatedTimeFilter)
     search_fields = ('seller__auth_user_id', 'service_type')  # Додайте поля для пошуку
     list_editable = ('charged_to_payment_commission', 'paid_in_salary_commission')  # Дозволити редагування в списку
@@ -133,7 +179,7 @@ class ChangeStockHistoryAdmin(admin.ModelAdmin):
     )
 
     # Фільтрація за цими полями
-    list_filter = ("seller", "active_rate_record", "created_time", "description")
+    list_filter = (SellerExistingUserFilter, "active_rate_record", "created_time", "description")
 
     # Сортування за замовчуванням
     ordering = ('-created_time',)
@@ -462,7 +508,7 @@ class SellerServerInterestRateAdmin(admin.ModelAdmin):
     list_display = ('seller', 'server_display',
                     'interest_rate',
                     'renter_lvl1', 'renter_lvl2')
-    list_filter = ('seller', 'server__game_name')
+    list_filter = (SellerExistingUserFilter, 'server__game_name')
     list_editable = ('interest_rate', 'renter_lvl1', 'renter_lvl2')
     search_fields = ('seller__auth_user__username', 'server__server_name', 'server__game_name')
     # Додаємо autocomplete для server
@@ -528,7 +574,7 @@ class OffersForPlacementAdmin(admin.ModelAdmin):
     list_display = ('sellers', 'server_urls', 'active_rate', 'double_minimal_mode_status',
                     'price', 'stock', 'face_to_face_trade', 'order_status')
     list_editable = ('order_status', 'active_rate', 'face_to_face_trade', 'double_minimal_mode_status')
-    list_filter = ('sellers', 'active_rate', 'order_status', 'double_minimal_mode_status')
+    list_filter = (SellerExistingUserFilter, 'active_rate', 'order_status', 'double_minimal_mode_status')
     search_fields = ('sellers__name', 'description', 'server__server_name', 'server__game_name')
     autocomplete_fields = ['server_urls']
     actions = ['prepare_to_double_minimal_mode', 'update_double_minimal_prices']
@@ -646,7 +692,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'paid_to_owner',
         'paid_to_technical',
     )
-    list_filter = ('seller', CreatedTimeFilter, 'paid_in_salary', 'status', 'download_video_status')
+    list_filter = (SellerExistingUserFilter, CreatedTimeFilter, 'paid_in_salary', 'status', 'download_video_status')
     actions = ['send_message_to_seller', 'delete_selected_orders']
 
     # Поля для відображення у формі створення замовлення

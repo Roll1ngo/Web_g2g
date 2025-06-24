@@ -142,22 +142,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_STARTTLS = os.getenv('EMAIL_STARTTLS')
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-PASSWORD_RESET_CONFIRM_URL = 'password_reset_confirm'
-
 MEDIA_URL = '/media/'  # URL для медіа-файлів
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Директорія для зберігання медіа-файлів
-
-SITE_ID = 2
-
-
 
 # Налаштування для allauth
 ACCOUNT_EMAIL_REQUIRED = True
@@ -170,6 +156,8 @@ SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_ADAPTER = 'main.adapters.CustomSocialAccountAdapter'
 SOCIALACCOUNT_AUTO_SIGNUP = True  # Автоматична реєстрація
+
+SITE_ID = 1
 
 
 ACCOUNT_ALLOW_REGISTRATION = True
@@ -204,4 +192,4 @@ EMAIL_USE_SSL = True  # True для порту 465, False для 2525
 EMAIL_USE_TLS = False  # True для порту 2525
 EMAIL_HOST_USER = 'fastsaleservice@ukr.net'  # Повна адреса
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD  # Пароль для SMTP (не від облікового запису!)
-DEFAULT_FROM_EMAIL = 'Fast Sale Service <fastsaleservice@ukr.net>'  # Відображуване ім'я
+DEFAULT_FROM_EMAIL = 'Wow service portal <fastsaleservice@ukr.net>'  # Відображуване ім'я

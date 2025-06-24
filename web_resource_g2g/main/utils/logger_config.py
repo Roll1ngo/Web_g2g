@@ -11,7 +11,7 @@ backup_count = 1
 logger = logging.getLogger(__name__)
 
 # Set the logging level to DEBUG to capture all messages
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 # Get the path to the executable file
 # Отримання шляху до кореня проєкту
@@ -45,7 +45,7 @@ console_handler.setFormatter(file_formatter)  # Використовуємо т�
 logger.addHandler(console_handler)
 
 # Console colored output configuration
-coloredlogs.install(level='INFO',
+coloredlogs.install(level='DEBUG',
                     fmt='\033[1;32m%(asctime)s - %(levelname)s -'
                         ' \033[1;33m%(module)s\033[1;32m.\033[1;34m%(funcName)s\033[1;32m:%(lineno)d - %(message)s\033[0m',
                     datefmt='%H:%M:%S',

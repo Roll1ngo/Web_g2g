@@ -1,0 +1,36 @@
+{% extends 'users/base.html' %}
+{% load socialaccount %}
+{% load static%}
+{% block content %}
+{% if user.is_authenticated %}
+<h1>Create Order Instruction</h1>
+<ul>
+  <li><h3>Перейдіть на головну сторінку</h3></li>
+  <li><h3>Натисніть кнопку 'Додати сервер'</h3>
+  <img src="{% static 'user_profile/images/create_order_instruction/add_server_push_button.png' %}" alt="Натисніть
+кнопку 'Додати сервер'">
+  </li>
+  <li><h3>Оберіть гру, регіон та сервер</h3></li>
+  <li><h3>Натисніть кнопку 'Готово'</h3>
+    <img src="{% static 'user_profile/images/create_order_instruction/choose_server.png' %}" alt="Вибір сервера">
+  </li>
+  <li><h3>Якщо ціни для цього сервера відсутні, зачекайте 10 хвилин та оновіть сторінку</h3>
+    <p><h5> якщо ж ціни присутні - переходьте до наступного кроку</p></h5>
+      <img src="{% static 'user_profile/images/create_order_instruction/update_price.png' %}" alt="Вибір сервера">
+  </li>
+  <li><h3>Заповніть інформацію про товар</h3>
+    <ul>
+      <li><h5>Запас:Наявний запас золота(для Сataclysm вказувати кількість тисяч, наприклад 25000 золота вказати як 25)</h5></li>
+      <li><h5>Стратегія: Залежність ціни від швидкості продажу</h5></li>
+      <li><h5>Доставка: Пошта або пошта + трейд(чим більше способів доставки, тим швидше надійде замовлення) </h5></li>
+      <li><h5>Вартість замовлення("Загалом") повинна перевищувати 5$</h5></li>
+    </ul>
+    <img src="{% static 'user_profile/images/create_order_instruction/fill_fields.png' %}" alt="Вибір сервера">
+  </li>
+  <li><h3>ОБ</h3>
+
+</ul>
+
+
+{% endif %}
+{% endblock %}
