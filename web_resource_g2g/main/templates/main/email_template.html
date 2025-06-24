@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ласкаво просимо до FastSaleService!</title>
+    <title>Ласкаво просимо до Wow Service Portal!</title>
     <style>
         /* Основні стилі для сумісності з поштовими клієнтами */
         body {
@@ -19,7 +19,6 @@
             margin: 20px auto;
             padding: 20px;
             /* Використовуємо змінну з контексту для фонового зображення */
-            background-image: url('{{ background_image_url }}');
             background-size: cover; /* Зображення покриває всю площу */
             background-repeat: no-repeat; /* Зображення не повторюється */
             background-position: center center; /* Центрування зображення */
@@ -65,7 +64,7 @@
         .footer {
             text-align: right;
             margin-top: 30px;
-            font-size: 0.9em;
+            font-size: 1.2em; /* Збільшено з 0.9em (0.9 * 1.333) */
             color: #6b7280; /* Темніший текст футера */
         }
         .footer a {
@@ -86,38 +85,37 @@
 </head>
 <body>
     <div class="email-container">
-        <h1 style="font-size: 28px; font-weight: bold; margin-bottom: 25px;">Ласкаво просимо до FastSaleService!</h1>
+        <h1 style="font-size: 37px; font-weight: bold; margin-bottom: 25px;">Ласкаво просимо до Wow Service Portal!</h1> <!-- Збільшено з 28px (28 * 1.333) -->
 
-        <p style="font-size: 18px; text-align: center; margin-bottom: 25px;">
+        <p style="font-size: 24px; text-align: center; margin-bottom: 25px;"> <!-- Збільшено з 18px (18 * 1.333) -->
             Привіт, <strong style="font-weight: 600;">{{ user_name|default:"Друже" }}</strong>! Ми раді вітати вас у нашій спільноті.
         </p>
 
         <div class="info-box">
-            <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 15px;">Ваші дані для входу:</h3>
+            <h3 style="font-size: 27px; font-weight: bold; margin-bottom: 15px;">Ваші дані для входу:</h3> <!-- Збільшено з 20px (20 * 1.333) -->
             <p style="margin-bottom: 8px;"><strong>Логін (Email):</strong> <code>{{ user_email }}</code></p>
             <p style="margin-bottom: 8px;">
                 <strong>Пароль:</strong>
                 <code>{{ user_password }}</code>
             </p>
-            <p style="margin-bottom: 8px;"><strong>Telegram_bot:</strong> <a href="http://t.me/MNLalertbot" target="_blank" style="color: white">http://t.me/MNLalertbot</a></p>
-            <p style="margin-top: 20px; font-size: 0.8em; color: white; font-weight: 500;">
-                Після завершення реєстраційні дані будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.
+            <a href="https://t.me/+cWY33B74-FY2ODFi" target="_blank" style="margin-top: 20px; font-size: 1.47em; color: white; font-weight: 500;">Телеграм канал спільноти сайту</a> <!-- Збільшено з 1.1em (1.1 * 1.333) -->
+            <p><a href="https://t.me/VladislavBratus" target="_blank" style="margin-top: 20px; font-size: 1.47em; color: white; font-weight: 500;">Техпідтримка</a></p> <!-- Збільшено з 1.1em (1.1 * 1.333) -->
+
+
+            <p style="margin-top: 20px; font-size: 1.2em; color: white; font-weight: 500;"> <!-- Збільшено з 0.9em (0.9 * 1.333) -->
+                *Після завершення реєстраційні дані будуть видалені з сервісу і залишаться тільки на вашій поштовій скринці.
             </p>
         </div>
 
         <p style="text-align: center; margin-top: 30px;">
-            <a href="http://t.me/MNLalertbot" target="_blank" style="display: inline-block; padding: 12px 25px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
-                Підключити телеграм-бот
-            </a>
-            <a href="{{ website_link }}" target="_blank" style="display: inline-block; padding: 12px 25px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
-                Перейти на сайт FastSaleService
+            <a href="{{ website_link }}" target="_blank" style="display: inline-block; padding: 12px 25px; background-color: #3b82f6; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 21px;"> <!-- Збільшено з 16px (16 * 1.333) -->
+                Перейти на сайт Wow Service Portal
             </a>
         </p>
 
         <p class="footer">
             З повагою,<br>
-            <strong style="font-size: 1.1em; color: #1f2937;">Команда FastSaleService</strong><br>
-            <a href="{{ website_link }}" target="_blank">{{ website_link }}</a>
+            <strong style="font-size: 1.47em; color: #1f2937;">Команда Wow Service Portal</strong><br> <!-- Збільшено з 1.1em (1.1 * 1.333) -->
         </p>
     </div>
 </body>

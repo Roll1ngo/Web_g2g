@@ -8,4 +8,5 @@ urlpatterns = [
     path('rules/', views.rules, name='rules'),
     path('withdraw_page/', views.withdraw_page, name='withdraw_page'),
     path('deposit_page/', views.deposit_page, name='deposit_page'),
+    path('create_order_instruction/', views.create_order_instruction, name='create_order_instruction'),
 ]

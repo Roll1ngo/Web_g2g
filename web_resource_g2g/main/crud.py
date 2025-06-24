@@ -1,26 +1,19 @@
 import decimal
 from collections import defaultdict
 from datetime import datetime
-from decimal import Decimal
 
 from django.contrib.auth import get_user_model
-from django.db import transaction
-from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
-from django.http import JsonResponse
 from django.utils import timezone
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
-                     CommissionRates, TemporaryPassword)
-from django.db.models import F, Sum, DecimalField, Q
+                     TemporaryPassword)
+from django.db.models import F, Sum,Q
 
-from main.tg_bot_run import send_messages_sync
 from main.tg_bot_run import send_messages_sync
 
 from main.utils.logger_config import logger
-from main import calculate_commissions_crud as commissions_crud
-from internal_market.models import InternalOrder
 from main import calculate_commissions_crud as commissions_crud
 from internal_market.models import InternalOrder
 import config
@@ -163,12 +156,12 @@ def get_float_price(row, seller_id):
         if float_price is None:
             logger.warning(f"Відсутні ціни для сервера {server_urls_id}. Потрібен сеанс парсингу")
             float_price_without_exchange = 0
-            return round(float_price_without_exchange, 3), interest_rate
+            return round(float_price_without_exchange, 6), interest_rate
 
         total_percent = interest_rate - rang_exchange
         float_price_without_exchange = float_price * (total_percent / 100)
 
-        return round(float_price_without_exchange, 3), interest_rate
+        return round(float_price_without_exchange, 5), interest_rate
 
     # except Exception as e:
     #     # Логування будь-якої несподіваної помилки
@@ -300,13 +293,20 @@ def add_server_to_db(data):
     server_name = data['server']
     game_name = data['game']
 
-    seller_id = Sellers.objects.get(auth_user_id=auth_user_id)
-    server_id = ServerUrls.objects.get(server_name=server_name,
+    seller = Sellers.objects.get(auth_user_id=auth_user_id)
+    server = ServerUrls.objects.get(server_name=server_name,
                                        game_name=game_name)
 
-    logger.info(f'seller_id__{seller_id.id}, server_id__{server_id.id}')
-    new_offer = OffersForPlacement(sellers=seller_id,
-                                   server_urls=server_id,
+    # Створємо зв'язок між продавцем та сервером
+    interest_rate = commissions_crud.get_interest_rate_by_seller_id(seller.id, server.id)
+    if not interest_rate:
+        create_record_seller_server_interest_rate(seller, server)
+
+
+
+    logger.info(f'seller_id__{seller.id}, server_id__{server.id}')
+    new_offer = OffersForPlacement(sellers=seller,
+                                   server_urls=server,
                                    currency='USD',
                                    description='gold',
                                    price='mean20_lot',
@@ -633,6 +633,20 @@ def create_record_to_stock_history_table(row_id, description, active_rate=None):
     logger.info("New record to stock table created.")
 
 
+def create_record_seller_server_interest_rate(seller, server):
+    commissions_rate = commissions_crud.get_global_commissions_rates()
+    new_seller_commission_rate = commissions_rate.get('owner') + commissions_rate.get('technical')
+    new_seller_server_interest_rate = SellerServerInterestRate.objects.create(
+        seller=seller,
+        server=server,
+        interest_rate=new_seller_commission_rate
+    )
+    new_seller_server_interest_rate.save()
+    logger.info("New record to seller_server_interest_rate table created.")
+
+
+
+
 def calculate_seller_owner_technical_earning_from_orders(seller_id):
     if seller_id == owner_user_and_seller_id or seller_id == technical_user_and_seller_id:
         query_filter_sold_orders = (Q(charged_to_payment=True) & Q(paid_to_technical=False)
@@ -727,7 +741,10 @@ def get_email_password(user_id):
 
 
 def password_confirmed_status(user_id):
-    temp_record = TemporaryPassword.objects.get(user_id=user_id)
+    try:
+        temp_record = TemporaryPassword.objects.get(user_id=user_id)
+    except TemporaryPassword.DoesNotExist:
+        return False
     return bool(temp_record.is_confirmed)
 
 
