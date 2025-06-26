@@ -61,9 +61,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware"
+    "allauth.account.middleware.AccountMiddleware",
+    "main.middleware.RefMiddleware",
 
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # або 'django.contrib.sessions.backends.cached_db'
+SESSION_COOKIE_SECURE = False  # True для HTTPS
 
 ROOT_URLCONF = "web_resource_g2g.urls"
 
@@ -193,3 +197,4 @@ EMAIL_USE_TLS = False  # True для порту 2525
 EMAIL_HOST_USER = 'fastsaleservice@ukr.net'  # Повна адреса
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD  # Пароль для SMTP (не від облікового запису!)
 DEFAULT_FROM_EMAIL = 'Wow service portal <fastsaleservice@ukr.net>'  # Відображуване ім'я
+
