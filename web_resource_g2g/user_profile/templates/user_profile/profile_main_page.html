@@ -233,7 +233,7 @@
         <div class="col-md-10 text-center">
             <h1 class="display-4 fw-bold cabinet-title" style="color: #343a40; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">
                 <i class="fas fa-user-circle me-3 text-custom-blue"></i>
-                Ваш Приватний Кабінет
+                Ваш Особистий Кабінет
             </h1>
             <p class="lead" style="color: #555;">
                 Ласкаво просимо, <span class="fw-bold text-custom-blue">{{ user.first_name|default:user.username }}</span>!
@@ -248,43 +248,41 @@
             {# Секція Огляду та Балансу #}
             <div class="personal-cabinet-card balance-section">
                 <div class="card-header">
-                    <i class="fas fa-money-bill-wave"></i> Огляд Балансу та Профілю
+                    <i class="fas fa-money-bill-wave"></i> Огляд Балансу
                 </div>
                 <div class="card-body text-center">
                     <div class="row align-items-center">
-                        <div class="col-md-6 mb-4 mb-md-0">
-                            <p class="card-text">Поточний баланс:</p>
-                            <span class="balance-amount {% if user_balance < 0 %}text-custom-red{% else %}text-custom-green{% endif %}">
-                                {{ user_balance|default:"0.00" }}$
-                            </span>
-                            <div class="btn-group w-100" role="group" aria-label="Баланс дії">
-                                <a href="{% url 'user_profile:deposit_page' %}" class="btn btn-success"><i class="fas fa-plus-circle me-2"></i> Поповнити</a>
-                                <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning text-dark"><i class="fas fa-minus-circle me-2"></i> Вивести</a>
-                            </div>
+                        <p class="card-text-center">Поточний баланс:</p>
+                        <span class="balance-amount {% if user_balance < 0 %}text-custom-red{% else %}text-custom-green{% endif %}">
+                            {{ user_balance|default:"0.00" }}$
+                        </span>
+                        <div class="btn-group w-100" role="group" aria-label="Баланс дії">
+                            <a href="{% url 'user_profile:deposit_page' %}" class="btn btn-success"><i class="fas fa-plus-circle me-2"></i> Поповнити</a>
+                            <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning text-dark"><i class="fas fa-minus-circle me-2"></i> Вивести</a>
                         </div>
-                        <div class="col-md-6">
-                            <h5 class="mb-3">Повнота профілю:</h5>
-                            {# Прогрес-бар профілю. Припустимо, profile_completeness_percentage обчислюється у View #}
-                            {% comment %}
-                            Приклад обчислення profile_completeness_percentage у View:
-                            profile_completeness_percentage = 0
-                            if request.user.first_name and request.user.last_name:
-                                profile_completeness_percentage += 30
-                            if request.user.email and request.user.email_verified:
-                                profile_completeness_percentage += 30
-                            if seller_profile.id_telegram:
-                                profile_completeness_percentage += 40
-                            {% endcomment %}
-                            {% with profile_completeness_percentage=75 %} {# Заглушка, замініть на реальну змінну #}
-                            <div class="progress profile-completeness-bar">
-                                <div class="progress-bar" role="progressbar" style="width: {{ profile_completeness_percentage }}%;" aria-valuenow="{{ profile_completeness_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <p class="profile-status mt-2">{{ profile_completeness_percentage }}% заповнено</p>
-                            {% endwith %}
-                            <a href="{% url 'user_profile:profile_main_page' %}" class="btn btn-outline-secondary mt-3">
-                                <i class="fas fa-edit me-2"></i> Редагувати профіль
-                            </a>
-                        </div>
+<!--                        <div class="col-md-6">-->
+<!--                            <h5 class="mb-3">Повнота профілю:</h5>-->
+<!--                            {# Прогрес-бар профілю. Припустимо, profile_completeness_percentage обчислюється у View #}-->
+<!--                            {% comment %}-->
+<!--                            Приклад обчислення profile_completeness_percentage у View:-->
+<!--                            profile_completeness_percentage = 0-->
+<!--                            if request.user.first_name and request.user.last_name:-->
+<!--                                profile_completeness_percentage += 30-->
+<!--                            if request.user.email and request.user.email_verified:-->
+<!--                                profile_completeness_percentage += 30-->
+<!--                            if seller_profile.id_telegram:-->
+<!--                                profile_completeness_percentage += 40-->
+<!--                            {% endcomment %}-->
+<!--                            {% with profile_completeness_percentage=75 %} {# Заглушка, замініть на реальну змінну #}-->
+<!--                            <div class="progress profile-completeness-bar">-->
+<!--                                <div class="progress-bar" role="progressbar" style="width: {{ profile_completeness_percentage }}%;" aria-valuenow="{{ profile_completeness_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>-->
+<!--                            </div>-->
+<!--                            <p class="profile-status mt-2">{{ profile_completeness_percentage }}% заповнено</p>-->
+<!--                            {% endwith %}-->
+<!--                            <a href="{% url 'user_profile:profile_main_page' %}" class="btn btn-outline-secondary mt-3">-->
+<!--                                <i class="fas fa-edit me-2"></i> Редагувати профіль-->
+<!--                            </a>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -296,38 +294,94 @@
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <i class="fas fa-at"></i> Email: <span class="fw-bold text-custom-blue">{{ user.email }}</span>
-
+                        {# Email #}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="min-width: 160px;"> {# Лівий стовпчик: Мітка #}
+                                <i class="fas fa-at me-2"></i> Email:
+                            </div>
+                            <div class="flex-grow-1 d-flex justify-content-center align-items-center"> {# Середній стовпчик: Значення (Email), по центру #}
+                                <span class="fw-bold text-custom-blue">{{ user.email }}</span>
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center" style="min-width: 100px;"> {# Правий стовпчик: Місце для кнопки (пусто для Email) #}
+                                {# Тут немає кнопки для Email #}
+                            </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <i class="fas fa-user"></i> Ім'я користувача: {{user.username}}
-                            <a href="/" class="btn btn-sm btn-outline-primary">
-                                Змінити <i class="fas fa-arrow-right ms-2"></i>
-                            </a>
+                        {# Ім'я користувача #}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="min-width: 160px;"> {# Лівий стовпчик: Мітка #}
+                                <i class="fas fa-user me-2"></i> Ім'я користувача:
+                            </div>
+                            <div class="flex-grow-1 d-flex justify-content-center align-items-center"> {# Середній стовпчик: Значення (Ім'я користувача), по центру #}
+                                <span class="fw-bold text-custom-blue">{{ user.username }}</span>
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center" style="min-width: 100px;"> {# Правий стовпчик: Кнопка #}
+                                <a href="/" class="btn btn-sm btn-outline-primary">
+                                    Змінити <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <i class="fas fa-key"></i> Зміна пароля:
-                            <a href="{% url 'account_change_password' %}" class="btn btn-sm btn-outline-primary">
-                                Змінити <i class="fas fa-arrow-right ms-2"></i>
-                            </a>
+                        {# Зміна пароля #}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="min-width: 160px;"> {# Лівий стовпчик: Мітка #}
+                                <i class="fas fa-key me-2"></i> Зміна пароля:
+                            </div>
+                            <div class="flex-grow-1"> {# Середній стовпчик: Пусто, оскільки немає значення перед кнопкою #}
+                                {# Ця комірка пуста #}
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center" style="min-width: 100px;"> {# Правий стовпчик: Кнопка #}
+                                <a href="{% url 'account_change_password' %}" class="btn btn-sm btn-outline-primary">
+                                    Змінити <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <i class="fas fa-headset"></i> Техпідтримка:
-                            <a href="http://t.me/VladislavBratus" target="_blank" class="btn btn-sm btn-outline-info">
-                                Написати <i class="fab fa-telegram-plane ms-2"></i>
-                            </a>
+                        {# Техпідтримка #}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="min-width: 160px;"> {# Лівий стовпчик: Мітка #}
+                                <i class="fas fa-headset me-2"></i> Техпідтримка:
+                            </div>
+                            <div class="flex-grow-1"> {# Середній стовпчик: Пусто #}
+                                {# Ця комірка пуста #}
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center" style="min-width: 100px;"> {# Правий стовпчик: Кнопка #}
+                                <a href="http://t.me/VladislavBratus" target="_blank" class="btn btn-sm btn-outline-info">
+                                    Написати <i class="fab fa-telegram-plane ms-2"></i>
+                                </a>
+                            </div>
                         </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <i class="fas fa-users"></i> Канал спільноти:
-                            <a href="https://t.me/+cWY33B74-FY2ODFi" target="_blank" class="btn btn-sm btn-outline-info">
-                                Приєднатись <i class="fab fa-telegram-plane ms-2"></i>
-                            </a>
+                        {# Канал спільноти #}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="min-width: 160px;"> {# Лівий стовпчик: Мітка #}
+                                <i class="fas fa-users me-2"></i> Канал спільноти:
+                            </div>
+                            <div class="flex-grow-1"> {# Середній стовпчик: Пусто #}
+                                {# Ця комірка пуста #}
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center" style="min-width: 100px;"> {# Правий стовпчик: Кнопка #}
+                                <a href="https://t.me/+cWY33B74-FY2ODFi" target="_blank" class="btn btn-sm btn-outline-info">
+                                    Приєднатись <i class="fab fa-telegram-plane ms-2"></i>
+                                </a>
+                            </div>
+                        </li>
+                        {# Telegram Profile #}
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="min-width: 160px;"> {# Лівий стовпчик: Мітка #}
+                                <i class="fab fa-telegram-plane me-2"></i> Telegram Profile:
+                            </div>
+                            <div class="flex-grow-1 d-flex justify-content-center align-items-center"> {# Середній стовпчик: Значення/Кнопка, по центру #}
+                                {% if not telegram_status %}
+                                <a href="{% url 'users:complete_registration' %}" class="quick-access-btn btn-warning text-dark">
+                                    <i class="fab fa-telegram-plane me-2"></i>
+                                    <span>Під'єднати Telegram</span>
+                                </a>
+                                {% else %}
+                                  <span class="fw-bold text-custom-blue">Під'єднано</span>
+                                {% endif %}
+                            </div>
+                            <div style="min-width: 100px;"></div> {# Пустий placeholder, щоб підтримувати вирівнювання з іншими рядками #}
                         </li>
                     </ul>
                 </div>
             </div>
-
 
             {# Секція Швидких Посилань #}
             <div class="personal-cabinet-card">
@@ -365,20 +419,6 @@
                                 <i class="fas fa-lock"></i>
                                 <span>Змінити Пароль</span>
                             </a>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            {# Посилання для прив'язки Telegram #}
-                            {% if not telegram_status %}
-                            <a href="{% url 'users:complete_registration' %}" class="quick-access-btn btn-warning text-dark">
-                                <i class="fab fa-telegram-plane"></i>
-                                <span>Прив'язати Telegram</span>
-                            </a>
-                            {% else %}
-                            <a href="#" class="quick-access-btn text-success" style="cursor: default;">
-                                <i class="fab fa-telegram-plane"></i>
-                                <span>Telegram Прив'язано</span>
-                            </a>
-                            {% endif %}
                         </div>
                         {% comment %}
                         <div class="col-md-4 mb-3">
@@ -440,7 +480,7 @@
                 <div class="col-md-6 mb-4">
                     <div class="personal-cabinet-card h-100">
                         <div class="card-header">
-                            <i class="fas fa-bell"></i> Сповіщення
+                            <i class="fas fa-bell"></i> Мої послуги
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -500,48 +540,48 @@
             {% endif %}
             {% endwith %}
 
-            {# Секція Останньої Активності #}
-            {% comment %}
-            Припустимо, `recent_activities` - це список об'єктів з полями `icon_class`, `message`, `timestamp`.
-            {% endcomment %}
-            {% with recent_activities=True %} {# Заглушка #}
-            <div class="personal-cabinet-card">
-                <div class="card-header">
-                    <i class="fas fa-history"></i> Остання Активність
-                </div>
-                <div class="card-body">
-                    {% if recent_activities %}
-                        <ul class="list-group list-group-flush">
-                            {# Приклад активності #}
-                            <li class="activity-item">
-                                <i class="fas fa-dollar-sign activity-icon text-success"></i>
-                                <span>Ви поповнили баланс на 10.00$.</span>
-                                <span class="activity-time">10 хвилин тому</span>
-                            </li>
-                            <li class="activity-item">
-                                <i class="fas fa-shopping-cart activity-icon text-primary"></i>
-                                <span>Створено нове замовлення #ABC123.</span>
-                                <span class="activity-time">1 годину тому</span>
-                            </li>
-                            <li class="activity-item">
-                                <i class="fas fa-check-circle activity-icon text-info"></i>
-                                <span>Замовлення #XYZ789 завершено.</span>
-                                <span class="activity-time">2 години тому</span>
-                            </li>
-                            <li class="activity-item">
-                                <i class="fas fa-bell activity-icon text-warning"></i>
-                                <span>Нове сповіщення: перевірте ваш профіль.</span>
-                                <span class="activity-time">Вчора</span>
-                            </li>
-                            {# ... інші активності ... #}
-                        </ul>
-                        <div class="text-center mt-3">
-                        </div>
-                    {% else %}
-                        <p class="text-center text-muted">Немає останніх записів активності.</p>
-                    {% endif %}
-                </div>
-            </div>
+<!--            {# Секція Останньої Активності #}-->
+<!--            {% comment %}-->
+<!--            Припустимо, `recent_activities` - це список об'єктів з полями `icon_class`, `message`, `timestamp`.-->
+<!--            {% endcomment %}-->
+<!--            {% with recent_activities=True %} {# Заглушка #}-->
+<!--            <div class="personal-cabinet-card">-->
+<!--                <div class="card-header">-->
+<!--                    <i class="fas fa-history"></i> Остання Активність-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    {% if recent_activities %}-->
+<!--                        <ul class="list-group list-group-flush">-->
+<!--                            {# Приклад активності #}-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-dollar-sign activity-icon text-success"></i>-->
+<!--                                <span>Ви поповнили баланс на 10.00$.</span>-->
+<!--                                <span class="activity-time">10 хвилин тому</span>-->
+<!--                            </li>-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-shopping-cart activity-icon text-primary"></i>-->
+<!--                                <span>Створено нове замовлення #ABC123.</span>-->
+<!--                                <span class="activity-time">1 годину тому</span>-->
+<!--                            </li>-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-check-circle activity-icon text-info"></i>-->
+<!--                                <span>Замовлення #XYZ789 завершено.</span>-->
+<!--                                <span class="activity-time">2 години тому</span>-->
+<!--                            </li>-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-bell activity-icon text-warning"></i>-->
+<!--                                <span>Нове сповіщення: перевірте ваш профіль.</span>-->
+<!--                                <span class="activity-time">Вчора</span>-->
+<!--                            </li>-->
+<!--                            {# ... інші активності ... #}-->
+<!--                        </ul>-->
+<!--                        <div class="text-center mt-3">-->
+<!--                        </div>-->
+<!--                    {% else %}-->
+<!--                        <p class="text-center text-muted">Немає останніх записів активності.</p>-->
+<!--                    {% endif %}-->
+<!--                </div>-->
+<!--            </div>-->
 
             {# Новий блок: Довідка та Посібники #}
             <div class="personal-cabinet-card">
