@@ -18,7 +18,7 @@
         <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Увійдіть</h2>
 
         <!-- Стандартна форма логіну -->
-        <form method="post" class="mb-8 p-6 rounded-lg"> {# Видалено bg-white та shadow-md для прозорості #}
+        <form method="post" class="mb-8 p-6 rounded-lg">
             {% csrf_token %}
             {% if form.non_field_errors %}
                 <div class="alert alert-danger text-red-700 bg-red-100 p-3 rounded mb-4">
@@ -49,9 +49,13 @@
             </p>
 
                 <!-- Контейнер для кнопки "Вхід за допомогою Google" -->
-        <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger">
-        <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google Logo" />
-        Увійти через Google</a>
+            <p>Debug: ref = {{ request.GET.ref }}</p>
+            <a href="{% provider_login_url 'google' process='login' %}"
+               class="btn btn-outline-danger"
+               onclick="localStorage.setItem('ref', '{{ request.GET.ref|default:'' }}')">
+                <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google Logo" />
+                Увійти через Google
+            </a>
 
 
         </div>

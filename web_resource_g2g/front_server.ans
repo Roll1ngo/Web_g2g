@@ -16995,3 +16995,265 @@ ValueError: Model instances passed to related filters must be saved.
 [1;32m2025-06-24 17:36:41,252 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__7.88400000000000[0m
 [1;32m2025-06-24 17:36:41,253 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__7.19600000000000[0m
 [1;32m2025-06-24 17:36:41,254 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-06-26 10:45:02,318 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 10:45:02,318 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: 53, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 10:45:02,318 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'a4R1r_GaYfPqKwro5UPsiQ', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750923902, 'exp': 1750927502}[0m
+[1;32m2025-06-26 10:45:02,320 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:40 - Found existing user by email: barsujkoanatoliy@gmail.com (PK: 53)[0m
+[1;32m2025-06-26 10:45:02,324 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:75 - Social account for google (UID: 105113021588061676097) ALREADY LINKED to user barsujkoanatoliy@gmail.com. Proceeding normally.[0m
+[1;32m2025-06-26 10:45:02,339 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 10:45:02,341 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 10:45:02,342 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 10:45:02,342 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 10:45:02,343 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 10:45:02,344 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 10:45:02,355 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 10:45:02,356 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 10:45:02,357 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 10:45:02,357 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 10:45:02,358 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 10:45:02,358 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 10:45:24,431 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 10:45:24,432 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 10:45:24,433 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 10:45:24,434 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 10:45:24,434 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 10:45:24,435 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 14:44:35,056 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 14:44:35,057 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: 53, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 14:44:35,057 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'DZXW5mSDOJ7WMrJ4Fsx8iQ', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750938275, 'exp': 1750941875}[0m
+[1;32m2025-06-26 14:44:35,058 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:40 - Found existing user by email: barsujkoanatoliy@gmail.com (PK: 53)[0m
+[1;32m2025-06-26 14:44:35,060 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:75 - Social account for google (UID: 105113021588061676097) ALREADY LINKED to user barsujkoanatoliy@gmail.com. Proceeding normally.[0m
+[1;32m2025-06-26 14:44:35,073 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 14:44:35,076 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 14:44:35,078 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 14:44:35,081 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 14:44:35,082 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 14:44:35,083 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 14:44:35,096 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 14:44:35,097 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 14:44:35,099 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 14:44:35,099 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 14:44:35,100 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 14:44:35,101 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 14:44:55,893 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 14:44:55,894 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: 53, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 14:44:55,894 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'q2evAIEwPiiHb5L_GMGo3A', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750938295, 'exp': 1750941895}[0m
+[1;32m2025-06-26 14:44:55,896 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:40 - Found existing user by email: barsujkoanatoliy@gmail.com (PK: 53)[0m
+[1;32m2025-06-26 14:44:55,898 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:75 - Social account for google (UID: 105113021588061676097) ALREADY LINKED to user barsujkoanatoliy@gmail.com. Proceeding normally.[0m
+[1;32m2025-06-26 14:44:55,912 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 14:44:55,913 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 14:44:55,914 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 14:44:55,915 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 14:44:55,917 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 14:44:55,917 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 14:44:55,932 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__53, seller_id__54[0m
+[1;32m2025-06-26 14:44:55,934 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 14:44:55,937 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 14:44:55,938 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 14:44:55,940 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__54, commission_earned__0[0m
+[1;32m2025-06-26 14:44:55,941 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:03:09,317 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:03:09,317 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:03:09,317 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'SHDknaW8t3ZWQtpxYGArSQ', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750939389, 'exp': 1750942989}[0m
+[1;32m2025-06-26 15:03:09,319 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:03:09,323 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:03:09,331 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:27 - ref: None[0m
+[1;32m2025-06-26 15:03:09,336 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:36 - Created Seller for barsujkoanatoliy@gmail.com without ref[0m
+[1;32m2025-06-26 15:03:09,345 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 54, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:03:09,347 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:03:09,347 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:03:09,347 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:03:09,705 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:27 - ref: None[0m
+[1;32m2025-06-26 15:03:09,718 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:03:09,719 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:03:10,584 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:03:10,595 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:27 - ref: None[0m
+[1;32m2025-06-26 15:03:10,598 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__54, seller_id__55[0m
+[1;32m2025-06-26 15:03:10,599 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:03:10,600 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:03:10,601 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:03:10,605 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__55, commission_earned__0[0m
+[1;32m2025-06-26 15:03:10,606 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:03:10,622 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__54, seller_id__55[0m
+[1;32m2025-06-26 15:03:10,623 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:03:10,624 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:03:10,625 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:03:10,625 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__55, commission_earned__0[0m
+[1;32m2025-06-26 15:03:10,626 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:10:06,528 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:10:06,529 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:10:06,529 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'wEGti-25AW-altD_PX-yjA', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750939806, 'exp': 1750943406}[0m
+[1;32m2025-06-26 15:10:06,531 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:10:06,534 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:10:06,545 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:32 - Created Seller for barsujkoanatoliy@gmail.com without ref[0m
+[1;32m2025-06-26 15:10:06,552 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 55, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:10:06,553 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:10:06,554 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:10:06,554 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:10:06,910 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:10:06,911 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:10:12,401 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:10:12,415 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__55, seller_id__56[0m
+[1;32m2025-06-26 15:10:12,418 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:10:12,420 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:10:12,421 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:10:12,423 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__56, commission_earned__0[0m
+[1;32m2025-06-26 15:10:12,424 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:10:12,444 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__55, seller_id__56[0m
+[1;32m2025-06-26 15:10:12,446 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:10:12,447 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:10:12,448 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:10:12,449 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__56, commission_earned__0[0m
+[1;32m2025-06-26 15:10:12,449 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:14:29,872 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:14:29,872 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:14:29,873 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'aRT2RxPK95wvZtkqFsdIUw', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750940069, 'exp': 1750943669}[0m
+[1;32m2025-06-26 15:14:29,875 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:14:29,879 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:14:29,889 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:32 - Created Seller for barsujkoanatoliy@gmail.com without ref[0m
+[1;32m2025-06-26 15:14:29,896 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 56, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:14:29,897 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:14:29,897 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:14:29,897 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:14:30,265 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:14:30,265 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:14:31,090 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:14:31,102 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__56, seller_id__57[0m
+[1;32m2025-06-26 15:14:31,105 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:14:31,106 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:14:31,107 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:14:31,108 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__57, commission_earned__0[0m
+[1;32m2025-06-26 15:14:31,108 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:14:31,121 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__56, seller_id__57[0m
+[1;32m2025-06-26 15:14:31,122 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:14:31,123 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:14:31,124 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:14:31,125 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__57, commission_earned__0[0m
+[1;32m2025-06-26 15:14:31,125 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:15:01,744 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__56, seller_id__57[0m
+[1;32m2025-06-26 15:15:01,748 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:15:01,751 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:15:01,753 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:15:01,755 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__57, commission_earned__0[0m
+[1;32m2025-06-26 15:15:01,756 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:17:18,218 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:17:18,218 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:17:18,218 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': '9kRAo__NfXc2f__yuYcdfQ', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750940238, 'exp': 1750943838}[0m
+[1;32m2025-06-26 15:17:18,220 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:17:18,220 - INFO - [1;33msignals[1;32m.[1;34mcapture_ref_from_google[1;32m:56 - Raw state from sociallogin: {'process': 'login', 'data': None, 'pkce_code_verifier': None}[0m
+[1;32m2025-06-26 15:17:18,220 - WARNING - [1;33msignals[1;32m.[1;34mcapture_ref_from_google[1;32m:66 - No ref parameter found in state or request[0m
+[1;32m2025-06-26 15:17:18,223 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:17:18,232 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:32 - Created Seller for barsujkoanatoliy@gmail.com without ref[0m
+[1;32m2025-06-26 15:17:18,239 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 57, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:17:18,240 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:17:18,241 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:17:18,241 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:17:18,616 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:17:18,617 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:17:19,358 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:17:19,370 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__57, seller_id__58[0m
+[1;32m2025-06-26 15:17:19,372 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:17:19,373 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:17:19,374 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:17:19,374 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__58, commission_earned__0[0m
+[1;32m2025-06-26 15:17:19,375 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:17:19,388 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__57, seller_id__58[0m
+[1;32m2025-06-26 15:17:19,389 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:17:19,390 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:17:19,391 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:17:19,392 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__58, commission_earned__0[0m
+[1;32m2025-06-26 15:17:19,392 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:22:13,992 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:22:13,993 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:22:13,993 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'LH_vdSX3bIf3Hhqdl0-WFw', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750940533, 'exp': 1750944133}[0m
+[1;32m2025-06-26 15:22:13,993 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:22:13,994 - WARNING - [1;33msignals[1;32m.[1;34mcapture_ref_from_google[1;32m:69 - No ref parameter found[0m
+[1;32m2025-06-26 15:22:13,995 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:22:14,005 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:32 - Created Seller for barsujkoanatoliy@gmail.com without ref[0m
+[1;32m2025-06-26 15:22:14,016 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 58, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:22:14,018 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:22:14,019 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:22:14,020 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:22:14,379 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:22:14,379 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:22:15,101 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:22:15,113 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__58, seller_id__59[0m
+[1;32m2025-06-26 15:22:15,115 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:22:15,117 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:22:15,119 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:22:15,121 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__59, commission_earned__0[0m
+[1;32m2025-06-26 15:22:15,122 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:22:15,136 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__58, seller_id__59[0m
+[1;32m2025-06-26 15:22:15,138 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:22:15,139 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:22:15,140 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:22:15,141 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__59, commission_earned__0[0m
+[1;32m2025-06-26 15:22:15,141 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:33:03,788 - INFO - [1;33mmiddleware[1;32m.[1;34mprocess_request[1;32m:11 - Stored ref in session: Valentin[0m
+[1;32m2025-06-26 15:33:19,398 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:33:19,398 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:33:19,398 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'Jur4PiRMryPQ6gElau43Ng', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750941199, 'exp': 1750944799}[0m
+[1;32m2025-06-26 15:33:19,399 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:33:19,403 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:33:19,418 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:32 - Created Seller for barsujkoanatoliy@gmail.com without ref[0m
+[1;32m2025-06-26 15:33:19,429 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 59, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:33:19,430 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:33:19,431 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:33:19,431 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:33:19,788 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:33:19,788 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:33:20,748 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:33:20,764 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__59, seller_id__60[0m
+[1;32m2025-06-26 15:33:20,767 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:33:20,769 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:33:20,771 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:33:20,774 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__60, commission_earned__0[0m
+[1;32m2025-06-26 15:33:20,774 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:33:20,794 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__59, seller_id__60[0m
+[1;32m2025-06-26 15:33:20,797 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:33:20,799 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:33:20,800 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:33:20,802 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__60, commission_earned__0[0m
+[1;32m2025-06-26 15:33:20,803 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:38:39,153 - INFO - [1;33mmiddleware[1;32m.[1;34mprocess_request[1;32m:16 - Stored ref in session and request: Valentin[0m
+[1;32m2025-06-26 15:38:42,233 - INFO - [1;33mmiddleware[1;32m.[1;34mprocess_request[1;32m:16 - Stored ref in session and request: Valentin[0m
+[1;32m2025-06-26 15:38:47,179 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:38:47,179 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:38:47,179 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'Nd9I38fcFQBwpzazI1LYHg', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750941527, 'exp': 1750945127}[0m
+[1;32m2025-06-26 15:38:47,180 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:38:47,180 - INFO - [1;33msignals[1;32m.[1;34mcapture_ref_from_google[1;32m:42 - Captured ref for barsujkoanatoliy@gmail.com: Valentin[0m
+[1;32m2025-06-26 15:38:47,182 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:43:23,236 - INFO - [1;33mmiddleware[1;32m.[1;34mprocess_request[1;32m:16 - Stored ref in session and request: Valentin[0m
+[1;32m2025-06-26 15:43:29,606 - INFO - [1;33mmiddleware[1;32m.[1;34mprocess_request[1;32m:16 - Stored ref in session and request: Valentin[0m
+[1;32m2025-06-26 15:43:32,514 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:29 - pre_social_login called for barsujkoanatoliy@gmail.com (Provider: google)[0m
+[1;32m2025-06-26 15:43:32,515 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:30 - Sociallogin initial user PK: None, Email: barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:43:32,515 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:31 - Socialaccount extra_data: {'iss': 'https://accounts.google.com', 'azp': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'aud': '689690442957-bbp48a2h58nrtud7k3s70rlu39h829k5.apps.googleusercontent.com', 'sub': '105113021588061676097', 'email': 'barsujkoanatoliy@gmail.com', 'email_verified': True, 'at_hash': 'zNS6cz4U5zT-qsGIuwbWxA', 'name': 'Anatoliy Barsujko', 'picture': 'https://lh3.googleusercontent.com/a/ACg8ocI9NChqK1HSXEDRtzW42q787BWOwGj929sNOfHO1MKFg1xm7g=s96-c', 'given_name': 'Anatoliy', 'family_name': 'Barsujko', 'iat': 1750941812, 'exp': 1750945412}[0m
+[1;32m2025-06-26 15:43:32,516 - INFO - [1;33madapters[1;32m.[1;34mpre_social_login[1;32m:92 - No existing user found for email barsujkoanatoliy@gmail.com. Allauth will proceed with new user signup.[0m
+[1;32m2025-06-26 15:43:32,517 - INFO - [1;33msignals[1;32m.[1;34mcapture_ref_from_google[1;32m:44 - Captured ref for barsujkoanatoliy@gmail.com: Valentin[0m
+[1;32m2025-06-26 15:43:32,520 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:106 - save_user called for google for user email barsujkoanatoliy@gmail.com[0m
+[1;32m2025-06-26 15:43:32,538 - INFO - [1;33msignals[1;32m.[1;34mcreate_seller_for_user[1;32m:31 - Created Seller for barsujkoanatoliy@gmail.com with ref: Valentin[0m
+[1;32m2025-06-26 15:43:32,546 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:119 - After super().save_user: User PK: 61, Email: barsujkoanatoliy@gmail.com, Password set: False[0m
+[1;32m2025-06-26 15:43:32,546 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:124 - VERIFICATION (save_user): SocialAccount record for google (UID: 105113021588061676097) found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:43:32,547 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:131 - VERIFICATION (save_user): EmailAddress record for barsujkoanatoliy@gmail.com found for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:43:32,547 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:141 - Setting new random password for user barsujkoanatoliy@gmail.com in save_user. (User had no usable password originally and still doesn't)[0m
+[1;32m2025-06-26 15:43:32,912 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:151 - TemporaryPassword record created for user barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:43:32,912 - DEBUG - [1;33madapters[1;32m.[1;34msave_user[1;32m:164 - Attempting to send email: user_was_created_by_social_login=True, raw_password_exists=True[0m
+[1;32m2025-06-26 15:43:33,628 - INFO - [1;33madapters[1;32m.[1;34msave_user[1;32m:206 - Вітальний лист успішно відправлено на barsujkoanatoliy@gmail.com.[0m
+[1;32m2025-06-26 15:43:33,639 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__61, seller_id__61[0m
+[1;32m2025-06-26 15:43:33,641 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:43:33,644 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:43:33,645 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:43:33,647 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__61, commission_earned__0[0m
+[1;32m2025-06-26 15:43:33,648 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:43:33,663 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__61, seller_id__61[0m
+[1;32m2025-06-26 15:43:33,664 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:43:33,666 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:43:33,667 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:43:33,668 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__61, commission_earned__0[0m
+[1;32m2025-06-26 15:43:33,668 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m
+[1;32m2025-06-26 15:45:44,540 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__61, seller_id__61[0m
+[1;32m2025-06-26 15:45:44,541 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:678 - sold_orders_earned__0[0m
+[1;32m2025-06-26 15:45:44,542 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - internal_market_earned__0[0m
+[1;32m2025-06-26 15:45:44,543 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:700 - internal_market_spend__0[0m
+[1;32m2025-06-26 15:45:44,543 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__61, commission_earned__0[0m
+[1;32m2025-06-26 15:45:44,544 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:576 - seller_total_balance_0[0m

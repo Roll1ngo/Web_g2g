@@ -22,28 +22,34 @@ User = get_user_model()
 
 @receiver(post_save, sender=User)
 def create_seller_for_user(sender, instance, created, **kwargs):
-    """Автоматичне створення Seller для нового користувача."""
     if created and not hasattr(instance, 'seller'):
-        Sellers.objects.create(auth_user=instance)
-        logger.info(f"Created Seller for {instance.email}")
+        ref = getattr(instance, 'ref', None)
+        if ref:
+            recruiter = User.objects.filter(username=ref).first()
+            seller_recruiter = Sellers.objects.filter(auth_user=recruiter).first()
+            Sellers.objects.create(auth_user=instance, recruiter=seller_recruiter)
+            logger.info(f"Created Seller for {instance.email} with ref: {ref}")
+        else:
+            Sellers.objects.create(auth_user=instance)
+            logger.info(f"Created Seller for {instance.email} without ref")
 
 
-@receiver(social_account_added)
-def update_seller_on_social_connect(sender, **kwargs):
-    """Створення Seller при підключенні соцмережі."""
-    request = kwargs.get('request') # Отримуємо request з kwargs, якщо потрібен
-    socialaccount = kwargs.get('socialaccount') # Отримуємо socialaccount з kwargs
+# signals.py
+@receiver(pre_social_login)
+def capture_ref_from_google(request, sociallogin, **kwargs):
+    # Отримуємо ref з request або сесії
+    ref = getattr(request, 'ref', None) or request.session.get('ref')
 
-    # Перевіряємо, чи socialaccount є None або відсутній в kwargs
-    if socialaccount is None:
-        logger.error("update_seller_on_social_connect: 'socialaccount' argument is missing or None from kwargs. Cannot proceed.")
-        return # Не можемо продовжити без socialaccount
-
-    user = socialaccount.user
-    if not hasattr(user, 'seller'):
-        Sellers.objects.create(auth_user=user)
-        logger.info(f"Created Seller via social for {user.email}")
+    if ref:
+        logger.info(f"Captured ref for {sociallogin.user.email}: {ref}")
+        sociallogin.user.ref = ref
+        # Очищаємо після використання
+        if hasattr(request, 'ref'):
+            del request.ref
+        if 'ref' in request.session:
+            del request.session['ref']
     else:
-        logger.info(f"Seller already exists for {user.email}. No new Seller created.")
+        logger.warning("No ref parameter found")
+
 
 
