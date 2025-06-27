@@ -106,7 +106,6 @@ def get_float_price(row):
         return None, None
 
 
-
 def create_order(user_id, internal_order_data):
     internal_buyer_id = Sellers.objects.get(auth_user_id=user_id)
     internal_order_data['buyer_id'] = internal_buyer_id.id
