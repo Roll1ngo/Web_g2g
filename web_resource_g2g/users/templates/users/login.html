@@ -49,7 +49,6 @@
             </p>
 
                 <!-- Контейнер для кнопки "Вхід за допомогою Google" -->
-            <p>Debug: ref = {{ request.GET.ref }}</p>
             <a href="{% provider_login_url 'google' process='login' %}"
                class="btn btn-outline-danger"
                onclick="localStorage.setItem('ref', '{{ request.GET.ref|default:'' }}')">
