@@ -100,24 +100,31 @@ def calculate_owner_technical_commissions(seller_id, server_id,
                                           exist_exchange_commission=True,
                                           internal_order=False):
     logger.info(f"seller_id__{seller_id}, server_id__{server_id}, total_amount__{total_amount}")
-    internal_exchange_percent = get_global_commissions_rates()['internal_exchange_percent']
     global_commissions_rates = get_global_commissions_rates()
+    internal_exchange_percent = Decimal(global_commissions_rates['internal_exchange_percent'])
     exchange_commission = Decimal(global_commissions_rates['exchange'])
     technical_commission = Decimal(global_commissions_rates['technical'])
     owner_commission = Decimal(global_commissions_rates['owner'])
     seller_interest_rate = get_interest_rate_by_seller_id(seller_id, server_id)
 
     if internal_order:
-        technical_commission += (exchange_commission - internal_exchange_percent)/2
-        owner_commission += (exchange_commission - internal_exchange_percent)/2
+        diff_commissions = exchange_commission - internal_exchange_percent
+        technical_commission += diff_commissions/2
+        owner_commission += diff_commissions/2
 
     # Обчислюємо значення за формулами
     if exist_exchange_commission:
         to_be_earned_without_exchange_commission = total_amount * (Decimal(1) - exchange_commission / Decimal(100))
     else:
         to_be_earned_without_exchange_commission = total_amount
+
     earned_without_service_commission = to_be_earned_without_exchange_commission * (
             seller_interest_rate / Decimal(100))
+
+    if internal_order:
+        earned_without_service_commission = to_be_earned_without_exchange_commission * (
+            (seller_interest_rate - diff_commissions) / Decimal(100))
+
     technical_commission = to_be_earned_without_exchange_commission * (
             technical_commission / Decimal(100))
     owner_commission = to_be_earned_without_exchange_commission * (
