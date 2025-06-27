@@ -107,11 +107,6 @@ def calculate_owner_technical_commissions(seller_id, server_id,
     owner_commission = Decimal(global_commissions_rates['owner'])
     seller_interest_rate = get_interest_rate_by_seller_id(seller_id, server_id)
 
-    if internal_order:
-        diff_commissions = exchange_commission - internal_exchange_percent
-        technical_commission += diff_commissions/2
-        owner_commission += diff_commissions/2
-
     # Обчислюємо значення за формулами
     if exist_exchange_commission:
         to_be_earned_without_exchange_commission = total_amount * (Decimal(1) - exchange_commission / Decimal(100))
@@ -122,6 +117,9 @@ def calculate_owner_technical_commissions(seller_id, server_id,
             seller_interest_rate / Decimal(100))
 
     if internal_order:
+        diff_commissions = exchange_commission - internal_exchange_percent
+        technical_commission += diff_commissions/2
+        owner_commission += diff_commissions/2
         earned_without_service_commission = to_be_earned_without_exchange_commission * (
             (seller_interest_rate - diff_commissions) / Decimal(100))
 
