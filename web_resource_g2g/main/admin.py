@@ -19,7 +19,7 @@ from main import calculate_commissions_crud as commissions_crud
 from main import crud as main_crud
 from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
                          ServerUrls, ChangeStockHistory, OffersForPlacement,
-                         CommissionBreakdown, CommissionRates, VitaliyOrders)
+                         CommissionBreakdown, CommissionRates, VitaliyOrders, TemporaryPassword)
 from main.utils.logger_config import logger
 from main.tg_bot_run import send_messages_sync
 from internal_market import crud as internal_market_crud
@@ -830,3 +830,13 @@ class AddOrderAdmin(admin.ModelAdmin):
                                                                                   to_be_earned_without_exchange_commission,
                                                                                   order_number)
         main_crud.change_offer_stock_when_create_order(server_id, seller_id, order_quantity)
+
+@admin.register(TemporaryPassword)
+class TemporaryPasswordAdmin(admin.ModelAdmin):
+    """
+    Адмін-клас для моделі TemporaryPassword.
+    """
+    list_display = ('user', 'raw_password', 'created_at', 'is_confirmed',)
+    list_filter = ('is_confirmed', 'created_at',)
+    search_fields = ('user__username', 'user__email',)
+    readonly_fields = ('created_at',) # Дата створення зазвичай не повинна редагуватися

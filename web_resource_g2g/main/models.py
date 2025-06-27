@@ -264,6 +264,10 @@ class TemporaryPassword(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_confirmed = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = "Тимчасові паролі"
+        verbose_name = "Тимчасовий пароль"
+
     @classmethod
     def generate_password(cls, length=12):
         chars = string.ascii_letters + string.digits + "!@#$%^&*"
