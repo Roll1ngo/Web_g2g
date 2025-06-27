@@ -95,13 +95,21 @@ def get_breakdown_commissions(seller_id):
     return commission_earned
 
 
-def calculate_owner_technical_commissions(seller_id, server_id, total_amount, exist_exchange_commission=True):
+def calculate_owner_technical_commissions(seller_id, server_id,
+                                          total_amount,
+                                          exist_exchange_commission=True,
+                                          internal_order=False):
     logger.info(f"seller_id__{seller_id}, server_id__{server_id}, total_amount__{total_amount}")
+    internal_exchange_percent = get_global_commissions_rates()['internal_exchange_percent']
     global_commissions_rates = get_global_commissions_rates()
     exchange_commission = Decimal(global_commissions_rates['exchange'])
     technical_commission = Decimal(global_commissions_rates['technical'])
     owner_commission = Decimal(global_commissions_rates['owner'])
     seller_interest_rate = get_interest_rate_by_seller_id(seller_id, server_id)
+
+    if internal_order:
+        technical_commission += (exchange_commission - internal_exchange_percent)/2
+        owner_commission += (exchange_commission - internal_exchange_percent)/2
 
     # Обчислюємо значення за формулами
     if exist_exchange_commission:
