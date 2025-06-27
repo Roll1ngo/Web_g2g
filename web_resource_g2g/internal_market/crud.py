@@ -140,7 +140,8 @@ def create_order(user_id, internal_order_data):
                                                                                              server_id.id,
                                                                                              total_amount,
                                                                                              exist_exchange_commission=
-                                                                                             False)
+                                                                                             False,
+                                                                                             internal_order=True)
     logger.info(f"to_be_earned_without_exchange_commission__{to_be_earned_without_exchange_commission},"
                 f"earned_without_service_commission__{earned_without_service_commission},"
                 f"technical_commission__{technical_commission}, owner_commission_{owner_commission},"
