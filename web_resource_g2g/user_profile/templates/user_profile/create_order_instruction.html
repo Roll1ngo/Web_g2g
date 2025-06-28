@@ -1,36 +1,231 @@
 {% extends 'users/base.html' %}
 {% load socialaccount %}
 {% load static%}
+
+{% block extra_head %}
+    <style>
+        /* Встановлення шрифту Inter для всього тіла документа (якщо не задано в Bootstrap) */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Перевизначення оверлею body з базового шаблону, якщо потрібно */
+            background: url('{% static 'images/background.jpg' %}') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7); /* Напівпрозорий білий фон 70% */
+            z-index: -1;
+        }
+
+        /* Кастомні стилі для карток інструкцій, що імітують personal-cabinet-card */
+        .instruction-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Трохи прозорий білий фон для карток */
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px; /* Відступ між картками */
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+        }
+        .instruction-card:hover {
+            transform: translateY(-5px);
+        }
+        .instruction-card .card-header {
+            background-color: #007bff; /* Основний синій колір для заголовків карток */
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+        }
+        .instruction-card .card-header svg {
+            margin-right: 10px;
+            /* Зменшено розмір SVG іконки в заголовку */
+            width: 1.5em; /* Відносно розміру шрифту заголовка */
+            height: 1.5em;
+        }
+        .step-title {
+            color: #007bff; /* Синій для заголовків кроків */
+        }
+        .step-icon {
+             width: 1.75rem; /* h-7 w-7 */
+             height: 1.75rem;
+             margin-right: 0.75rem; /* space-x-3 */
+        }
+        /* Стиль для іконки в секції "Покрокова інструкція" */
+        .instruction-section-icon {
+            width: 1.5rem; /* h-6 w-6 */
+            height: 1.5rem;
+            margin-right: 0.5rem; /* mr-2 */
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
-<h1>Create Order Instruction</h1>
-<ul>
-  <li><h3>Перейдіть на головну сторінку</h3></li>
-  <li><h3>Натисніть кнопку 'Додати сервер'</h3>
-  <img src="{% static 'user_profile/images/create_order_instruction/add_server_push_button.png' %}" alt="Натисніть
-кнопку 'Додати сервер'">
-  </li>
-  <li><h3>Оберіть гру, регіон та сервер</h3></li>
-  <li><h3>Натисніть кнопку 'Готово'</h3>
-    <img src="{% static 'user_profile/images/create_order_instruction/choose_server.png' %}" alt="Вибір сервера">
-  </li>
-  <li><h3>Якщо ціни для цього сервера відсутні, зачекайте 10 хвилин та оновіть сторінку</h3>
-    <p><h5> якщо ж ціни присутні - переходьте до наступного кроку</p></h5>
-      <img src="{% static 'user_profile/images/create_order_instruction/update_price.png' %}" alt="Вибір сервера">
-  </li>
-  <li><h3>Заповніть інформацію про товар</h3>
-    <ul>
-      <li><h5>Запас:Наявний запас золота(для Сataclysm вказувати кількість тисяч, наприклад 25000 золота вказати як 25)</h5></li>
-      <li><h5>Стратегія: Залежність ціни від швидкості продажу</h5></li>
-      <li><h5>Доставка: Пошта або пошта + трейд(чим більше способів доставки, тим швидше надійде замовлення) </h5></li>
-      <li><h5>Вартість замовлення("Загалом") повинна перевищувати 5$</h5></li>
-    </ul>
-    <img src="{% static 'user_profile/images/create_order_instruction/fill_fields.png' %}" alt="Вибір сервера">
-  </li>
-  <li><h3>ОБ</h3>
+{# Змінено: Bootstrap container на container-fluid для розтягування на всю ширину #}
+<div class="container-fluid mt-5 mb-5 px-4"> {# mt-5 для відступу від навбару, mb-5 для відступу знизу, px-4 для відступів по боках #}
+    <div class="instruction-card"> {# Основна картка для всього керівництва #}
+        <!-- Заголовок сторінки, стилізований під card-header Bootstrap -->
+        <header class="card-header text-center">
+            {# Зменшено розмір SVG іконки за допомогою inline-стилю та CSS правила instruction-card .card-header svg #}
+            <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h1 class="h3 font-weight-bold mb-0">Керівництво зі створення замовлення</h1>
+        </header>
 
-</ul>
+        <main class="card-body"> {# card-body для вмісту #}
+            <!-- Секція "Покрокова інструкція" -->
+            <div class="bg-info text-white p-3 mb-4 rounded d-flex align-items-center">
+                {# Зменшено розмір SVG іконки за допомогою CSS правила instruction-section-icon #}
+                <svg xmlns="http://www.w3.org/2000/svg" class="instruction-section-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <span class="h5 mb-0">Покрокова інструкція</span>
+            </div>
 
+            <!-- Крок 1: Перехід на головну сторінку -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        Крок 1: Перейдіть на головну сторінку
+                    </h2>
+                    <p class="text-secondary">Для початку, будь ласка, перейдіть до основного розділу нашого сервісу, де ви зможете ознайомитись з доступними опціями.</p>
+                </div>
+            </div>
 
+            <!-- Крок 2: Натисніть кнопку "Додати сервер" -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-success d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Крок 2: Натисніть кнопку "Додати сервер"
+                    </h2>
+                    <p class="text-secondary mb-3">Натисніть на відповідну кнопку, щоб розпочати процес додавання нового сервера до вашого облікового запису.</p>
+                    <img src="{% static 'user_profile/images/create_order_instruction/add_server_push_button.png' %}" alt="Натисніть кнопку 'Додати сервер'" class="img-fluid rounded border border-secondary mt-2">
+                </div>
+            </div>
+
+            <!-- Крок 3: Оберіть гру, регіон та сервер -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-purple d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-1.25-3M15 10V5a3 3 0 00-3-3m0 0V2.5A.5.5 0 0112.5 3h1.012a.5.5 0 01.492.41L14 4m-4 0v.01M8.5 5h.01M16.5 5h.01M12 2v2.5M10.25 10L9 11l-1-1-1.25-3M14 4h.01M8 4h.01M16 4h.01" />
+                        </svg>
+                        Крок 3: Оберіть гру, регіон та сервер
+                    </h2>
+                    <p class="text-secondary">Виберіть зі списку необхідну гру, відповідний регіон та бажаний сервер для вашого замовлення.</p>
+                </div>
+            </div>
+
+            <!-- Крок 4: Натисніть кнопку "Готово" -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-success d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Крок 4: Натисніть кнопку "Готово"
+                    </h2>
+                    <p class="text-secondary mb-3">Після того, як ви зробили свій вибір, натисніть кнопку "Готово", щоб завершити налаштування замовлення.</p>
+                    <img src="{% static 'user_profile/images/create_order_instruction/choose_server.png' %}" alt="Зображення вибору сервера" class="img-fluid rounded border border-secondary mt-2">
+                </div>
+            </div>
+
+            <!-- Крок 5: Дочекайтесь оновлення цін -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-danger d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Крок 5: Дочекайтесь оновлення цін
+                    </h2>
+                    <p class="text-secondary mb-2">Якщо ціни для цього сервера відсутні, зачекайте приблизно 10 хвилин та оновіть сторінку.</p>
+                    <p class="text-secondary mb-3">Якщо ж ціни вже присутні, переходьте до наступного кроку.</p>
+                    <img src="{% static 'user_profile/images/create_order_instruction/update_price.png' %}" alt="Зображення оновлення цін" class="img-fluid rounded border border-secondary mt-2">
+                </div>
+            </div>
+
+            <!-- Крок 6: Заповніть інформацію про товар -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        Крок 6: Заповніть інформацію про товар
+                    </h2>
+                    <ul class="list-unstyled text-secondary mb-3">
+                        <li><span class="font-weight-bold">Запас:</span> Наявний запас золота (для Cataclysm вказувати кількість тисяч, наприклад 25000 золота вказати як 25).</li>
+                        <li><span class="font-weight-bold">Стратегія:</span> Залежність ціни від швидкості продажу.</li>
+                        <li><span class="font-weight-bold">Доставка:</span> Пошта або пошта + трейд (чим більше способів доставки, тим швидше надійде замовлення).</li>
+                        <li><span class="font-weight-bold">Вартість замовлення ("Загалом")</span> повинна перевищувати 2$.</li>
+                    </ul>
+                    <img src="{% static 'user_profile/images/create_order_instruction/fill_fields.png' %}" alt="Зображення заповнення полів" class="img-fluid rounded border border-secondary mt-2">
+                </div>
+            </div>
+
+            <!-- Крок 7: Обробка замовлення -->
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        Крок 7: Виставлення товару на продаж
+                    </h2>
+                    <ul class="list-unstyled text-secondary mb-3">
+                        <li><span class="font-weight-bold">Опції -> Виставити товар ->Підтвердити операцію:</span></li>
+
+                    </ul>
+                    <p class="text-secondary">Після підтвердження операції колір індикатора зміниться на зелений. Тепер ваш товар буде передано на продаж протягом 5 хвилин</p>
+                </div>
+            </div>
+
+          #Зняття товару з продажу
+          <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        Крок 7: Зняття товару з продажу
+                    </h2>
+                    <ul class="list-unstyled text-secondary mb-3">
+                        <li><span class="font-weight-bold">Опції -> Зупинити продаж -> Підтвердити операцію</span></li>
+                    </ul>
+                    <div class="alert alert-danger font-weight-bold text-center mt-4" role="alert">
+                        Після зняття товару з продажу замовлення може прийти ще протягом 5 хвилин
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Футер з кнопкою "До кабінету" -->
+        <footer class="bg-light text-secondary text-center p-3 rounded-b-lg d-flex flex-column align-items-center">
+            <p class="mb-3">Ця сторінка є частиною керівництва зі створення замовлення Wow Service Portal.</p>
+            <a href="{% url 'user_profile:profile_main_page' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-circle me-2"></i> До кабінету
+            </a>
+        </footer>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
