@@ -258,52 +258,8 @@
                         </span>
                         <div class="btn-group w-100" role="group" aria-label="Баланс дії">
                             <a href="{% url 'user_profile:deposit_page' %}" class="btn btn-success"><i class="fas fa-plus-circle me-2"></i> Поповнити</a>
-                            <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning text-dark"><i class="fas fa-minus-circle me-2"></i> </a>
+                            <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning text-dark"><i class="fas fa-minus-circle me-2"></i> Вивести</a>
                         </div>
-                        <hr class="my-4">
-
-                            {% if withdrawal_info %}
-                              <div class="withdrawal-status text-start">
-
-                                <p><strong>Обраний спосіб виплати:</strong>
-                                  {{ withdrawal_info.get_withdraw_type_display }} /
-                                  {{ withdrawal_info.get_payment_method_display|default:"Без виплат" }}
-                                </p>
-
-                                {% if withdrawal_info.withdraw_type == "custom" and withdrawal_info.status == "pending" %}
-                                  <div class="alert alert-info p-2 rounded">
-                                    <strong>Виплата проводиться</strong>
-                                    <details class="mt-2">
-                                      <summary>Деталі</summary>
-                                      <small>Замовлено: {{ withdrawal_info.created_at|date:"Y-m-d H:i" }}<br>
-                                      Очікується до: {{ withdrawal_info.created_at|add:"1 day"|date:"Y-m-d H:i" }}</small>
-                                    </details>
-                                  </div>
-                                  <button class="btn btn-secondary w-100 mt-2" disabled>Запит вже надіслано</button>
-
-                                {% if is_fixed_day %}
-                                  <button class="btn btn-secondary w-100 mt-2" disabled>Очікуйте дату виплати</button>
-                                {% else %}
-                                  <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning w-100 mt-2">
-                                    <i class="fas fa-minus-circle me-2"></i> Обрати спосіб виплати
-                                  </a>
-                                {% endif %}
-
-                                {% elif withdrawal_info.withdraw_type == "do_not_withdraw" %}
-                                  <p><strong>Виплати не здійснюються.</strong> (обрано: Без виплат)</p>
-                                  <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning w-100 mt-2">
-                                    <i class="fas fa-minus-circle me-2"></i> Обрати спосіб виплати
-                                  </a>
-                                {% endif %}
-
-                              </div>
-                            {% else %}
-                              <p class="text-muted">Інформація про виплати відсутня.</p>
-                              <a href="{% url 'user_profile:withdraw_page' %}" class="btn btn-warning w-100 mt-2">
-                                <i class="fas fa-minus-circle me-2"></i> Обрати спосіб виплати
-                              </a>
-                            {% endif %}
-
 <!--                        <div class="col-md-6">-->
 <!--                            <h5 class="mb-3">Повнота профілю:</h5>-->
 <!--                            {# Прогрес-бар профілю. Припустимо, profile_completeness_percentage обчислюється у View #}-->

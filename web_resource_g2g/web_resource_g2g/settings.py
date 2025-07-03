@@ -83,7 +83,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "main.context_processors.user_balance",
-                'main.context_processors.privat_bank_rate'
             ],
         },
     },
@@ -130,7 +129,7 @@ TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -199,7 +198,3 @@ EMAIL_HOST_USER = 'fastsaleservice@ukr.net'  # Повна адреса
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD  # Пароль для SMTP (не від облікового запису!)
 DEFAULT_FROM_EMAIL = 'Wow service portal <fastsaleservice@ukr.net>'  # Відображуване ім'я
 
-#Власні налаштування
-PRIVAT_BANK_RATE_UPDATE_INTERVAL_MINUTES = 30
-JOINT_TRADE_STRATEGY = 'mean10_lot' # 'minimal' для швидкої продажі
-F2F_FOR_JOINT_TRADE = True
