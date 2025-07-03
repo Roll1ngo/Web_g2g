@@ -35,7 +35,7 @@ def profile_main_page(request):
             user_balance_amount = f"Продавця не додано. Зверніться до адміністратора"
         except Exception as e:
             logger.error(f"Помилка при отриманні балансу користувача {request.user.id}: {e}")
-            user_balance_amount = "Помилка балансу"
+            user_balance_amount = "Помилка балансу "
 
     scheduled_day = getattr(withdrawal_request_obj.scheduled_withdrawal_date, "day", None)
     is_fixed_day = scheduled_day in [15, 30] if scheduled_day else False
