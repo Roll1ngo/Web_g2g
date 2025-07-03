@@ -207,16 +207,46 @@ class SellersResource(resources.ModelResource):
         fields = ('auth_user__username', 'auth_user__email', 'balance')  # Поля для експорту
 
 
+from django.contrib import admin
+from import_export.admin import ExportActionModelAdmin # Припускаємо, що це імпортовано
+from .models import Sellers # Припускаємо, що модель Sellers знаходиться тут
+from user_profile.models import WithdrawalRequest # Імпортуємо модель WithdrawalRequest
+# Припускаємо, що main_crud та logger імпортовані з відповідних модулів
+# from . import main_crud
+# import logging
+# logger = logging.getLogger(__name__)
+
+
 @admin.register(Sellers)
 class SellersAdmin(ExportActionModelAdmin):
-    resource_class = SellersResource
-    list_display = ('auth_user', 'get_user_email',
-                    'mentor', 'recruiter', 'balance', 'negative_balance_permission')
+    resource_class = SellersResource # Припускаємо, що SellersResource визначено
+    list_display = (
+        'auth_user',
+        'get_user_email',
+        'mentor',
+        'recruiter',
+        'balance',
+        'negative_balance_permission',
+        'get_withdrawal_type_display',  # Нова колонка: Тип виведення
+        'get_payment_method_display',   # Нова колонка: Метод виведення
+        'get_payment_details_display',  # Нова колонка: Реквізити виведення
+    )
 
     list_editable = ('mentor', 'recruiter', 'negative_balance_permission')
 
     actions = ['complete_orders_and_clear_balance',
                'update_balance']
+
+    # Додаємо фільтри для зручного пошуку, включаючи пов'язані поля з WithdrawalRequest
+    list_filter = (
+        'mentor',
+        'recruiter',
+        'negative_balance_permission',
+        # Фільтри за полями з пов'язаної моделі WithdrawalRequest
+        # Правильний шлях через auth_user до withdrawal_requests
+        'auth_user__withdrawal_requests__withdraw_type',
+        'auth_user__withdrawal_requests__payment_method',
+    )
 
     @admin.action(description='Позначити замовлення та комісії як оплачені та скинути баланси')
     def complete_orders_and_clear_balance(self, request, queryset):
@@ -231,8 +261,8 @@ class SellersAdmin(ExportActionModelAdmin):
         for user_id in queryset.values_list('auth_user_id', flat=True).distinct():
             new_balance = main_crud.get_balance(user_id)
             logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
-        main_crud.update_technical_balance()
-        main_crud.update_owner_balance()
+        main_crud.update_technical_balance() # Розкоментуйте, якщо main_crud доступний
+        main_crud.update_owner_balance() # Розкоментуйте, якщо main_crud доступний
         self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
 
     # Перевизначаємо метод get_actions для зміни порядку дій
@@ -253,6 +283,40 @@ class SellersAdmin(ExportActionModelAdmin):
         return obj.auth_user.email
 
     get_user_email.short_description = 'Payoneer'
+
+    def get_withdrawal_type_display(self, obj):
+        """
+        Повертає відображуваний тип виведення для продавця.
+        """
+        withdrawal_request = obj.auth_user.withdrawal_requests.first()
+        if withdrawal_request:
+            return withdrawal_request.get_withdraw_type_display()
+        return "Немає запиту"
+    get_withdrawal_type_display.short_description = 'Тип виведення'
+    get_withdrawal_type_display.admin_order_field = 'auth_user__withdrawal_requests__withdraw_type'
+
+    def get_payment_method_display(self, obj):
+        """
+        Повертає відображуваний метод виведення для продавця.
+        """
+        withdrawal_request = obj.auth_user.withdrawal_requests.first()
+        if withdrawal_request:
+            return withdrawal_request.get_payment_method_display()
+        return "Немає запиту"
+    get_payment_method_display.short_description = 'Метод виведення'
+    get_payment_method_display.admin_order_field = 'auth_user__withdrawal_requests__payment_method'
+
+    def get_payment_details_display(self, obj):
+        """
+        Повертає деталі оплати (реквізити) для продавця.
+        """
+        withdrawal_request = obj.auth_user.withdrawal_requests.first()
+        if withdrawal_request and withdrawal_request.payment_details:
+            # Припускаємо, що 'account_info' є ключем у JSONField
+            return withdrawal_request.payment_details.get('account_info', 'Не вказано')
+        return "Немає запиту / Не вказано"
+    get_payment_details_display.short_description = 'Реквізити виведення'
+
 
 
 class SellerBalanceFilter(SimpleListFilter):
