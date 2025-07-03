@@ -1,14 +1,12 @@
-import json
 import os
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import redirect
 from main import crud
 from main import calculate_commissions_crud as commissions_crud
-from main.utils.send_email import send_massage_to_email
 from .utils.logger_config import logger
 
 
@@ -51,7 +49,7 @@ def start_page(request):
             'games': games,
             'regions': regions,
             'servers_json': grouped_data,
-            'double_add': double_add  # Тепер це список, а не JSON-рядок
+            'double_add': double_add,
         }
 
         return render(request, 'main/index.html', context)
