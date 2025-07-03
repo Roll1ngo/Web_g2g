@@ -144,6 +144,13 @@ class WithdrawalRequest(models.Model):
             self.payment_details = None
             self.status = 'not_applicable'  # Встановлюємо статус
         else:
+            # Встановлюємо статус на 'pending' для інших типів виведення,
+            # щоб скинути 'not_applicable', якщо він був встановлений раніше.
+            if self.status == 'not_applicable': # Перевіряємо, чи був попередній статус 'not_applicable'
+                self.status = 'pending' # Якщо так, скидаємо його на 'pending'
+            # Якщо статус вже є 'pending' або іншим, він залишається без змін,
+            # якщо тільки він не змінюється явно іншою логікою.
+
             # Розрахунок комісії
             if self.withdraw_type == 'custom':
                 if self.payment_method == 'payoneer':

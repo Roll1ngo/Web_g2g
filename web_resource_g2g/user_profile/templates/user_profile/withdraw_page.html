@@ -186,12 +186,14 @@
                                     <input class="form-check-input" type="radio" name="payment_method" id="payoneer" value="payoneer" {% if form.payment_method.value == 'payoneer' or form.payment_method.value is None %}checked{% endif %}>
                                     <label class="form-check-label" for="payoneer">
                                         Payoneer <span id="payoneerCommission" class="commission-text"></span>
+                                        <small class="text-muted d-block" id="payoneerMinLimit"></small>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="payment_method" id="visa_mastercard" value="visa_mastercard" {% if form.payment_method.value == 'visa_mastercard' %}checked{% endif %}>
                                     <label class="form-check-label" for="visa_mastercard">
                                         Visa / Mastercard (UAH) <span id="cardCommission" class="commission-text"></span>
+                                        <small class="text-muted d-block" id="cardMinLimit"></small>
                                     </label>
                                 </div>
                                 {% if form.payment_method.errors %}
@@ -208,7 +210,7 @@
                         <div class="mb-3" id="amountFieldGroup" style="display: none;">
                             <label for="id_amount" class="form-label h5 mb-3">Сума виведення (USD):</label>
                             <div class="input-group">
-                                <input type="number" step="0.01" min="10.00"
+                                <input type="number" step="0.01"
                                        class="form-control form-control-lg {% if form.amount.errors %}is-invalid{% endif %}"
                                        id="id_amount" name="amount" placeholder="Наприклад, 100.00"
                                        value="{{ form.amount.value|default_if_none:'' }}" required>
@@ -290,6 +292,8 @@
         const paymentMethodRadios = document.querySelectorAll('input[name="payment_method"]');
         const payoneerCommissionSpan = document.getElementById('payoneerCommission');
         const cardCommissionSpan = document.getElementById('cardCommission');
+        const payoneerMinLimitSpan = document.getElementById('payoneerMinLimit'); // New
+        const cardMinLimitSpan = document.getElementById('cardMinLimit');     // New
         const amountInput = document.getElementById('id_amount');
         const amountHelpText = document.querySelector('#amountFieldGroup .invalid-feedback');
         const paymentAccountInfoHelpText = document.getElementById('paymentAccountInfoHelpText');
@@ -324,6 +328,10 @@
         const uahToUsdRate = parseFloat(privat_bank_rate?.dataset.saleRate?.replace(',', '.') || '0'); // Assuming sale rate for UAH to USD conversion if needed
         const userBalance = parseFloat(document.getElementById('user_balance_data')?.dataset.balance?.replace(',', '.') || '0');
 
+        // Визначення мінімальних лімітів
+        const MIN_PAYONEER_AMOUNT = 50.00;
+        const MIN_CARD_AMOUNT = 20.00;
+
         // Функція скидання валідації
         function resetValidation() {
             if (amountInput) amountInput.classList.remove('is-invalid', 'is-valid');
@@ -341,7 +349,10 @@
 
         // Функція оновлення конвертації
         function updateUahConversion() {
-            if (!amountInput) return;
+            if (!amountInput || amountFieldGroup.style.display === 'none') { // Додано перевірку на відображення поля суми
+                safeSetText(uahConversionText, '');
+                return;
+            }
 
             const amount = parseFloat(amountInput.value);
             if (!isNaN(amount)) {
@@ -372,8 +383,8 @@
             const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
 
             let payoneerCommissionText, cardCommissionText;
-            const minAmount = 10.00; // General minimum for amount input
 
+            // Оновлення тексту комісії
             if (currentSelectedWithdrawType === 'custom') {
                 payoneerCommissionText = '3%';
                 cardCommissionText = '9%';
@@ -388,6 +399,12 @@
 
             if (payoneerCommissionSpan) safeSetText(payoneerCommissionSpan, `Комісія: ${payoneerCommissionText}`);
             if (cardCommissionSpan) safeSetText(cardCommissionSpan, `Комісія: ${cardCommissionText}`);
+
+            // Оновлення тексту мінімальних лімітів
+            // Ці елементи <small> тепер відображаються завжди, але їхній текст оновлюється
+            safeSetText(payoneerMinLimitSpan, `(мін. $${MIN_PAYONEER_AMOUNT.toFixed(2)})`);
+            safeSetText(cardMinLimitSpan, `(мін. $${MIN_CARD_AMOUNT.toFixed(2)})`);
+
 
             // Set display for amount and payment info fields
             if (currentSelectedWithdrawType === 'do_not_withdraw') {
@@ -408,12 +425,23 @@
                     if (amountFieldGroup) amountFieldGroup.style.display = 'block';
                     if (amountInput) {
                         amountInput.setAttribute('required', 'required');
-                        amountInput.min = minAmount; // Always min $10 for custom withdrawal
+                        // Встановлення мінімального значення для поля суми
+                        if (selectedPaymentMethod === 'payoneer') {
+                            amountInput.min = MIN_PAYONEER_AMOUNT;
+                            safeSetText(amountHelpText, `Мінімальна сума виведення для Payoneer: $${MIN_PAYONEER_AMOUNT.toFixed(2)}.`);
+                        } else if (selectedPaymentMethod === 'visa_mastercard') {
+                            amountInput.min = MIN_CARD_AMOUNT;
+                            safeSetText(amountHelpText, `Мінімальна сума виведення для Visa/Mastercard: $${MIN_CARD_AMOUNT.toFixed(2)}.`);
+                        } else {
+                             // Якщо метод не обрано або невідомий, встановлюємо загальний мінімум
+                            amountInput.min = MIN_CARD_AMOUNT; // За замовчуванням
+                            safeSetText(amountHelpText, `Будь ласка, оберіть метод виведення, щоб побачити мінімальну суму.`);
+                        }
                     }
                 }
             }
 
-            // Update help texts based on selected payment method
+            // Update help texts based on selected payment method for account info
             if (selectedPaymentMethod === 'payoneer') {
                 safeSetText(paymentAccountInfoHelpText, 'Будь ласка, введіть коректну адресу електронної пошти Payoneer.');
                 if (paymentAccountInfoInput) paymentAccountInfoInput.placeholder = 'Введіть email Payoneer';
@@ -483,11 +511,20 @@
             // Валідація суми (тільки для "Терміновий вивід")
             if (currentSelectedWithdrawType === 'custom') {
                 const amount = parseFloat(amountInput.value);
-                const minAmount = parseFloat(amountInput.min || '10'); // Assume min is 10 if not set
+                let minAmountForValidation = 0;
 
-                if (isNaN(amount) || amount < minAmount) {
+                if (selectedPaymentMethod === 'payoneer') {
+                    minAmountForValidation = MIN_PAYONEER_AMOUNT;
+                } else if (selectedPaymentMethod === 'visa_mastercard') {
+                    minAmountForValidation = MIN_CARD_AMOUNT;
+                } else {
+                    // Якщо метод не обрано, використовуємо загальний мінімум або найменший з можливих
+                    minAmountForValidation = MIN_CARD_AMOUNT; // Або можна зробити невалідним, якщо метод не обрано
+                }
+
+                if (isNaN(amount) || amount < minAmountForValidation) {
                     amountInput.classList.add('is-invalid');
-                    safeSetText(amountHelpText, `Будь ласка, введіть суму, не меншу за мінімальну: $${minAmount.toFixed(2)}.`);
+                    safeSetText(amountHelpText, `Будь ласка, введіть суму, не меншу за мінімальну: $${minAmountForValidation.toFixed(2)}.`);
                     isValid = false;
                 } else if (amount > userBalance) { // New balance validation
                     amountInput.classList.add('is-invalid');
@@ -585,7 +622,7 @@
         // Обробник події для кнопки "Підтвердити" в модальному вікні
         if (confirmWithdrawalBtn) {
             confirmWithdrawalBtn.addEventListener('click', function() {
-                withdrawForm.submit();
+                withdrawForm.submit(); // Відправляє форму після підтвердження
             });
         }
 
@@ -596,40 +633,37 @@
             });
         }
 
-        // Обробники подій для радіокнопок
+        // Обробники подій для радіо-кнопок
         withdrawTypeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                resetValidation(); // Скидаємо валідацію при зміні типу виведення
-                updateFormDynamics();
-            });
+            radio.addEventListener('change', updateFormDynamics);
         });
 
         paymentMethodRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                resetValidation(); // Скидаємо валідацію при зміні методу виведення
-                updateFormDynamics();
-            });
+            radio.addEventListener('change', updateFormDynamics);
         });
 
-        // Обробник події для поля вводу суми
+        // Обробник події для поля суми
         if (amountInput) {
-            amountInput.addEventListener('input', function() {
-                updateUahConversion();
-                // Re-validate amount input on change to show immediate feedback
-                validateFormForModal();
-            });
+            amountInput.addEventListener('input', updateUahConversion);
         }
 
-        // Обробник події для поля деталей рахунку
-        if (paymentAccountInfoInput) {
-            paymentAccountInfoInput.addEventListener('input', function() {
-                validateFormForModal(); // Re-validate payment account info on change
-            });
-        }
-
-        // Початковий виклик для налаштування форми при завантаженні сторінки
+        // Ініціалізація форми при завантаженні сторінки
         updateFormDynamics();
+        updateUahConversion();
     });
 </script>
+{% else %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="alert alert-warning" role="alert">
+                Будь ласка, <a href="{% url 'account_login' %}">увійдіть</a> або <a href="{% url 'account_signup' %}">зареєструйтесь</a>, щоб отримати доступ до системи виведення коштів.
+            </div>
+            <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-lg mt-3">
+                <i class="fab fa-google me-2"></i> Увійти через Google
+            </a>
+        </div>
+    </div>
+</div>
 {% endif %}
 {% endblock %}

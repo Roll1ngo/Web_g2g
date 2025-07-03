@@ -20,13 +20,14 @@ class WithdrawalRequestForm(forms.ModelForm):
         required=False,
         max_digits=10,
         decimal_places=2,
-        min_value=10.00,  # Мінімальна сума $10
+        # min_value тепер буде встановлюватися динамічно в clean()
         widget=forms.NumberInput(attrs={
             'class': 'form-control form-control-lg',
             'placeholder': 'Наприклад, 100.00',
-            'step': '0.01' # Змінено крок на 0.01 для DecimalField
+            'step': '1'
         }),
-        help_text="Мінімальна сума виведення: $10.00"
+        # help_text буде оновлюватися динамічно в шаблоні через JavaScript
+        help_text=""
     )
 
     # Оновлені варіанти вибору типу виведення
@@ -40,7 +41,7 @@ class WithdrawalRequestForm(forms.ModelForm):
         label="Варіанти виведення",
         choices=WITHDRAW_TYPE_CHOICES,
         widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
-        initial=WITHDRAW_FIXED # Встановлено початкове значення
+        initial=WITHDRAW_FIXED
     )
 
     payment_method = forms.ChoiceField(
@@ -81,7 +82,6 @@ class WithdrawalRequestForm(forms.ModelForm):
         payment_account_info = cleaned_data.get('payment_account_info')
 
         # Валідація типу виведення
-        # Ця перевірка вже вбудована в ChoiceField, але залишаємо для ясності
         if withdraw_type not in [choice[0] for choice in self.WITHDRAW_TYPE_CHOICES]:
             raise ValidationError("Зробіть коректний вибір типу виведення")
 
@@ -116,11 +116,17 @@ class WithdrawalRequestForm(forms.ModelForm):
         # Динамічна валідація поля amount:
         # Поле amount є обов'язковим лише для 'custom'
         if withdraw_type == self.WITHDRAW_CUSTOM:
-            if amount is None:  # Перевіряємо, чи була сума взагалі введена
+            min_amount_for_method = 0.00 # Значення за замовчуванням
+            if payment_method == 'payoneer':
+                min_amount_for_method = 50.00
+            elif payment_method == 'visa_mastercard':
+                min_amount_for_method = 20.00
+
+            if amount is None:
                 self.add_error('amount', 'Будь ласка, вкажіть суму виведення.')
-            elif amount < 10.00:  # Мінімальна сума $10 для всіх методів
+            elif amount < min_amount_for_method:
                 self.add_error('amount',
-                               'Мінімальна сума виведення становить $10.00.')
+                               f'Мінімальна сума виведення для {payment_method.capitalize()} становить ${min_amount_for_method:.2f}.')
         else:
             # Для 'fixed_15_30' (вивести всю суму) amount не потрібний
             cleaned_data['amount'] = None

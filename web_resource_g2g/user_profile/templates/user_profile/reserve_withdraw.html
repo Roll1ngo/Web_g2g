@@ -129,6 +129,7 @@
                      data-sale-rate="{{ privat_bank_rate.sale|stringformat:"f" }}"
                      style="display: none;">
                   </div>
+                    <div id="user_balance_data" data-balance="{{ user_balance|default:"0.00" }}" style="display: none;"></div>
                 </header>
 
                 <div class="card-body p-4">
@@ -290,17 +291,16 @@
         const payoneerCommissionSpan = document.getElementById('payoneerCommission');
         const cardCommissionSpan = document.getElementById('cardCommission');
         const amountInput = document.getElementById('id_amount');
-        const amountHelpText = document.getElementById('amountHelpText');
+        const amountHelpText = document.querySelector('#amountFieldGroup .invalid-feedback');
         const paymentAccountInfoHelpText = document.getElementById('paymentAccountInfoHelpText');
         const paymentAccountInfoInput = document.getElementById('id_payment_account_info');
-        const paymentAccountInfoError = document.getElementById('paymentAccountInfoError');
         const uahConversionText = document.getElementById('uahConversionText');
         const submitWithdrawalBtn = document.getElementById('submitWithdrawalBtn');
         const withdrawForm = document.getElementById('withdrawForm');
         const amountFieldGroup = document.getElementById('amountFieldGroup');
-        const paymentMethodGroup = document.getElementById('paymentMethodGroup');
+        const paymentMethodGroup = document.querySelector('#paymentMethodGroup');
         const paymentAccountInfoGroup = document.getElementById('paymentAccountInfoGroup');
-        const doNotWithdrawRadio = document.getElementById('doNotWithdraw');
+        const doNotWithdrawRadio = document.getElementById('do_not_withdraw');
         const modalAmountUahWrapper = document.getElementById('modalAmountUahWrapper');
 
         // Елементи модального вікна
@@ -318,21 +318,31 @@
         const confirmWithdrawalBtn = document.getElementById('confirmWithdrawalBtn');
         const cancelWithdrawalBtn = document.getElementById('cancelWithdrawalBtn');
 
-        // Отримання курсу валют
+        // Отримання курсу валют та балансу користувача
         const privat_bank_rate = document.getElementById('privat_bank_rate');
-        const usdToUahRate = parseFloat(privat_bank_rate.dataset.buyRate.replace(',', '.'));
-        const uahToUsdRate = parseFloat(privat_bank_rate.dataset.saleRate.replace(',', '.'));
+        const usdToUahRate = parseFloat(privat_bank_rate?.dataset.buyRate?.replace(',', '.') || '0');
+        const uahToUsdRate = parseFloat(privat_bank_rate?.dataset.saleRate?.replace(',', '.') || '0'); // Assuming sale rate for UAH to USD conversion if needed
+        const userBalance = parseFloat(document.getElementById('user_balance_data')?.dataset.balance?.replace(',', '.') || '0');
 
         // Функція скидання валідації
         function resetValidation() {
-            amountInput.classList.remove('is-invalid', 'is-valid');
-            paymentAccountInfoInput.classList.remove('is-invalid', 'is-valid');
-            document.getElementById('withdrawTypeGroup').classList.remove('is-invalid');
-            document.getElementById('paymentMethodGroup').classList.remove('is-invalid');
+            if (amountInput) amountInput.classList.remove('is-invalid', 'is-valid');
+            if (paymentAccountInfoInput) paymentAccountInfoInput.classList.remove('is-invalid', 'is-valid');
+            if (document.querySelector('#withdrawTypeGroup')) {
+                document.querySelector('#withdrawTypeGroup').classList.remove('is-invalid');
+            }
+            if (paymentMethodGroup) {
+                paymentMethodGroup.classList.remove('is-invalid');
+            }
+            // Clear any custom error messages
+            if (amountHelpText) safeSetText(amountHelpText, '');
+            if (document.getElementById('paymentAccountInfoError')) safeSetText(document.getElementById('paymentAccountInfoError'), '');
         }
 
         // Функція оновлення конвертації
         function updateUahConversion() {
+            if (!amountInput) return;
+
             const amount = parseFloat(amountInput.value);
             if (!isNaN(amount)) {
                 const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
@@ -341,15 +351,15 @@
 
                 if (selectedPaymentMethod === 'payoneer') {
                     commissionRate = selectedWithdrawType === 'custom' ? 0.03 : 0;
-                    const commissionAmountUSD = (amount * commissionRate).toFixed(2);
-                    const amountAfterCommissionUSD = (amount * (1 - commissionRate)).toFixed(2);
-                    safeSetText(uahConversionText, `Сума з урахуванням комісії: $${amountAfterCommissionUSD} (комісія $${commissionAmountUSD})`);
+                    const commissionAmountUSD = (amount * commissionRate);
+                    const amountAfterCommissionUSD = (amount - commissionAmountUSD);
+                    safeSetText(uahConversionText, `Сума з урахуванням комісії: $${amountAfterCommissionUSD.toFixed(2)} (комісія $${commissionAmountUSD.toFixed(2)})`);
                 } else if (selectedPaymentMethod === 'visa_mastercard') {
                     commissionRate = selectedWithdrawType === 'custom' ? 0.09 : 0.06;
-                    const uahAmount = (amount * usdToUahRate).toFixed(2);
-                    const commissionAmount = (amount * usdToUahRate * commissionRate).toFixed(2);
-                    const amountAfterCommission = (amount * usdToUahRate * (1 - commissionRate)).toFixed(2);
-                    safeSetText(uahConversionText, `≈ ${uahAmount} грн (за курсом ${usdToUahRate.toFixed(2)} UAH/USD, з комісією = ${commissionAmount} грн → ${amountAfterCommission} грн)`);
+                    const uahAmount = (amount * usdToUahRate);
+                    const commissionAmount = (uahAmount * commissionRate);
+                    const amountAfterCommission = (uahAmount - commissionAmount);
+                    safeSetText(uahConversionText, `≈ ${uahAmount.toFixed(2)} грн (за курсом ${usdToUahRate.toFixed(2)} UAH/USD, комісія ${commissionRate * 100}% = ${commissionAmount.toFixed(2)} грн → ${amountAfterCommission.toFixed(2)} грн)`);
                 }
             } else {
                 safeSetText(uahConversionText, '');
@@ -362,109 +372,129 @@
             const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
 
             let payoneerCommissionText, cardCommissionText;
-            const minAmount = 10.00;
+            const minAmount = 10.00; // General minimum for amount input
 
             if (currentSelectedWithdrawType === 'custom') {
                 payoneerCommissionText = '3%';
                 cardCommissionText = '9%';
-                payoneerCommissionSpan?.classList.add('danger');
-                cardCommissionSpan?.classList.add('danger');
-            } else {
+                if (payoneerCommissionSpan) payoneerCommissionSpan.classList.add('danger');
+                if (cardCommissionSpan) cardCommissionSpan.classList.add('danger');
+            } else { // fixed_15_30
                 payoneerCommissionText = '0%';
                 cardCommissionText = '6%';
-                payoneerCommissionSpan?.classList.remove('danger');
-                cardCommissionSpan?.classList.remove('danger');
+                if (payoneerCommissionSpan) payoneerCommissionSpan.classList.remove('danger');
+                if (cardCommissionSpan) cardCommissionSpan.classList.remove('danger');
             }
 
-            safeSetText(payoneerCommissionSpan, payoneerCommissionText);
-            safeSetText(cardCommissionSpan, cardCommissionText);
+            if (payoneerCommissionSpan) safeSetText(payoneerCommissionSpan, `Комісія: ${payoneerCommissionText}`);
+            if (cardCommissionSpan) safeSetText(cardCommissionSpan, `Комісія: ${cardCommissionText}`);
 
+            // Set display for amount and payment info fields
             if (currentSelectedWithdrawType === 'do_not_withdraw') {
-                amountFieldGroup.style.display = 'none';
-                paymentMethodGroup.style.display = 'none';
-                paymentAccountInfoGroup.style.display = 'none';
-                amountInput.removeAttribute('required');
-                paymentAccountInfoInput.removeAttribute('required');
+                if (amountFieldGroup) amountFieldGroup.style.display = 'none';
+                if (paymentMethodGroup) paymentMethodGroup.style.display = 'none';
+                if (paymentAccountInfoGroup) paymentAccountInfoGroup.style.display = 'none';
+                if (amountInput) amountInput.removeAttribute('required');
+                if (paymentAccountInfoInput) paymentAccountInfoInput.removeAttribute('required');
             } else {
-                paymentMethodGroup.style.display = 'block';
-                paymentAccountInfoGroup.style.display = 'block';
-                paymentAccountInfoInput.setAttribute('required', 'required');
+                if (paymentMethodGroup) paymentMethodGroup.style.display = 'block';
+                if (paymentAccountInfoGroup) paymentAccountInfoGroup.style.display = 'block';
+                if (paymentAccountInfoInput) paymentAccountInfoInput.setAttribute('required', 'required');
 
                 if (currentSelectedWithdrawType === 'fixed_15_30') {
-                    amountFieldGroup.style.display = 'none';
-                    amountInput.removeAttribute('required');
+                    if (amountFieldGroup) amountFieldGroup.style.display = 'none';
+                    if (amountInput) amountInput.removeAttribute('required');
                 } else if (currentSelectedWithdrawType === 'custom') {
-                    amountFieldGroup.style.display = 'block';
-                    amountInput.setAttribute('required', 'required');
-                    amountInput.min = minAmount;
-                    safeSetText(amountHelpText, '');
-                    amountInput.placeholder = `Наприклад, ${minAmount.toFixed(2)}`;
+                    if (amountFieldGroup) amountFieldGroup.style.display = 'block';
+                    if (amountInput) {
+                        amountInput.setAttribute('required', 'required');
+                        amountInput.min = minAmount; // Always min $10 for custom withdrawal
+                    }
                 }
             }
 
+            // Update help texts based on selected payment method
             if (selectedPaymentMethod === 'payoneer') {
                 safeSetText(paymentAccountInfoHelpText, 'Будь ласка, введіть коректну адресу електронної пошти Payoneer.');
-                paymentAccountInfoInput.placeholder = 'Введіть email Payoneer';
-                safeSetText(paymentAccountInfoError, 'Будь ласка, введіть коректний email');
+                if (paymentAccountInfoInput) paymentAccountInfoInput.placeholder = 'Введіть email Payoneer';
             } else if (selectedPaymentMethod === 'visa_mastercard') {
                 safeSetText(paymentAccountInfoHelpText, 'Будь ласка, введіть 16-значний номер картки Visa/Mastercard.');
-                paymentAccountInfoInput.placeholder = 'Введіть 16-значний номер картки';
-                safeSetText(paymentAccountInfoError, 'Будь ласка, введіть коректний номер картки (16 цифр)');
+                if (paymentAccountInfoInput) paymentAccountInfoInput.placeholder = 'Введіть 16-значний номер картки';
+            } else {
+                // Default case if no payment method is selected or an unexpected value
+                safeSetText(paymentAccountInfoHelpText, 'Будь ласка, введіть коректні дані для вашого облікового запису Payoneer або номер банківської картки.');
+                if (paymentAccountInfoInput) paymentAccountInfoInput.placeholder = 'Введіть email Payoneer або номер картки';
             }
+            updateUahConversion(); // Update UAH conversion whenever form dynamics change
         }
 
         // Функція валідації форми
         function validateFormForModal() {
             let isValid = true;
-            resetValidation();
+            resetValidation(); // Скидаємо всі попередні стани валідації
 
             const currentSelectedWithdrawType = document.querySelector('input[name="withdraw_type"]:checked')?.value;
+            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
 
+            // Валідація типу виведення
             if (!currentSelectedWithdrawType) {
-                document.getElementById('withdrawTypeGroup').classList.add('is-invalid');
+                document.querySelector('#withdrawTypeGroup').classList.add('is-invalid');
                 isValid = false;
             }
 
             if (currentSelectedWithdrawType === 'do_not_withdraw') {
-                return true;
+                return true; // Якщо обрано "Не виводити", інші поля не валідуються
             }
 
-            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked');
+            // Валідація методу виведення
             if (!selectedPaymentMethod) {
-                document.getElementById('paymentMethodGroup').classList.add('is-invalid');
+                paymentMethodGroup.classList.add('is-invalid');
                 isValid = false;
             }
 
+            // Валідація деталей рахунку
             const paymentAccountInfo = paymentAccountInfoInput.value.trim();
             if (paymentAccountInfo === '') {
                 paymentAccountInfoInput.classList.add('is-invalid');
+                safeSetText(document.getElementById('paymentAccountInfoError'), 'Будь ласка, вкажіть деталі рахунку для виведення.');
                 isValid = false;
-            } else if (selectedPaymentMethod?.value === 'payoneer') {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(paymentAccountInfo)) {
-                    paymentAccountInfoInput.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    paymentAccountInfoInput.classList.add('is-valid');
-                }
-            } else if (selectedPaymentMethod?.value === 'visa_mastercard') {
-                const cleanedCardNumber = paymentAccountInfo.replace(/\D/g, '');
-                if (!(cleanedCardNumber.length === 16 && /^\d+$/.test(cleanedCardNumber))) {
-                    paymentAccountInfoInput.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    paymentAccountInfoInput.classList.add('is-valid');
+            } else {
+                if (selectedPaymentMethod === 'payoneer') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(paymentAccountInfo)) {
+                        paymentAccountInfoInput.classList.add('is-invalid');
+                        safeSetText(document.getElementById('paymentAccountInfoError'), 'Будь ласка, введіть дійсну адресу електронної пошти Payoneer.');
+                        isValid = false;
+                    } else {
+                        paymentAccountInfoInput.classList.add('is-valid');
+                    }
+                } else if (selectedPaymentMethod === 'visa_mastercard') {
+                    const cleanedCardNumber = paymentAccountInfo.replace(/\D/g, '');
+                    if (!(cleanedCardNumber.length === 16 && /^\d+$/.test(cleanedCardNumber))) {
+                        paymentAccountInfoInput.classList.add('is-invalid');
+                        safeSetText(document.getElementById('paymentAccountInfoError'), 'Будь ласка, введіть дійсний номер картки Visa/Mastercard (рівно 16 цифр).');
+                        isValid = false;
+                    } else {
+                        paymentAccountInfoInput.classList.add('is-valid');
+                    }
                 }
             }
 
+            // Валідація суми (тільки для "Терміновий вивід")
             if (currentSelectedWithdrawType === 'custom') {
                 const amount = parseFloat(amountInput.value);
-                const minAmount = parseFloat(amountInput.min);
+                const minAmount = parseFloat(amountInput.min || '10'); // Assume min is 10 if not set
+
                 if (isNaN(amount) || amount < minAmount) {
                     amountInput.classList.add('is-invalid');
                     safeSetText(amountHelpText, `Будь ласка, введіть суму, не меншу за мінімальну: $${minAmount.toFixed(2)}.`);
                     isValid = false;
-                } else {
+                } else if (amount > userBalance) { // New balance validation
+                    amountInput.classList.add('is-invalid');
+                    safeSetText(amountHelpText, `Сума виведення не може перевищувати ваш баланс ($${userBalance.toFixed(2)}).`);
+                    isValid = false;
+                }
+                else {
                     amountInput.classList.add('is-valid');
                     safeSetText(amountHelpText, '');
                 }
@@ -473,157 +503,133 @@
             return isValid;
         }
 
-        // Обробник події для кнопки виведення
-        submitWithdrawalBtn.addEventListener('click', function(event) {
-            event.preventDefault();
-            resetValidation();
+        // Обробник події для кнопки "Надіслати запит на виведення"
+        if (submitWithdrawalBtn) {
+            submitWithdrawalBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                resetValidation(); // Скидаємо валідацію перед новою перевіркою
 
-            const selectedWithdrawTypeForSubmit = document.querySelector('input[name="withdraw_type"]:checked')?.value;
-            const selectedPaymentMethodValue = document.querySelector('input[name="payment_method"]:checked')?.value;
-
-            if (!validateFormForModal()) {
-                return;
-            }
-
-            // Визначення дати виведення
-            let withdrawDateText = 'Не застосовується';
-            if (selectedWithdrawTypeForSubmit === 'fixed_15_30') {
-                withdrawDateText = '15 і 30 числа кожного місяця';
-            } else if (selectedWithdrawTypeForSubmit === 'custom') {
-                withdrawDateText = 'протягом 24 годин';
-            }
-
-            // Отримання значень
-            const amount = parseFloat(amountInput.value) || 0;
-            const amountDisplay = amount.toFixed(2);
-            const uahAmount = (amount * usdToUahRate).toFixed(2);
-
-            // Визначення способу виводу
-            let paymentMethodText = 'Не визначено';
-            if (selectedPaymentMethodValue === 'payoneer') {
-                paymentMethodText = 'Payoneer';
-            } else if (selectedPaymentMethodValue === 'visa_mastercard') {
-                paymentMethodText = 'Visa/Mastercard (UAH)';
-            }
-
-            // Отримання реквізитів
-            const paymentDetails = paymentAccountInfoInput.value.trim();
-
-            // Розрахунок комісії
-            let commissionRate = 0;
-            let finalCommissionText = '0%';
-            let amountAfterCommission = amountDisplay;
-
-            if (selectedPaymentMethodValue === 'payoneer') {
-                commissionRate = selectedWithdrawTypeForSubmit === 'custom' ? 0.03 : 0;
-                finalCommissionText = selectedWithdrawTypeForSubmit === 'custom' ? '3%' : '0%';
-                amountAfterCommission = (amount * (1 - commissionRate)).toFixed(2);
-                modalAmountUahWrapper.style.display = 'none';
-            } else if (selectedPaymentMethodValue === 'visa_mastercard') {
-                commissionRate = selectedWithdrawTypeForSubmit === 'custom' ? 0.09 : 0.06;
-                finalCommissionText = selectedWithdrawTypeForSubmit === 'custom' ? '9%' : '6%';
-                amountAfterCommission = (amount * usdToUahRate * (1 - commissionRate)).toFixed(2);
-                modalAmountUahWrapper.style.display = 'inline';
-            }
-
-            // Заповнення модального вікна
-            safeSetText(modalPaymentMethod, paymentMethodText);
-            safeSetText(modalPaymentDetails, paymentDetails || 'Не вказано');
-            safeSetText(modalAmount, amountDisplay);
-            safeSetText(modalAmountUah, uahAmount);
-            safeSetText(modalFinalCommission, finalCommissionText);
-            safeSetText(modalAmountAfterCommission,
-                selectedPaymentMethodValue === 'payoneer'
-                    ? `$${amountAfterCommission}`
-                    : `${amountAfterCommission} грн`);
-            safeSetText(modalWithdrawDate, withdrawDateText);
-
-            // Відображення модального вікна
-            confirmationModal.show();
-        });
-
-        // Автоматична валідація при введенні даних
-        amountInput.addEventListener('input', function() {
-            const amount = parseFloat(this.value);
-            const minAmount = parseFloat(this.min);
-
-            if (!isNaN(amount) && amount >= minAmount) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-                safeSetText(amountHelpText, '');
-            }
-            updateUahConversion();
-        });
-
-        paymentAccountInfoInput.addEventListener('input', function() {
-            const selectedPaymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
-            const value = this.value.trim();
-
-            if (selectedPaymentMethod === 'payoneer') {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (emailRegex.test(value)) {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
+                if (!validateFormForModal()) {
+                    // Якщо форма невалідна, фокусуємося на першому невалідному елементі
+                    if (document.querySelector('#withdrawTypeGroup.is-invalid')) {
+                        document.querySelector('#withdrawTypeGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else if (paymentMethodGroup.classList.contains('is-invalid')) {
+                        paymentMethodGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else if (amountFieldGroup.style.display !== 'none' && amountInput.classList.contains('is-invalid')) {
+                        amountInput.focus();
+                    } else if (paymentAccountInfoGroup.style.display !== 'none' && paymentAccountInfoInput.classList.contains('is-invalid')) {
+                        paymentAccountInfoInput.focus();
+                    }
+                    return;
                 }
-            } else if (selectedPaymentMethod === 'visa_mastercard') {
-                const cleanedCardNumber = value.replace(/\D/g, '');
-                if (cleanedCardNumber.length === 16 && /^\d+$/.test(cleanedCardNumber)) {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
-                }
-            }
-        });
 
-        // Інші обробники подій
+                const selectedWithdrawTypeForSubmit = document.querySelector('input[name="withdraw_type"]:checked')?.value;
+                console.log('Client-side selected withdraw_type value before modal show:', selectedWithdrawTypeForSubmit); // Debug log
+                const selectedPaymentMethodValue = document.querySelector('input[name="payment_method"]:checked')?.value;
+
+                // Визначення дати виведення
+                let withdrawDateText = 'Не застосовується';
+                if (selectedWithdrawTypeForSubmit === 'fixed_15_30') {
+                    withdrawDateText = '15 і 30 числа кожного місяця';
+                } else if (selectedWithdrawTypeForSubmit === 'custom') {
+                    withdrawDateText = 'протягом 24 годин';
+                }
+
+                // Отримання значень
+                const amount = parseFloat(amountInput?.value) || 0;
+                const accountInfo = paymentAccountInfoInput?.value || 'Не вказано';
+
+                let finalCommissionPercentage = 0;
+                let amountAfterCommission = amount;
+                let modalUahValue = (amount * usdToUahRate).toFixed(2); // Calculate UAH value without commission for display in parentheses
+
+                if (selectedWithdrawTypeForSubmit === 'do_not_withdraw') {
+                    safeSetText(modalAmount, 'N/A');
+                    safeSetText(modalAmountUah, 'N/A');
+                    modalAmountUahWrapper.style.display = 'none';
+                    safeSetText(modalFinalCommission, 'Не застосовується');
+                    safeSetText(modalAmountAfterCommission, 'Не застосовується');
+                    safeSetText(modalPaymentMethod, 'Не застосовується');
+                    safeSetText(modalPaymentDetails, 'Не застосовується');
+                } else {
+                    if (selectedPaymentMethodValue === 'payoneer') {
+                        finalCommissionPercentage = selectedWithdrawTypeForSubmit === 'custom' ? 0.03 : 0;
+                        amountAfterCommission = amount * (1 - finalCommissionPercentage);
+                        safeSetText(modalPaymentMethod, 'Payoneer');
+                        safeSetText(modalPaymentDetails, accountInfo);
+                        modalAmountUahWrapper.style.display = 'inline';
+                        safeSetText(modalAmountAfterCommission, `${amountAfterCommission.toFixed(2)} USD`);
+                    } else if (selectedPaymentMethodValue === 'visa_mastercard') {
+                        finalCommissionPercentage = selectedWithdrawTypeForSubmit === 'custom' ? 0.09 : 0.06;
+                        // For Visa/Mastercard, the amount is in USD, converted to UAH for commission calculation
+                        const amountInUAH = amount * usdToUahRate;
+                        const commissionInUAH = amountInUAH * finalCommissionPercentage;
+                        const amountAfterCommissionInUAH = amountInUAH - commissionInUAH;
+                        // modalUahValue is already calculated above without commission
+                        safeSetText(modalPaymentMethod, 'Visa / Mastercard');
+                        safeSetText(modalPaymentDetails, accountInfo);
+                        modalAmountUahWrapper.style.display = 'inline';
+                        safeSetText(modalAmountAfterCommission, `${amountAfterCommissionInUAH.toFixed(2)} UAH + комісія вашого банку за переказ`); // Modified line
+                    }
+
+                    safeSetText(modalAmount, amount.toFixed(2));
+                    safeSetText(modalAmountUah, modalUahValue);
+                    safeSetText(modalFinalCommission, `${(finalCommissionPercentage * 100).toFixed(0)}%`);
+                }
+
+                safeSetText(modalWithdrawDate, withdrawDateText);
+                confirmationModal.show();
+            });
+        }
+
+        // Обробник події для кнопки "Підтвердити" в модальному вікні
+        if (confirmWithdrawalBtn) {
+            confirmWithdrawalBtn.addEventListener('click', function() {
+                withdrawForm.submit();
+            });
+        }
+
+        // Обробник події для кнопки "Скасувати" в модальному вікні
+        if (cancelWithdrawalBtn) {
+            cancelWithdrawalBtn.addEventListener('click', function() {
+                confirmationModal.hide();
+            });
+        }
+
+        // Обробники подій для радіокнопок
         withdrawTypeRadios.forEach(radio => {
             radio.addEventListener('change', function() {
-                if (document.getElementById('fixed_15_30')?.checked) {
-                    amountFieldGroup.style.display = 'none';
-                } else if (document.getElementById('custom')?.checked) {
-                    amountFieldGroup.style.display = 'block';
-                }
+                resetValidation(); // Скидаємо валідацію при зміні типу виведення
                 updateFormDynamics();
-                updateUahConversion();
             });
         });
 
         paymentMethodRadios.forEach(radio => {
             radio.addEventListener('change', function() {
+                resetValidation(); // Скидаємо валідацію при зміні методу виведення
                 updateFormDynamics();
-                updateUahConversion();
             });
         });
 
-        doNotWithdrawRadio.addEventListener('change', function() {
-            if (this.checked) {
-                paymentMethodRadios.forEach(radio => radio.checked = false);
-                document.getElementById('payoneer').checked = true;
-            }
-            updateFormDynamics();
-            updateUahConversion();
-        });
-
-        // Ініціалізація при завантаженні сторінки
-        updateFormDynamics();
-        updateUahConversion();
-
-        if (doNotWithdrawRadio.checked) {
-            paymentMethodRadios.forEach(radio => radio.checked = false);
-            document.getElementById('payoneer').checked = true;
-            updateFormDynamics();
+        // Обробник події для поля вводу суми
+        if (amountInput) {
+            amountInput.addEventListener('input', function() {
+                updateUahConversion();
+                // Re-validate amount input on change to show immediate feedback
+                validateFormForModal();
+            });
         }
 
-        // Обробник підтвердження виведення
-        confirmWithdrawalBtn.addEventListener('click', function() {
-            withdrawForm.submit();
-        });
+        // Обробник події для поля деталей рахунку
+        if (paymentAccountInfoInput) {
+            paymentAccountInfoInput.addEventListener('input', function() {
+                validateFormForModal(); // Re-validate payment account info on change
+            });
+        }
 
-        // Обробник скасування виведення
-        cancelWithdrawalBtn.addEventListener('click', function() {
-            confirmationModal.hide();
-        });
+        // Початковий виклик для налаштування форми при завантаженні сторінки
+        updateFormDynamics();
     });
 </script>
-
 {% endif %}
 {% endblock %}
