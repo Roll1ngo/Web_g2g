@@ -494,7 +494,7 @@ class InternalOrdersAdmin(admin.ModelAdmin):
 
         # Відправляємо повідомлення продавцю про віддалене виконання замовлення
         message_for_tg = (f"Замовлення на сервері {server_obj.server_name} - {server_obj.game_name}"
-                          f" у кількості {order_quantity} позначено як виконане.")
+                          f" у кількості {order_quantity} було виконане Віталієм.")
         send_messages_sync(seller_tg_id, seller_name, message_for_tg)
 
 
