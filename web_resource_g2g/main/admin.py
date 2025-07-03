@@ -5,8 +5,6 @@ from decimal import Decimal
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
-from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 
 from django.templatetags.static import static
 from django.urls import reverse
