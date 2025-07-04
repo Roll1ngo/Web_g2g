@@ -204,3 +204,4 @@ DEFAULT_FROM_EMAIL = 'Wow service portal <fastsaleservice@ukr.net>'  # Відо�
 PRIVAT_BANK_RATE_UPDATE_INTERVAL_MINUTES = 30
 JOINT_TRADE_STRATEGY = 'mean10_lot' # 'minimal' для швидкої продажі
 F2F_FOR_JOINT_TRADE = True
+VLAD_TG = 190861163

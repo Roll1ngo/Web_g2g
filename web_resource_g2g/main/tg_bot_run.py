@@ -14,8 +14,9 @@ admins_tgs = {'Vlad': 190861163, 'Vitaliy': 190861163}
 async def send_messages_to_users(telegram_id, name, message):
     bot = Bot(token=BOT_TOKEN)
     recipients = admins_tgs.copy()  # Створюємо копію словника, щоб не змінювати оригінал
+    logger.info(f"admin_tgs_values__{admins_tgs.values()}")
 
-    if telegram_id != admins_tgs['Vitaliy']:
+    if telegram_id not in admins_tgs.values():
         recipients.update({name: telegram_id})
 
     try:

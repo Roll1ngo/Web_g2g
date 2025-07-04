@@ -11,7 +11,7 @@ class WithdrawalArchive(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='withdrawal_requests',
+        related_name='archived_withdrawal_entries',  # Changed related_name
         verbose_name="Користувач",
         unique=False # Changed to False, as a user might have multiple archived withdrawals
     )
@@ -92,3 +92,26 @@ class WithdrawalArchive(models.Model):
 
     def __str__(self):
         return f"Запит на виведення для {self.user.username} - {self.amount} {self.withdraw_type}"
+
+
+class ReservedFunds(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'В очікуванні',),
+        ('paid', 'Виплачено',),
+        ('canceled', 'Скасовано',),
+        ('archived', 'Архівовано',),
+    ]
+    RESERVE_TYPE_CHOICES = [
+        ('withdrawal', 'Виведення коштів',),
+        ('deposit', 'Депозит',),
+    ]
+    reserve_type = models.CharField(max_length=20, default='withdrawal', choices=RESERVE_TYPE_CHOICES)
+    status = models.CharField(max_length=20, default='pending', choices=STATUS_CHOICES)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    archived_id = models.ForeignKey(WithdrawalArchive, on_delete=models.SET_NULL, null=True, blank=True)
+    archived_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Резерв для {self.user.username} - {self.amount} {self.reserve_type}"

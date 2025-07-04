@@ -266,6 +266,9 @@
                             {% if withdrawal_info %}
                                 <details class="withdrawal-details">
                                     <summary>Деталі</summary>
+                                    {% if withdrawal_info.withdraw_type == "custom" and withdrawal_info.status == "pending" %}
+                                    <p class="mb-0"><strong>Сума:</strong> {{ withdrawal_info.amount }}</p>
+                                    {% endif %}
                                     <p class="mb-0"><strong>Спосіб виплати:</strong> {{ withdrawal_info.get_withdraw_type_display }}</p>
                                     <p class="mb-0"><strong>Метод виплати:</strong> {{ withdrawal_info.get_payment_method_display|default:"Не вказано" }}</p>
                                     {% if withdrawal_info.payment_details and withdrawal_info.payment_details.account_info %}
