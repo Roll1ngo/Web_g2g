@@ -18743,3 +18743,133 @@ ValueError: Model instances passed to related filters must be saved.
 [1;32m2025-07-03 15:43:13,432 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:677 - sold_orders_earned__527.476000000000[0m
 [1;32m2025-07-03 15:43:13,434 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:684 - internal_market_earned__13.9760000000000[0m
 [1;32m2025-07-03 15:43:13,434 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-04 09:36:36,955 - CRITICAL - [1;33mlogger_config[1;32m.[1;34mhandle_exception[1;32m:54 - Uncaught exception[0m
+Traceback (most recent call last):
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 22, in <module>
+    main()
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 416, in execute
+    django.setup()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/__init__.py", line 24, in setup
+    apps.populate(settings.INSTALLED_APPS)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/apps/registry.py", line 124, in populate
+    app_config.ready()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/contrib/admin/apps.py", line 27, in ready
+    self.module.autodiscover()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/contrib/admin/__init__.py", line 52, in autodiscover
+    autodiscover_modules("admin", register_to=site)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/utils/module_loading.py", line 58, in autodiscover_modules
+    import_module("%s.%s" % (app_config.name, module_to_search))
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/main/admin.py", line 195, in <module>
+    from user_profile.models import WithdrawalRequest # Імпортуємо модель WithdrawalRequest
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: cannot import name 'WithdrawalRequest' from 'user_profile.models' (/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/user_profile/models.py)
+[1;32m2025-07-04 09:38:08,005 - CRITICAL - [1;33mlogger_config[1;32m.[1;34mhandle_exception[1;32m:54 - Uncaught exception[0m
+Traceback (most recent call last):
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/checks/urls.py", line 136, in check_custom_error_handlers
+    handler = resolver.resolve_error_handler(status_code)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/urls/resolvers.py", line 732, in resolve_error_handler
+    callback = getattr(self.urlconf_module, "handler%s" % view_type, None)
+                       ^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/web_resource_g2g/urls.py", line 12, in <module>
+    path('archive_payments/', include('archive_payment.urls'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'archive_payment'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 22, in <module>
+    main()
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 442, in execute_from_command_line
+    utility.execute()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/__init__.py", line 436, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 413, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 454, in execute
+    self.check()
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/management/base.py", line 486, in check
+    all_issues = checks.run_checks(
+                 ^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/checks/registry.py", line 88, in run_checks
+    new_errors = check(app_configs=app_configs, databases=databases)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/core/checks/urls.py", line 138, in check_custom_error_handlers
+    path = getattr(resolver.urlconf_module, "handler%s" % status_code)
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/urls/resolvers.py", line 711, in urlconf_module
+    return import_module(self.urlconf_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/roll1ng/Documents/Python_projects/Web_g2g/web_resource_g2g/web_resource_g2g/urls.py", line 12, in <module>
+    path('archive_payments/', include('archive_payment.urls'))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/roll1ng/.cache/pypoetry/virtualenvs/web-g2g-szsjq3IS-py3.12/lib/python3.12/site-packages/django/urls/conf.py", line 39, in include
+    urlconf_module = import_module(urlconf_module)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'archive_payment'

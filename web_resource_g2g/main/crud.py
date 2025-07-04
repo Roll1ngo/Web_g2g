@@ -705,21 +705,63 @@ def get_sum_spend_internal_market(seller_id):
 
 
 def mark_orders_and_commissions_as_paid(seller_ids):
-    # Оновлюємо замовлення та комісії тільки для виділених продавців
-    (SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_technical=False)
-     .update(paid_to_technical=True))
-    (SoldOrders.objects.filter(seller_id__in=seller_ids, paid_in_salary=False)
-     .update(paid_in_salary=True))
-    (SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_owner=False)
-     .update(paid_to_owner=True))
-    (InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_technical=False)
-     .update(paid_to_technical=True))
-    (InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_in_salary=False)
-     .update(paid_in_salary=True))
-    (InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_owner=False)
-     .update(paid_to_owner=True))
-    (CommissionBreakdown.objects.filter(seller_id__in=seller_ids, paid_in_salary_commission=False)
-     .update(paid_in_salary_commission=True))
+    """
+    Позначає замовлення та комісії як оплачені для вказаних продавців
+    та повертає ID оновлених об'єктів.
+
+    Args:
+        seller_ids (list): Список ID продавців.
+
+    Returns:
+        list: Список, що містить один словник з ID оновлених об'єктів
+              за категоріями: SoldOrders, InternalOrder, CommissionBreakdown.
+              Наприклад: [{"SoldOrders": [id1, id2], "InternalOrder": [id3], "CommissionBreakdown": [id4]}]
+    """
+    updated_sold_order_ids = set()
+    updated_internal_order_ids = set()
+    updated_commission_breakdown_ids = set()
+
+    # 1. Збираємо ID SoldOrders, які будуть оновлені
+    sold_orders_to_update_tech = SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_technical=False)
+    updated_sold_order_ids.update(sold_orders_to_update_tech.values_list('id', flat=True))
+
+    sold_orders_to_update_salary = SoldOrders.objects.filter(seller_id__in=seller_ids, paid_in_salary=False)
+    updated_sold_order_ids.update(sold_orders_to_update_salary.values_list('id', flat=True))
+
+    sold_orders_to_update_owner = SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_owner=False)
+    updated_sold_order_ids.update(sold_orders_to_update_owner.values_list('id', flat=True))
+
+    # 2. Збираємо ID InternalOrder, які будуть оновлені
+    internal_orders_to_update_tech = InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_technical=False)
+    updated_internal_order_ids.update(internal_orders_to_update_tech.values_list('id', flat=True))
+
+    internal_orders_to_update_salary = InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_in_salary=False)
+    updated_internal_order_ids.update(internal_orders_to_update_salary.values_list('id', flat=True))
+
+    internal_orders_to_update_owner = InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_owner=False)
+    updated_internal_order_ids.update(internal_orders_to_update_owner.values_list('id', flat=True))
+
+    # 3. Збираємо ID CommissionBreakdown, які будуть оновлені
+    commission_breakdowns_to_update = CommissionBreakdown.objects.filter(seller_id__in=seller_ids, paid_in_salary_commission=False)
+    updated_commission_breakdown_ids.update(commission_breakdowns_to_update.values_list('id', flat=True))
+
+    # Виконуємо оновлення
+    sold_orders_to_update_tech.update(paid_to_technical=True)
+    sold_orders_to_update_salary.update(paid_in_salary=True)
+    sold_orders_to_update_owner.update(paid_to_owner=True)
+
+    internal_orders_to_update_tech.update(paid_to_technical=True)
+    internal_orders_to_update_salary.update(paid_in_salary=True)
+    internal_orders_to_update_owner.update(paid_to_owner=True)
+
+    commission_breakdowns_to_update.update(paid_in_salary_commission=True)
+
+    # Повертаємо зібрані ID
+    return [{
+        "SoldOrders": list(updated_sold_order_ids),
+        "InternalOrder": list(updated_internal_order_ids),
+        "CommissionBreakdown": list(updated_commission_breakdown_ids)
+    }]
 
 
 def order_status_set_status(seller_id, server_id, status, reset_reserve=None):

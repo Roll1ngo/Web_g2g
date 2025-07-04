@@ -9,4 +9,5 @@ urlpatterns = [
     path("internal_market/", include("internal_market.urls")),
     path('accounts/', include('allauth.urls')),
     path('profile/', include('user_profile.urls')),
-]
+    path('archive_payments/', include('archive_payments.urls'))
+    ]
