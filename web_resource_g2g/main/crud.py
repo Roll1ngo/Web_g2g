@@ -159,16 +159,19 @@ def get_float_price(row, seller_id):
             return round(float_price_without_exchange, 6), interest_rate
 
         total_percent = interest_rate - rang_exchange
+        logger.info(f"total_percent: {total_percent},"
+                    f"interest_rate: {interest_rate},"
+                    f"rang_exchange: {rang_exchange},")
         float_price_without_exchange = float_price * (total_percent / 100)
+        logger.info(f"float_price_without_exchange: {float_price_without_exchange}")
 
         return round(float_price_without_exchange, 5), interest_rate
 
-    # except Exception as e:
-    #     # Логування будь-якої несподіваної помилки
-    #     logger.error(f"Unexpected error in get_float_price: {e}", exc_info=True)
-    #     return None, None
-    finally:
-        pass
+    except Exception as e:
+        # Логування будь-якої несподіваної помилки
+        logger.error(f"Unexpected error in get_float_price: {e}", exc_info=True)
+        return None, None
+
 
 
 def get_clients_provide_service(user_id):
@@ -635,7 +638,7 @@ def create_record_to_stock_history_table(row_id, description, active_rate=None):
 
 def create_record_seller_server_interest_rate(seller, server):
     commissions_rate = commissions_crud.get_global_commissions_rates()
-    new_seller_commission_rate = commissions_rate.get('owner') + commissions_rate.get('technical')
+    new_seller_commission_rate = 100 - (commissions_rate.get('owner') + commissions_rate.get('technical'))
     new_seller_server_interest_rate = SellerServerInterestRate.objects.create(
         seller=seller,
         server=server,
