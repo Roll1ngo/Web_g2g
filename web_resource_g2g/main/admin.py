@@ -234,7 +234,8 @@ class SellersAdmin(ExportActionModelAdmin):
     def complete_orders_and_clear_balance(self, request, queryset):
         # Отримуємо ID виділених продавців
         seller_ids = queryset.values_list('id', flat=True)
-        main_crud.mark_orders_and_commissions_as_paid(seller_ids)
+        # Позначаємо замовлення та комісії як оплачені та повертаємо IDs
+        ids_of_paid_orders = main_crud.mark_orders_and_commissions_as_paid(seller_ids)
         self.message_user(request, f"Замовлення та комісії позначені як оплачені для {queryset.count()} продавців.")
         self.update_balance(request, queryset)
 
