@@ -5,8 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.conf import settings
 
 from main import crud as main_crud
+from archive_payments import crud as archive_payments_crud
+from main.tg_bot_run import send_messages_sync
 from main.utils.logger_config import logger
 from user_profile.forms import WithdrawalRequestForm
 from user_profile.models import WithdrawalRequest # Імпортуємо модель WithdrawalRequest
@@ -113,8 +116,7 @@ def rules(request):
 
 @login_required
 def withdraw_page(request):
-    # withdrawal_info = user_profile_crud.get_withdrawal_user_info(request.user.id) # Цей рядок більше не потрібен тут
-
+    user_id = request.user.id
     if request.method == 'POST':
         # Спробуємо отримати існуючий запит на виведення для поточного користувача
         try:
@@ -132,13 +134,13 @@ def withdraw_page(request):
             user_balance_amount = 0
             try:
                 # Припускаємо, що get_balance повертає числове значення
-                user_balance_amount = main_crud.get_balance(request.user.id)
+                user_balance_amount = main_crud.get_balance(user_id)
             except AttributeError:
                 messages.error(request, "Помилка отримання балансу. Зверніться до адміністратора.")
                 context = {'form': form}
                 return render(request, 'user_profile/withdraw_page.html', context)
             except Exception as e:
-                logger.error(f"Помилка при отриманні балансу користувача {request.user.id}: {e}")
+                logger.error(f"Помилка при отриманні балансу користувача {user_id}: {e}")
                 messages.error(request, "Виникла помилка при перевірці балансу. Спробуйте ще раз.")
                 context = {'form': form}
                 return render(request, 'user_profile/withdraw_page.html', context)
@@ -155,6 +157,16 @@ def withdraw_page(request):
             logger.info(
                 f"Запит на виведення успішно збережено/оновлено: {withdrawal_request.pk} від {withdrawal_request.user.username} на {withdrawal_request.amount if withdrawal_request.amount else 'N/A'}$ ({withdrawal_request.status})"
             )
+            if withdrawal_request.withdraw_type == 'custom':
+               # Додаємо запис у таблицю резервування
+               archive_payments_crud.create_withdrawal_reserver_record(request.user, withdrawal_request)
+
+               send_messages_sync(settings.VLAD_TG,
+                                  "",
+                                   message=f'Запит на виведення коштів від {withdrawal_request.user.username}'
+                                           f' на {withdrawal_request.amount if withdrawal_request.amount else "N/A"}$')
+
+
 
             messages.success(request, 'Ваш запит на виведення коштів успішно надіслано!')
             return redirect('user_profile:profile_main_page')

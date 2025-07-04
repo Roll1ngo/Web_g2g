@@ -15,6 +15,7 @@ from main.tg_bot_run import send_messages_sync
 
 from main.utils.logger_config import logger
 from main import calculate_commissions_crud as commissions_crud
+from archive_payments import crud as archive_payments_crud
 from internal_market.models import InternalOrder
 import config
 
@@ -565,10 +566,13 @@ def get_balance(user_id):
     total_received_from_orders = calculate_seller_owner_technical_earning_from_orders(seller)
     spend_internal_market = get_sum_spend_internal_market(seller)
 
-    # 2. Баланс із CommissionBreakdown (тільки для Delivered лотів)
+    # Баланс із CommissionBreakdown (тільки для Delivered лотів)
     commission_earned = commissions_crud.get_breakdown_commissions(seller)
+    # Баланс із ReservedFunds
+    reserved_funds = archive_payments_crud.get_reserved_funds_amount(user_id)
+    # Рахуємо загальний баланс
     total_balance = decimal.Decimal(total_received_from_orders) + decimal.Decimal(commission_earned) - decimal.Decimal(
-        spend_internal_market)
+        spend_internal_market)-decimal.Decimal(reserved_funds)
 
     # If no records are found, total_earned will be None. Set it to 0 in that case.
     if total_balance is None:
@@ -707,61 +711,85 @@ def get_sum_spend_internal_market(seller_id):
 def mark_orders_and_commissions_as_paid(seller_ids):
     """
     Позначає замовлення та комісії як оплачені для вказаних продавців
-    та повертає ID оновлених об'єктів.
+    та повертає ID оновлених об'єктів згруповані по seller_id.
 
     Args:
         seller_ids (list): Список ID продавців.
 
     Returns:
-        list: Список, що містить один словник з ID оновлених об'єктів
-              за категоріями: SoldOrders, InternalOrder, CommissionBreakdown.
-              Наприклад: [{"SoldOrders": [id1, id2], "InternalOrder": [id3], "CommissionBreakdown": [id4]}]
+        list: Список словників, де кожен словник містить ID продавця як ключ
+              та словник з ID оновлених об'єктів за категоріями:
+              {"id": {"SoldOrders": [], "InternalOrder": [], "CommissionBreakdown": []}}
     """
-    updated_sold_order_ids = set()
-    updated_internal_order_ids = set()
-    updated_commission_breakdown_ids = set()
+    result = []
 
-    # 1. Збираємо ID SoldOrders, які будуть оновлені
-    sold_orders_to_update_tech = SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_technical=False)
-    updated_sold_order_ids.update(sold_orders_to_update_tech.values_list('id', flat=True))
+    for seller_id in seller_ids:
+        # Створюємо структуру для поточного продавця
+        seller_data = {
+            str(seller_id): {
+                "SoldOrders": set(),
+                "InternalOrder": set(),
+                "CommissionBreakdown": set()
+            }
+        }
 
-    sold_orders_to_update_salary = SoldOrders.objects.filter(seller_id__in=seller_ids, paid_in_salary=False)
-    updated_sold_order_ids.update(sold_orders_to_update_salary.values_list('id', flat=True))
+        # 1. Збираємо ID SoldOrders для поточного продавця
+        sold_orders_to_update_tech = SoldOrders.objects.filter(
+            seller_id=seller_id, paid_to_technical=False)
+        seller_data[str(seller_id)]["SoldOrders"].update(
+            sold_orders_to_update_tech.values_list('id', flat=True))
 
-    sold_orders_to_update_owner = SoldOrders.objects.filter(seller_id__in=seller_ids, paid_to_owner=False)
-    updated_sold_order_ids.update(sold_orders_to_update_owner.values_list('id', flat=True))
+        sold_orders_to_update_salary = SoldOrders.objects.filter(
+            seller_id=seller_id, paid_in_salary=False)
+        seller_data[str(seller_id)]["SoldOrders"].update(
+            sold_orders_to_update_salary.values_list('id', flat=True))
 
-    # 2. Збираємо ID InternalOrder, які будуть оновлені
-    internal_orders_to_update_tech = InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_technical=False)
-    updated_internal_order_ids.update(internal_orders_to_update_tech.values_list('id', flat=True))
+        sold_orders_to_update_owner = SoldOrders.objects.filter(
+            seller_id=seller_id, paid_to_owner=False)
+        seller_data[str(seller_id)]["SoldOrders"].update(
+            sold_orders_to_update_owner.values_list('id', flat=True))
 
-    internal_orders_to_update_salary = InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_in_salary=False)
-    updated_internal_order_ids.update(internal_orders_to_update_salary.values_list('id', flat=True))
+        # 2. Збираємо ID InternalOrder для поточного продавця
+        internal_orders_to_update_tech = InternalOrder.objects.filter(
+            internal_seller_id=seller_id, paid_to_technical=False)
+        seller_data[str(seller_id)]["InternalOrder"].update(
+            internal_orders_to_update_tech.values_list('id', flat=True))
 
-    internal_orders_to_update_owner = InternalOrder.objects.filter(internal_seller_id__in=seller_ids, paid_to_owner=False)
-    updated_internal_order_ids.update(internal_orders_to_update_owner.values_list('id', flat=True))
+        internal_orders_to_update_salary = InternalOrder.objects.filter(
+            internal_seller_id=seller_id, paid_in_salary=False)
+        seller_data[str(seller_id)]["InternalOrder"].update(
+            internal_orders_to_update_salary.values_list('id', flat=True))
 
-    # 3. Збираємо ID CommissionBreakdown, які будуть оновлені
-    commission_breakdowns_to_update = CommissionBreakdown.objects.filter(seller_id__in=seller_ids, paid_in_salary_commission=False)
-    updated_commission_breakdown_ids.update(commission_breakdowns_to_update.values_list('id', flat=True))
+        internal_orders_to_update_owner = InternalOrder.objects.filter(
+            internal_seller_id=seller_id, paid_to_owner=False)
+        seller_data[str(seller_id)]["InternalOrder"].update(
+            internal_orders_to_update_owner.values_list('id', flat=True))
 
-    # Виконуємо оновлення
-    sold_orders_to_update_tech.update(paid_to_technical=True)
-    sold_orders_to_update_salary.update(paid_in_salary=True)
-    sold_orders_to_update_owner.update(paid_to_owner=True)
+        # 3. Збираємо ID CommissionBreakdown для поточного продавця
+        commission_breakdowns_to_update = CommissionBreakdown.objects.filter(
+            seller_id=seller_id, paid_in_salary_commission=False)
+        seller_data[str(seller_id)]["CommissionBreakdown"].update(
+            commission_breakdowns_to_update.values_list('id', flat=True))
 
-    internal_orders_to_update_tech.update(paid_to_technical=True)
-    internal_orders_to_update_salary.update(paid_in_salary=True)
-    internal_orders_to_update_owner.update(paid_to_owner=True)
+        # Виконуємо оновлення для поточного продавця
+        sold_orders_to_update_tech.update(paid_to_technical=True)
+        sold_orders_to_update_salary.update(paid_in_salary=True)
+        sold_orders_to_update_owner.update(paid_to_owner=True)
 
-    commission_breakdowns_to_update.update(paid_in_salary_commission=True)
+        internal_orders_to_update_tech.update(paid_to_technical=True)
+        internal_orders_to_update_salary.update(paid_in_salary=True)
+        internal_orders_to_update_owner.update(paid_to_owner=True)
 
-    # Повертаємо зібрані ID
-    return [{
-        "SoldOrders": list(updated_sold_order_ids),
-        "InternalOrder": list(updated_internal_order_ids),
-        "CommissionBreakdown": list(updated_commission_breakdown_ids)
-    }]
+        commission_breakdowns_to_update.update(paid_in_salary_commission=True)
+
+        # Конвертуємо множини у списки
+        seller_data[str(seller_id)]["SoldOrders"] = list(seller_data[str(seller_id)]["SoldOrders"])
+        seller_data[str(seller_id)]["InternalOrder"] = list(seller_data[str(seller_id)]["InternalOrder"])
+        seller_data[str(seller_id)]["CommissionBreakdown"] = list(seller_data[str(seller_id)]["CommissionBreakdown"])
+
+        result.append(seller_data)
+
+    return result
 
 
 def order_status_set_status(seller_id, server_id, status, reset_reserve=None):
