@@ -185,11 +185,14 @@ def withdraw_page(request):
 
     context = {
         'form': form,
-        # 'withdrawal_info': withdrawal_info # Цей рядок більше не потрібен тут
     }
     return render(request, 'user_profile/withdraw_page.html', context)
 
 def deposit_page(request):
     return render(request, 'user_profile/deposit_page.html')
+
 def create_order_instruction(request):
     return render(request, 'user_profile/create_order_instruction.html')
+
+def security_and_privacy_policy(request):
+    return render(request, 'user_profile/security_and_privacy_policy.html')

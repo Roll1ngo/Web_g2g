@@ -6,11 +6,12 @@ from django.db import models
 from main.models import Sellers
 from main import crud as main_crud
 from main.utils.logger_config import logger
-from user_profile.models import WithdrawalRequest
 
 User = get_user_model() # Отримуємо поточну модель користувача
 
 def create_withdrawal_archive_record(paid_orders_data):
+    from user_profile.models import WithdrawalRequest
+
     """
     Створює записи в WithdrawalArchive на основі даних про оплачені замовлення
     та інформації з WithdrawalRequest.
