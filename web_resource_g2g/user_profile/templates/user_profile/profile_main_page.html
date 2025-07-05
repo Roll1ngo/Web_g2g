@@ -266,9 +266,16 @@
                             {% if withdrawal_info %}
                                 <details class="withdrawal-details">
                                     <summary>Деталі</summary>
+
                                     {% if withdrawal_info.withdraw_type == "custom" and withdrawal_info.status == "pending" %}
-                                    <p class="mb-0"><strong>Сума:</strong> {{ withdrawal_info.amount }}</p>
+                                    <p class="mb-0">
+                                        <strong>Сума:</strong> {{ withdrawal_info.amount }}$
+                                        {% if withdrawal_info.payment_method == "visa_mastercard" and withdrawal_info.converted_amount_uah %}
+                                            ({{ withdrawal_info.converted_amount_uah }} UAH)
+                                        {% endif %}
+                                    </p>
                                     {% endif %}
+
                                     <p class="mb-0"><strong>Спосіб виплати:</strong> {{ withdrawal_info.get_withdraw_type_display }}</p>
                                     <p class="mb-0"><strong>Метод виплати:</strong> {{ withdrawal_info.get_payment_method_display|default:"Не вказано" }}</p>
                                     {% if withdrawal_info.payment_details and withdrawal_info.payment_details.account_info %}
@@ -427,6 +434,12 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
+                         <div class="col-md-4 mb-3">
+                            <a href="{% url 'main:show_order_info' %}" class="quick-access-btn">
+                                <i class="fas fa-concierge-bell"></i>
+                                <span>Активне замовлення</span>
+                            </a>
+                        </div>
                         <div class="col-md-4 mb-3">
                             <a href="{% url 'main:my_services' %}" class="quick-access-btn">
                                 <i class="fas fa-concierge-bell"></i>
@@ -445,18 +458,6 @@
                                 <span>Історія Замовлень</span>
                             </a>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <a href="{% url 'account_email' %}" class="quick-access-btn">
-                                <i class="fas fa-envelope-open-text"></i>
-                                <span>Налаштування Email</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <a href="{% url 'account_change_password' %}" class="quick-access-btn">
-                                <i class="fas fa-lock"></i>
-                                <span>Змінити Пароль</span>
-                            </a>
-                        </div>
                         {% comment %}
                         <div class="col-md-4 mb-3">
                             <a href="{% url 'main:referral_program' %}" class="quick-access-btn">
@@ -469,22 +470,64 @@
                 </div>
             </div>
 
-            {# Секція Статистики та Сповіщень #}
-            {% comment %}
-            Цей блок був закоментований у вашому оригінальному коді.
-            Якщо ви хочете його відобразити, розкоментуйте його.
-            Він також потребує обгортки у `row` та `col-md-X` всередині `col-md-10`.
-            Наприклад:
-            <div class="row">
-                <div class="col-md-6 mb-4">...</div>
-                <div class="col-md-6 mb-4">...</div>
+            {# Новий блок: Довідка та Посібники #}
+            <div class="personal-cabinet-card">
+                <div class="card-header">
+                    <i class="fas fa-book-open"></i> Довідка та Посібники
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-question-circle"></i> Як працює поповнення балансу?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-sync-alt"></i> Як створити замовлення?
+                            <a href="{% url 'user_profile:create_order_instruction' %}" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-coins"></i> Принципи роботи внутрішнього ринку
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-user-plus"></i> Як працює рекрутинг?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-chalkboard-teacher"></i> Як працює система наставників?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-gamepad"></i> Як працює система оренди персонажів?
+                            <a href="/" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-shield-alt"></i> Політика безпеки та конфіденційності
+                            <a href="{% url 'user_profile:security_and_privacy_policy' %}" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <i class="fas fa-file-alt"></i> Правила використання сервісу
+                            <a href="{% url 'user_profile:rules' %}" class="btn btn-sm btn-outline-info">
+                                Детальніше <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            {% endcomment %}
-
-            {# Секція Поточного Замовлення (якщо є) #}
-            {% comment %}
-            Цей блок також був закоментований. Розкоментуйте, якщо потрібно.
-            {% endcomment %}
 
         </div> {# Закриття col-md-10, який містить усі картки #}
     </div> {# Закриття row justify-content-center, який містить col-md-10 з картками #}

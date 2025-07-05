@@ -1,0 +1,260 @@
+{% extends 'users/base.html' %}
+{% load socialaccount %}
+{% load static %}
+
+{% block extra_head %}
+    <style>
+        /* Встановлення шрифту Inter для всього тіла документа (якщо не задано в Bootstrap) */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Перевизначення оверлею body з базового шаблону, якщо потрібно */
+            background: url('{% static 'images/background.jpg' %}') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7); /* Напівпрозорий білий фон 70% */
+            z-index: -1;
+        }
+
+        /* Кастомні стилі для карток інструкцій, що імітують personal-cabinet-card */
+        .instruction-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Трохи прозорий білий фон для карток */
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px; /* Відступ між картками */
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+        }
+        .instruction-card:hover {
+            transform: translateY(-5px);
+        }
+        .instruction-card .card-header {
+            background-color: #007bff; /* Основний синій колір для заголовків карток */
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+        }
+        .instruction-card .card-header svg {
+            margin-right: 10px;
+            /* Зменшено розмір SVG іконки в заголовку */
+            width: 1.5em; /* Відносно розміру шрифту заголовка */
+            height: 1.5em;
+        }
+        .step-title {
+            color: #007bff; /* Синій для заголовків кроків */
+        }
+        .step-icon {
+             width: 1.75rem; /* h-7 w-7 */
+             height: 1.75rem;
+             margin-right: 0.75rem; /* space-x-3 */
+        }
+        /* Стиль для іконки в секції "Покрокова інструкція" */
+        .instruction-section-icon {
+            width: 1.5rem; /* h-6 w-6 */
+            height: 1.5rem;
+            margin-right: 0.5rem; /* mr-2 */
+        }
+        .custom-bullet-list ul {
+            list-style: none; /* Прибираємо стандартні маркери */
+            padding-left: 0; /* Прибираємо відступ для стандартних маркерів */
+        }
+
+        .custom-bullet-list li {
+            position: relative;
+            padding-left: 25px; /* Відступ для кастомного маркера */
+            margin-bottom: 10px; /* Відступ між елементами списку */
+        }
+
+        .custom-bullet-list li::before {
+            content: "\2022"; /* Юнікод символ кулі */
+            color: #007bff; /* Колір маркера */
+            font-weight: bold;
+            display: inline-block;
+            width: 1em; /* Ширина маркера */
+            margin-left: -1.5em; /* Забезпечує вирівнювання маркера */
+            position: absolute;
+            left: 0;
+        }
+        .policy-section-icon {
+            width: 1.8rem;
+            height: 1.8rem;
+            margin-right: 0.75rem;
+            color: #007bff;
+        }
+        .policy-subsection-title {
+            color: #007bff;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container-fluid mt-5 mb-5 px-4">
+    <div class="instruction-card">
+        <header class="card-header text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h1 class="h3 font-weight-bold mb-0">Політика безпеки та конфіденційності</h1>
+        </header>
+
+        <main class="card-body">
+            <div class="bg-info text-white p-3 mb-4 rounded d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="instruction-section-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <span class="h5 mb-0">Wow Service Portal</span>
+            </div>
+
+            <p class="text-secondary">
+                Wow Service Portal (далі «Ми», «Наш сервіс») прагне забезпечити максимальний рівень безпеки та конфіденційності для всіх наших користувачів (далі «Ви», «Користувач»). Ця Політика описує, як ми збираємо, використовуємо, зберігаємо та захищаємо Ваші дані при користуванні нашим сервісом продажу ігрового золота WoW з інтеграцією в Telegram.
+            </p>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        1. Збір та використання інформації
+                    </h2>
+                    <p class="text-secondary">Ми збираємо інформацію, необхідну для надання та покращення наших послуг. Це включає:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>
+                            <span class="font-weight-bold">Персональні дані:</span> Ім'я користувача Telegram, ідентифікатор Telegram (**Telegram ID**) для зв'язку з ботом, адреса електронної пошти. Ця інформація використовується виключно для Вашої ідентифікації в системі, зв'язку та надання доступу до функціоналу сервісу.
+                        </li>
+                        <li>
+                            <span class="font-weight-bold">Фінансові дані:</span> Інформація про баланс, історію транзакцій, обрані методи виплат (реквізити банківських карток, Payoneer, USDT BEP20/Binance USDT). Ці дані використовуються виключно для здійснення виплат та ведення фінансової звітності. <strong class="text-danger">Ми не зберігаємо повні номери банківських карток або повні платіжні дані Payoneer.</strong> Зберігається лише та інформація, яка необхідна для ідентифікації Вашого рахунку та проведення транзакцій, без компрометації повної платіжної інформації.
+                        </li>
+                        <li>
+                            <span class="font-weight-bold">Дані ігрового процесу:</span> Інформація про ігрові сервери, кількість золота, стратегії продажу, скріншоти та <strong class="text-info">відеозаписи відправок золота</strong>. Ці дані потрібні для виконання замовлень, контролю якості та вирішення спірних ситуацій. <strong class="text-info">Відеозаписи є ключовим елементом гарантії Вашої оплати.</strong>
+                        </li>
+                        <li>
+                            <span class="font-weight-bold">Технічні дані:</span> IP-адреса, тип пристрою, дані браузера, час доступу. Ця інформація збирається для аналізу використання сервісу, запобігання шахрайству та покращення роботи системи.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v3h8z" />
+                        </svg>
+                        2. Зберігання та захист даних
+                    </h2>
+                    <p class="text-secondary">Ми вживаємо всіх можливих заходів для захисту Ваших даних:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li><span class="font-weight-bold">Шифрування:</span> Вся передача даних між Вами та нашим сервісом здійснюється через захищені протоколи (HTTPS).</li>
+                        <li><span class="font-weight-bold">Обмежений доступ:</span> Доступ до Ваших персональних та фінансових даних мають лише уповноважені співробітники, яким це необхідно для виконання їхніх обов'язків.</li>
+                        <li><span class="font-weight-bold">Фізична безпека:</span> Наші сервери розташовані в захищених центрах обробки даних з контрольованим доступом.</li>
+                        <li><span class="font-weight-bold">Резервне копіювання:</span> Регулярне резервне копіювання даних забезпечує їх збереження у випадку непередбачених обставин.</li>
+                        <li><span class="font-weight-bold">Відеозаписи:</span> Відеозаписи відправок золота зберігаються на захищених серверах і використовуються виключно для підтвердження факту передачі та вирішення спорів. Вони не поширюються і не передаються третім особам.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        3. Розкриття інформації третім сторонам
+                    </h2>
+                    <p class="text-secondary"><strong class="text-danger">Ми ніколи не продаємо, не обмінюємо та не передаємо Ваші персональні дані третім сторонам</strong>, за винятком випадків, передбачених цією Політикою або чинним законодавством:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li><span class="font-weight-bold">Платіжні системи:</span> Для здійснення виплат Ваші фінансові дані можуть бути передані відповідним платіжним системам (банки, Payoneer, криптовалютні біржі). Передається лише мінімально необхідна інформація для проведення транзакції.</li>
+                        <li><span class="font-weight-bold">Правоохоронні органи:</span> У виняткових випадках, згідно з судовим рішенням або обґрунтованим запитом правоохоронних органів, ми можемо надати необхідну інформацію.</li>
+                        <li><span class="font-weight-bold">Агреговані дані:</span> Ми можемо використовувати та передавати агреговані або анонімні дані (які не дозволяють ідентифікувати Вас особисто) для статистичного аналізу, покращення сервісу або маркетингових досліджень.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        4. Ваші права
+                    </h2>
+                    <p class="text-secondary">Ви маєте право:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li><span class="font-weight-bold">Доступ до даних:</span> Запитувати інформацію про те, які Ваші дані ми зберігаємо.</li>
+                        <li><span class="font-weight-bold">Виправлення даних:</span> Вимагати виправлення неточної або неповної інформації.</li>
+                        <li><span class="font-weight-bold">Видалення даних:</span> Запитувати видалення Ваших даних з нашої системи, за винятком тих, що вимагаються для зберігання згідно з законодавством або для вирішення поточних фінансових/ігрових спорів.</li>
+                        <li><span class="font-weight-bold">Відкликання згоди:</span> Відкликати свою згоду на обробку даних у будь-який час, що може призвести до припинення надання послуг.</li>
+                    </ul>
+                    <p class="text-secondary">Для реалізації цих прав зверніться до нашої служби підтримки через Telegram-бота або до адміністратора.</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        5. Cookies
+                    </h2>
+                    <p class="text-secondary">Ми можемо використовувати файли cookie для покращення Вашого досвіду користування сервісом, аналізу трафіку та персоналізації контенту. Ви можете керувати налаштуваннями файлів cookie у своєму браузері.</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 0020 13a8 8 0 00-8 8H6v-5m.582-7.182a4.505 4.505 0 01.923-.787l5.422-5.422a4.505 4.505 0 01.787-.923m.787.923l5.422 5.422a4.505 4.505 0 01.923.787M4 13.582V18a2 2 0 002 2h4.418M19.993 11a.75.75 0 00-.007 1.5H19a.75.75 0 00.993-1.5z" />
+                        </svg>
+                        6. Зміни до Політики конфіденційності
+                    </h2>
+                    <p class="text-secondary">Ми залишаємо за собою право вносити зміни до цієї Політики безпеки та конфіденційності. Усі зміни будуть опубліковані на цій сторінці, і, за можливості, ми повідомимо Вас про суттєві зміни через Telegram-бота або електронну пошту. Рекомендуємо періодично переглядати цю сторінку для ознайомлення з актуальною інформацією.</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="policy-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.117C6.853 14.073 12 10 12 10s.867 0 2 0m-.01 0h.01" />
+                        </svg>
+                        7. Зв'язок з нами
+                    </h2>
+                    <p class="text-secondary">Якщо у Вас виникли питання щодо цієї Політики або обробки Ваших даних, будь ласка, зв'яжіться з нами через Telegram-бота або безпосередньо з адміністратором.</p>
+                    <div class="alert alert-success mt-3" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> Дякуємо за довіру до Wow Service Portal!
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-light text-secondary text-center p-3 rounded-b-lg d-flex flex-column align-items-center">
+            <p class="mb-3">Ця сторінка є частиною політики Wow Service Portal.</p>
+            <a href="{% url 'user_profile:profile_main_page' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-circle me-2"></i> До кабінету
+            </a>
+        </footer>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

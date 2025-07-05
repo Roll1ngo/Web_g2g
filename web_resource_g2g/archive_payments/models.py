@@ -23,6 +23,13 @@ class WithdrawalArchive(models.Model):
         null=True,
         blank=True
     )
+    converted_amount_uah = models.DecimalField(
+        max_digits=12,  # Збільшена точність для більших сум в UAH
+        decimal_places=2,
+        verbose_name="Конвертована сума з урахуванням комісій (грн)",
+        null=True,
+        blank=True
+    )
 
     WITHDRAW_TYPE_CHOICES = [
         ('fixed_15_30', '15 і 30 числа кожного місяця (вивести всю суму)'),

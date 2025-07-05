@@ -1,0 +1,151 @@
+
+<!--            {# Секція Статистики та Сповіщень #}-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6 mb-4">-->
+<!--                    <div class="personal-cabinet-card h-100">-->
+<!--                        <div class="card-header">-->
+<!--                            <i class="fas fa-chart-line"></i> Ваша Статистика-->
+<!--                        </div>-->
+<!--                        <div class="card-body">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-6 mb-3">-->
+<!--                                    <div class="statistic-box">-->
+<!--                                        <i class="fas fa-concierge-bell stat-icon"></i>-->
+<!--                                        <div class="stat-value">{{ active_orders_count|default:"0" }}</div>-->
+<!--                                        <div class="stat-label">Активні Замовлення</div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col-6 mb-3">-->
+<!--                                    <div class="statistic-box">-->
+<!--                                        <i class="fas fa-check-circle stat-icon"></i>-->
+<!--                                        <div class="stat-value">{{ monthly_completed_orders|default:"0" }}</div>-->
+<!--                                        <div class="stat-label">Завершено (місяць)</div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                {% comment %}-->
+<!--                                    Можна додати більше статистики, наприклад:-->
+<!--                                <div class="col-6 mb-3">-->
+<!--                                    <div class="statistic-box">-->
+<!--                                        <i class="fas fa-piggy-bank stat-icon"></i>-->
+<!--                                        <div class="stat-value">{{ total_earned|default:"0.00" }}$</div>-->
+<!--                                        <div class="stat-label">Загальний Заробіток</div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="col-6 mb-3">-->
+<!--                                    <div class="statistic-box">-->
+<!--                                        <i class="fas fa-star stat-icon"></i>-->
+<!--                                        <div class="stat-value">{{ user_rating|default:"5.0" }}</div>-->
+<!--                                        <div class="stat-label">Ваш Рейтинг</div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                {% endcomment %}-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="col-md-6 mb-4">-->
+<!--                    <div class="personal-cabinet-card h-100">-->
+<!--                        <div class="card-header">-->
+<!--                            <i class="fas fa-bell"></i> Мої послуги-->
+<!--                        </div>-->
+<!--                        <div class="card-body">-->
+<!--                            <ul class="list-group list-group-flush">-->
+<!--                                {% if new_notifications_count > 0 %}-->
+<!--                                    <li class="list-group-item d-flex justify-content-between align-items-center">-->
+<!--                                        <i class="fas fa-exclamation-circle text-danger"></i>-->
+<!--                                        У вас {{ new_notifications_count }} нових сповіщень!-->
+<!--                                        <span class="badge badge-notification">{{ new_notifications_count }}</span>-->
+<!--                                    </li>-->
+<!--                                {% endif %}-->
+<!--                                {# Приклад останніх сповіщень. Припустимо, recent_notifications передається з View #}-->
+<!--                                {% comment %}-->
+<!--                                {% if recent_notifications %}-->
+<!--                                    {% for notification in recent_notifications %}-->
+<!--                                        <li class="list-group-item">-->
+<!--                                            <i class="fas fa-info-circle text-info"></i>-->
+<!--                                            {{ notification.message }}-->
+<!--                                            <small class="text-muted ms-auto">{{ notification.timestamp|timesince }} тому</small>-->
+<!--                                        </li>-->
+<!--                                    {% endfor %}-->
+<!--                                {% else %}-->
+<!--                                    <li class="list-group-item text-center text-muted">-->
+<!--                                        <i class="fas fa-bell-slash me-2"></i> Поки що немає сповіщень.-->
+<!--                                    </li>-->
+<!--                                {% endif %}-->
+<!--                                {% endcomment %}-->
+<!--                                <li class="list-group-item text-center text-muted">-->
+<!--                                    <i class="fas fa-bell-slash me-2"></i> Поки що немає нових сповіщень.-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            {# Секція Поточного Замовлення (якщо є) #}-->
+<!--            {% comment %}-->
+<!--            Припустимо, у вас є змінна `current_order`, яка є об'єктом замовлення, або `None`.-->
+<!--            Якщо `current_order` існує, відображаємо інформацію про нього.-->
+<!--            {% endcomment %}-->
+<!--            {% with current_order_exists=True current_order_status='pending' current_order_id='XYZ789' %} {# Заглушки #}-->
+<!--            {% if current_order_exists %}-->
+<!--            <div class="personal-cabinet-card current-order-section">-->
+<!--                <h3><i class="fas fa-truck me-2"></i> Ваше Активне Замовлення</h3>-->
+<!--                <p class="order-status-text {% if current_order_status == 'pending' %}pending{% else %}active{% endif %}">-->
+<!--                    Статус: {{ current_order_status|capfirst }}-->
+<!--                </p>-->
+<!--                <div class="order-details">-->
+<!--                    <p>Замовлення #{{ current_order_id }}</p>-->
+<!--                    <p>Послуга: Назва послуги</p> {# Замініть на current_order.service.name #}-->
+<!--                    <p>Сума: 15.00$</p> {# Замініть на current_order.total_price #}-->
+<!--                </div>-->
+<!--                <a href="{% url 'main:show_order_info' %}" class="btn btn-primary btn-view-order">-->
+<!--                    Переглянути Деталі Замовлення <i class="fas fa-arrow-right ms-2"></i>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            {% endif %}-->
+<!--            {% endwith %}-->
+
+<!--            {# Секція Останньої Активності #}-->
+<!--            {% comment %}-->
+<!--            Припустимо, `recent_activities` - це список об'єктів з полями `icon_class`, `message`, `timestamp`.-->
+<!--            {% endcomment %}-->
+<!--            {% with recent_activities=True %} {# Заглушка #}-->
+<!--            <div class="personal-cabinet-card">-->
+<!--                <div class="card-header">-->
+<!--                    <i class="fas fa-history"></i> Остання Активність-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    {% if recent_activities %}-->
+<!--                        <ul class="list-group list-group-flush">-->
+<!--                            {# Приклад активності #}-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-dollar-sign activity-icon text-success"></i>-->
+<!--                                <span>Ви поповнили баланс на 10.00$.</span>-->
+<!--                                <span class="activity-time">10 хвилин тому</span>-->
+<!--                            </li>-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-shopping-cart activity-icon text-primary"></i>-->
+<!--                                <span>Створено нове замовлення #ABC123.</span>-->
+<!--                                <span class="activity-time">1 годину тому</span>-->
+<!--                            </li>-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-check-circle activity-icon text-info"></i>-->
+<!--                                <span>Замовлення #XYZ789 завершено.</span>-->
+<!--                                <span class="activity-time">2 години тому</span>-->
+<!--                            </li>-->
+<!--                            <li class="activity-item">-->
+<!--                                <i class="fas fa-bell activity-icon text-warning"></i>-->
+<!--                                <span>Нове сповіщення: перевірте ваш профіль.</span>-->
+<!--                                <span class="activity-time">Вчора</span>-->
+<!--                            </li>-->
+<!--                            {# ... інші активності ... #}-->
+<!--                        </ul>-->
+<!--                        <div class="text-center mt-3">-->
+<!--                        </div>-->
+<!--                    {% else %}-->
+<!--                        <p class="text-center text-muted">Немає останніх записів активності.</p>-->
+<!--                    {% endif %}-->
+<!--                </div>-->
+<!--            </div>-->

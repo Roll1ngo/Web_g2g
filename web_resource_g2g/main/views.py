@@ -28,6 +28,7 @@ def start_page(request):
             return render(request, 'users/continue_registration.html', context={"e-mail": e_mail,
                                                                          'temp_password': password,
                                                                          'exist_username': bool_exist_username})
+
         all_bets = crud.get_main_data_from_table(user_id)
 
         servers = crud.query_servers()

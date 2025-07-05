@@ -1,10 +1,14 @@
 import calendar
 import datetime
+import decimal
 
 from django.db import models
 from django.conf import settings  # Для посилання на стандартну модель User
 from django.core.validators import MinValueValidator
 from django.utils import timezone  # Для роботи з часовими поясами
+
+from main.context_processors import get_current_privatbank_rate
+from main.utils.logger_config import logger
 
 
 class WithdrawalRequest(models.Model):
@@ -32,7 +36,13 @@ class WithdrawalRequest(models.Model):
         null=True,  # Дозволяємо бути NULL, якщо сума не потрібна (наприклад, для "Не виводити")
         blank=True  # Дозволяємо бути порожнім
     )
-
+    converted_amount_uah = models.DecimalField(
+        max_digits=12,  # Збільшена точність для більших сум в UAH
+        decimal_places=2,
+        verbose_name="Конвертована сума з урахуванням комісій (грн)",
+        null=True,
+        blank=True
+    )
     # Варіанти виведення коштів
     WITHDRAW_TYPE_CHOICES = [
         ('fixed_15_30', '15 і 30 числа кожного місяця (вивести всю суму)'), # Оновлено
@@ -169,6 +179,30 @@ class WithdrawalRequest(models.Model):
                 # Для термінового виводу, встановлюємо дату на сьогодні (а "протягом 24 годин" це service level)
                 self.scheduled_withdrawal_date = today_date
                 self.custom_withdrawal_date = today_date  # Для цього типу виводу
+
+                # Розрахунок конвертованої суми в гривнях тільки для типу 'custom'
+                if self.amount and self.payment_method == 'visa_mastercard':
+                    private_bank_rate = get_current_privatbank_rate().get('buy')
+                    logger.info(f"Private bank rate: {private_bank_rate}")
+
+                    # Розрахунок суми USD після відрахування комісії
+                    # Переконайтеся, що commission_rate не є None перед використанням
+                    if self.commission_rate is not None:
+                        usd_with_commission = decimal.Decimal(self.amount) * (
+                                    decimal.Decimal('1') - decimal.Decimal(self.commission_rate) / decimal.Decimal('100.00'))
+                    else:
+                        # Обробка випадку, якщо commission_rate чомусь None,
+                        # хоча ваша логіка вище має його встановлювати.
+                        # Можливо, варто підняти виняток або вважати комісію 0.
+                        logger.warning("commission_rate is None for a custom withdrawal.")
+                        usd_with_commission = self.amount
+
+                    # Викликаємо функцію з context_processors
+                    # Конвертуємо суму USD з урахуванням комісії в UAH
+                    self.converted_amount_uah = usd_with_commission * decimal.Decimal(private_bank_rate)
+                else:
+                    self.converted_amount_uah = None  # Якщо немає суми, скидаємо конвертовану суму
+
             elif self.withdraw_type == 'fixed_15_30': # Оновлено
                 if today_date.day <= 15:
                     self.scheduled_withdrawal_date = today_date.replace(day=15)
