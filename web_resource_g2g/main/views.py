@@ -1,19 +1,35 @@
-import json
 import os
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponseNotAllowed, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponseNotAllowed
+from django.shortcuts import redirect, render, get_object_or_404 # Added get_object_or_404
+import json
 from main import crud
 from main import calculate_commissions_crud as commissions_crud
-from main.utils.send_email import send_massage_to_email
 from .utils.logger_config import logger
 
+# IMPORTANT: Replace 'YourBetModel' with the actual name of your Django model
+# that contains 'id' and 'game_name'. For example, if your model is named 'Bet',
+# you would use: from main.models import Bet
+# from main.models import YourBetModel # Uncomment and replace with your actual model import
 
-from django.shortcuts import render
-import json
+# Placeholder for crud function to get game_name.
+# You MUST implement this in your crud.py to query your database.
+# Example implementation in crud.py:
+# def get_game_name_for_offer(offer_id):
+#     try:
+#         # Assuming 'Offer' is your model that has 'id' and 'game_name'
+#         # Replace 'Offer' with your actual model name
+#         offer_instance = Offer.objects.get(id=offer_id)
+#         return offer_instance.game_name
+#     except Offer.DoesNotExist:
+#         logger.error(f"Offer with ID {offer_id} not found.")
+#         return None
+#     except Exception as e:
+#         logger.error(f"Error fetching game_name for offer_id {offer_id}: {e}")
+#         return None
 
 
 @login_required(login_url='users:login')
@@ -30,6 +46,7 @@ def start_page(request):
             return render(request, 'users/continue_registration.html', context={"e-mail": e_mail,
                                                                          'temp_password': password,
                                                                          'exist_username': bool_exist_username})
+
         all_bets = crud.get_main_data_from_table(user_id)
 
         servers = crud.query_servers()
@@ -51,7 +68,7 @@ def start_page(request):
             'games': games,
             'regions': regions,
             'servers_json': grouped_data,
-            'double_add': double_add  # Тепер це список, а не JSON-рядок
+            'double_add': double_add,
         }
 
         return render(request, 'main/index.html', context)
@@ -61,9 +78,54 @@ def update_table_data(request):
     if request.method == 'POST':
         user_id = request.user.id
         data = json.loads(request.body)
-        logger.info(data)
+        logger.info(f"Received data for update_table_data: {data}")
+
+        row_id = data.get('row_id')
+        field_name = data.get('field_name')
+        new_value = data.get('new_value')
+
+        if field_name == 'stock':
+            logger.info(f"Server-side validation for 'stock' field. Row ID: {row_id}, Value: '{new_value}'")
+            try:
+                stock_value_float = float(new_value)
+            except ValueError:
+                logger.warning(f"Validation failed: Stock value '{new_value}' is not a valid number.")
+                return JsonResponse({'success': False, 'error': 'Значення "Запас" повинно бути дійсним числом.'})
+
+            if stock_value_float < 0:
+                logger.warning(f"Validation failed: Stock value {stock_value_float} is negative.")
+                return JsonResponse({'success': False, 'error': 'Значення "Запас" повинно бути позитивним числом.'})
+
+            # Fetch game_name for specific validation
+            # You MUST implement crud.get_game_name_for_offer(row_id) in your crud.py
+            # This function should query your Django model (e.g., Offer.objects.get(id=row_id).game_name)
+            game_name = crud.get_game_name_for_offer(row_id)
+
+            if game_name is None:
+                logger.error(f"Could not retrieve game_name for offer_id {row_id}. Aborting validation.")
+                return JsonResponse({'success': False, 'error': 'Не вдалося отримати інформацію про гру для валідації.'})
+
+            game_name_lower = game_name.strip().lower()
+            logger.info(f"Server-side: Game Name for row {row_id}: '{game_name_lower}'")
+
+            if game_name_lower == 'cataclysm':
+                logger.info(f"Server-side: Applying Cataclysm specific validation for stock: {stock_value_float}")
+                # Check for integer and range 0-999
+                if not stock_value_float.is_integer() or stock_value_float < 0 or stock_value_float > 999:
+                    logger.warning(f"Validation failed: Cataclysm stock {stock_value_float}"
+                                   f" is not an integer between 0 and 999.")
+                    return JsonResponse({'success': False, 'error': 'Для гри Cataclysm,'
+                                                                    ' у поле "Запас" вводиться кількість тисяч.'
+                                                                    ' Наприклад 25000 = 25, 5489 = 5.'})
+            else:
+                logger.info(f"Server-side: Applying general validation for stock: {stock_value_float} (Game: '{game_name_lower}')")
+                # For non-Cataclysm, the float conversion and non-negative check above are sufficient.
+                # If you need to restrict decimals for other games, add more logic here.
+                pass
+
+        # If validation passes (or if not 'stock' field), proceed with update
         new_price = crud.update_price_delivery(data, user_id)
-        logger.info(new_price)
+        logger.info(f"Update successful. New price: {new_price}")
         return JsonResponse({'success': True, 'new_price': new_price})
     return HttpResponseNotAllowed(['POST'])
 

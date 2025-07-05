@@ -770,3 +770,8 @@ def confirm_registration_and_delete_raw_password(user_id):
     temp_record.raw_password = 'DELETED'
     temp_record.save()
     logger.info(f"TemporaryPassword for user {user_id} deleted successfully.")
+
+def get_game_name_for_offer(row_id):
+    offer = OffersForPlacement.objects.filter(id=row_id).first()
+    game_name = ServerUrls.objects.filter(id=offer.server_urls_id).first().game_name
+    return game_name
