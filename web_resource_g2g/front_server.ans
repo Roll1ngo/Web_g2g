@@ -24526,3 +24526,8 @@ ModuleNotFoundError: No module named 'archive_payment'
 [1;32m2025-07-06 13:19:36,767 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
 [1;32m2025-07-06 13:19:36,768 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
 [1;32m2025-07-06 13:19:36,769 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 13:38:37,458 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:38:37,459 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.00474474[0m
+[1;32m2025-07-06 13:38:37,467 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:38:37,469 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:38:37,470 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
