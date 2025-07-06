@@ -1,0 +1,12 @@
+version: "3.11"
+services:
+  django_app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      DJANGO_DEBUG: "True"
+      DJANGO_SECRET_KEY: "django-insecure-0jr)mqbmu@vn%%o4h9tt01%j-(1nv@6^4mpx0q$=dh&tm30tru"
+      DATABASE_URL: "sqlite:///G2G.sqlite3"

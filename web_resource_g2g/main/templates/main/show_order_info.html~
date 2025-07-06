@@ -1,0 +1,140 @@
+{% extends "users/base.html" %}
+{% block content %}
+<div class="center-container d-flex justify-content-center align-items-center flex-column"> {# Додано класи flexbox #}
+    <table >
+      <thead>
+          <tr>
+              <th></th>
+              <th>Сервер</th>
+              <th>Гра</th>
+              <th>Фракція</th>
+              <th>Кількість</th>
+              <th>Нік персонажа</th>
+              <th>Метод доставки</th>
+              <th>Ціна за одиницю</th>
+              <th>Заробіток</th>
+              <th>Статус замовлення</th>
+
+
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ order.server.server_name }}</td>
+              <td>{{ order.server.game_name}}</td>
+              <td>{{ order.server.fraction }}</td>
+              <td id="quantity_gold">{{ order.quantity }}</td>
+              <td>{{ order.character_name }}</td>
+              <td>{{ order.trade_mode }}</td>
+              <td>{{ price_unit }}</td>
+              <td>{{order.earned_without_admins_commission|floatformat:2 }}</td>
+              {% if not order.download_video_status %}
+              <td>Очикується завантаження відео</td>
+              {% else %}
+              <td>Завершено</td>
+              {% endif %}
+          </tr>
+      </tbody>
+    </table>
+    <button id="uploadButton">Завантажити відео</button>
+
+    <div id="uploadForm" style="display: none;">  <form method="post" enctype="multipart/form-data" id="videoForm">
+        {% csrf_token %}
+        <input type="file" name="video" id="videoFile" accept="video/*">
+        <label for="sent_gold">Введіть кількість надісланого золота:</label>
+        <input type="number" id="sent_gold" name="sent_gold" style="width: 8ch;" required>
+        <button type="button" id="submitButton">Відправити</button>
+        <button type="button" id="cancelUpload">Скасувати</button>
+      </form>
+    </div>
+</div>
+
+<script>
+    // Отримуємо посилання на елементи DOM
+    const uploadButton = document.getElementById('uploadButton');
+    const uploadForm = document.getElementById('uploadForm');
+    const videoFile = document.getElementById('videoFile');
+    const submitButton = document.getElementById('submitButton');
+    const progressDiv = document.getElementById('progress');
+    const cancelUpload = document.getElementById('cancelUpload'); // Отримуємо кнопку "Скасувати"
+    const sent_goldInput = document.getElementById('sent_gold');
+    const quantity = document.getElementById('quantity_gold');
+
+
+
+    uploadButton.addEventListener('click', () => {
+        uploadForm.style.display = 'block';
+        uploadButton.style.display = 'none';
+    });
+
+    // Додаємо обробник події для кнопки "Скасувати"
+    cancelUpload.addEventListener('click', () => {
+    uploadForm.style.display = 'none'; // Ховаємо форму
+    uploadButton.style.display = 'block'; // Показуємо кнопку "Завантажити відео"
+    videoFile.value = ''; // Очищаємо вибраний файл
+    sent_goldInput.value = ''; // Очищаємо поле вводу кількості золота
+    });
+
+    submitButton.addEventListener('click', () => {
+        const file = videoFile.files[0];
+        const sent_gold = sent_goldInput.value;
+        const quantity_gold = parseInt(quantity.textContent, 10);
+
+        if (sent_gold > quantity_gold) { // Перевірка тут
+            alert("Відправлене золото не може перевищувати замовлене");
+            return; // Зупиняємо виконання
+        }
+
+        if (!sent_gold) {
+            alert("Будь ласка, введіть кількість відправленого золота.");
+            return;
+        }
+
+        if (isNaN(sent_gold)) {
+            alert("кількість відправленого золота має містити тільки цифри.");
+            return;
+        }
+
+        if (!file) {
+            alert("Будь ласка, оберіть файл.");
+            return;
+        }
+
+        uploadFile(file, sent_gold); // Передаємо sent_gold у функцію uploadFile
+    });
+
+    function uploadFile(file, sent_gold) { // sent_gold тепер аргумент функції
+        const formData = new FormData();
+        formData.append('video', file);
+        formData.append('sent_gold', sent_gold);
+
+
+        const xhr = new XMLHttpRequest(); // Створюємо новий XMLHttpRequest
+        xhr.open('POST', '{% url 'main:upload_video' sold_order_number=sold_order_number %}', true); // Налаштовуємо запит: метод POST, URL '/upload', асинхронний режим
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+
+        xhr.upload.onprogress = function(event) {
+            if (event.lengthComputable) {
+                const percentComplete = (event.loaded / event.total) * 100;
+                progressDiv.textContent = `Завантажено: ${percentComplete.toFixed(2)}%`;
+            }
+        };
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                alert('Відео успішно завантажено!');
+                uploadForm.style.display = 'none';
+                window.location.href = '{% url 'main:start_page' %}'
+            } else {
+                alert('Помилка завантаження. ' + xhr.responseText); // Виводимо текст помилки з сервера
+            }
+        };
+                xhr.onerror = function() {
+          alert('Помилка з\'єднання з сервером.');
+        };
+
+        xhr.send(formData);
+    }
+</script>
+{% endblock %}

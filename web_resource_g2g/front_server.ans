@@ -24345,3 +24345,80 @@ ModuleNotFoundError: No module named 'archive_payment'
 [1;32m2025-07-05 16:43:47,895 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet [<ReservedFunds: Резерв для Taras - 120.00 withdrawal>]> for user_id__7[0m
 [1;32m2025-07-05 16:43:47,895 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:96 - reserved_funds__120 for user_id__7[0m
 [1;32m2025-07-05 16:43:47,896 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_97.2500000000000[0m
+[1;32m2025-07-06 12:55:19,229 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:55:19,230 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:55:19,231 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:56:32,150 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:56:32,151 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:56:32,152 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:56:34,065 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:56:34,066 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:56:34,067 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:56:42,100 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 12:56:42,102 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:56:42,104 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:56:42,104 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:703 - internal_market_spend__0[0m
+[1;32m2025-07-06 12:56:42,105 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 12:56:42,107 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet [<ReservedFunds: Резерв для Taras - 120.00 withdrawal>]> for user_id__7[0m
+[1;32m2025-07-06 12:56:42,108 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:96 - reserved_funds__120 for user_id__7[0m
+[1;32m2025-07-06 12:56:42,109 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_-120[0m
+[1;32m2025-07-06 12:56:45,139 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:63 - {'row_id': '218', 'field_name': 'stock', 'new_value': '1540'}[0m
+[1;32m2025-07-06 12:56:45,149 - INFO - [1;33mcrud[1;32m.[1;34mcreate_record_to_stock_history_table[1;32m:636 - New record to stock table created.[0m
+[1;32m2025-07-06 12:56:45,149 - INFO - [1;33mcrud[1;32m.[1;34mupdate_price_delivery[1;32m:241 - offer_dict__{'id': 218, 'sellers': 12, 'server_urls': 213, 'currency': 'USD', 'description': 'gold', 'price': 'minimal', 'stock': '1540', 'min_units_per_order': 17, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': False, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False}[0m
+[1;32m2025-07-06 12:56:45,151 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:65 - 0.51779[0m
+[1;32m2025-07-06 12:56:53,919 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 12:56:53,920 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:56:53,921 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:56:53,921 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:703 - internal_market_spend__0[0m
+[1;32m2025-07-06 12:56:53,922 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 12:56:53,924 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet [<ReservedFunds: Резерв для Taras - 120.00 withdrawal>]> for user_id__7[0m
+[1;32m2025-07-06 12:56:53,924 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:96 - reserved_funds__120 for user_id__7[0m
+[1;32m2025-07-06 12:56:53,925 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_-120[0m
+[1;32m2025-07-06 12:57:08,157 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 12:57:08,158 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:08,159 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:08,160 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:703 - internal_market_spend__0[0m
+[1;32m2025-07-06 12:57:08,161 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 12:57:08,162 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet [<ReservedFunds: Резерв для Taras - 120.00 withdrawal>]> for user_id__7[0m
+[1;32m2025-07-06 12:57:08,163 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:96 - reserved_funds__120 for user_id__7[0m
+[1;32m2025-07-06 12:57:08,164 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_-120[0m
+[1;32m2025-07-06 12:57:10,337 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 12:57:10,338 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:10,339 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:10,340 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:703 - internal_market_spend__0[0m
+[1;32m2025-07-06 12:57:10,341 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 12:57:10,343 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet [<ReservedFunds: Резерв для Taras - 120.00 withdrawal>]> for user_id__7[0m
+[1;32m2025-07-06 12:57:10,344 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:96 - reserved_funds__120 for user_id__7[0m
+[1;32m2025-07-06 12:57:10,344 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_-120[0m
+[1;32m2025-07-06 12:57:21,070 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 12:57:21,075 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:21,078 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:21,080 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:703 - internal_market_spend__0[0m
+[1;32m2025-07-06 12:57:21,082 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 12:57:21,087 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet [<ReservedFunds: Резерв для Taras - 120.00 withdrawal>]> for user_id__7[0m
+[1;32m2025-07-06 12:57:21,090 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:96 - reserved_funds__120 for user_id__7[0m
+[1;32m2025-07-06 12:57:21,091 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_-120[0m
+[1;32m2025-07-06 12:57:24,605 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:24,606 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:24,607 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:57:33,513 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:33,514 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:33,515 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:57:37,820 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:37,821 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:37,822 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:57:41,430 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:41,431 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:41,432 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 12:57:47,902 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:557 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 12:57:47,903 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:681 - sold_orders_earned__0[0m
+[1;32m2025-07-06 12:57:47,905 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:688 - internal_market_earned__0[0m
+[1;32m2025-07-06 12:57:47,905 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:703 - internal_market_spend__0[0m
+[1;32m2025-07-06 12:57:47,906 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 12:57:47,907 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 12:57:47,908 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 12:57:47,910 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:579 - seller_total_balance_0[0m
+[1;32m2025-07-06 12:57:55,016 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:63 - {'row_id': '218', 'field_name': 'stock', 'new_value': '256988'}[0m
+[1;32m2025-07-06 12:57:55,028 - INFO - [1;33mcrud[1;32m.[1;34mcreate_record_to_stock_history_table[1;32m:636 - New record to stock table created.[0m
+[1;32m2025-07-06 12:57:55,028 - INFO - [1;33mcrud[1;32m.[1;34mupdate_price_delivery[1;32m:241 - offer_dict__{'id': 218, 'sellers': 12, 'server_urls': 213, 'currency': 'USD', 'description': 'gold', 'price': 'minimal', 'stock': '256988', 'min_units_per_order': 17, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': False, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False}[0m
+[1;32m2025-07-06 12:57:55,031 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:65 - 0.51779[0m

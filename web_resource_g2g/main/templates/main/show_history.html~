@@ -1,0 +1,118 @@
+{% extends "users/base.html" %}
+{% block content %}
+<style>
+  :root {
+    --primary-color: #EEE8AA ; /* Світло-жовтий колір для заголовків */
+    --secondary-color: #333333; /* Темний колір для тексту */
+    --background-color: #F5F5F5; /* Світлий фон */
+    --table-header-bg: #E0E0E0; /* Фон заголовків таблиці */
+    --table-row-bg: #FFFFFF; /* Фон рядків таблиці */
+    --table-border-color: #CCCCCC; /* Колір меж таблиці */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+}
+
+h2 {
+    color: var(--primary-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    opacity: 0.7; /* Прозорість таблиці 60% */
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--table-border-color);
+}
+
+table th {
+    background-color: var(--table-header-bg);
+
+}
+
+table tr {
+    background-color: var(--table-row-bg);
+}
+
+table tr:hover {
+    background-color: #F0F0F0; /* Колір при наведенні */
+}
+</style>
+<div class="center-container">
+    <form method="get" action="{% url 'main:history_orders' %}" style="margin-bottom: 20px;">
+        <label for="payment_status">Фільтр по статусу виплати:</label>
+        <select name="payment_status" id="payment_status">
+            <option value="" {% if not request.GET.payment_status %}selected{% endif %}>Всі</option>
+            <option value="charged_to_payment" {% if request.GET.payment_status =="charged_to_payment" %}selected{% endif %}>Зараховано до оплати</option>
+            <option value="paid_in_salary" {% if request.GET.payment_status =="paid_in_salary" %}selected{% endif %}>Виплачено</option>
+            <option value="cancelled" {% if request.GET.payment_status =="cancelled" %}selected{% endif %}>Скасовано</option>
+            <option value="no_info" {% if request.GET.payment_status =="no_info" %}selected{% endif %}>Інформація відсутня</option>
+        </select>
+        <button type="submit">Фільтрувати</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Сервер</th>
+                <th>Гра</th>
+                <th>Фракція</th>
+                <th>Кількість</th>
+                <th>Нік персонажа</th>
+                <th>Метод доставки</th>
+                <th>Ціна за одиницю</th>
+                <th>Зараховано на баланс</th>
+                <th>Баланс</th>
+                <th>Час замовлення</th>
+                <th>Номер замовлення</th>
+                <th>Статус виконання замовлення</th>
+                <th>Статус виплати</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in orders_history %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.order.server.server_name }}</td>
+                    <td>{{ item.order.server.game_name}}</td>
+                    <td>{{ item.order.server.fraction }}</td>
+                    <td>{{ item.order.quantity }}</td>
+                    <td>{{ item.order.character_name }}</td>
+                    <td>{{ item.order.trade_mode }}</td>
+                    <td>{{ item.order.price_unit }}</td>
+                    <td>{{ item.order.earned_without_admins_commission|floatformat:2 }}</td>
+                    <td>{{ item.current_balance|floatformat:2}}</td>
+                    <td>{{ item.order.created_time }}</td>
+                    <td>{{ item.order.sold_order_number }}</td>
+                    {% if item.order.status == "CANCEL_REQUESTED" %}
+                    <td>Скасовано</td>
+                    {% elif not item.order.download_video_status %}
+                    <td>Очикується завантаження відео</td>
+                    {% else %}
+                    <td>Завершено</td>
+                    {% endif %}
+
+                    {% if item.order.charged_to_payment and not item.order.paid_in_salary %}
+                    <td>Зараховано до оплати</td>
+                    {% elif item.order.charged_to_payment and item.order.paid_in_salary %}
+                    <td>Виплачено</td>
+                    {% elif item.order.status == "CANCEL_REQUESTED" %}
+                    <td>Скасовано</td>
+                    {% else %}
+                    <td>Інформація відсутня</td>
+                    {% endif %}
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
