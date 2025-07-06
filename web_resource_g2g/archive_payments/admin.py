@@ -1,10 +1,4 @@
 from django.contrib import admin
-
-# Register your models here.
-# your_app_name/admin.py
-# Замініть 'your_app_name' на фактичну назву вашого Django-додатку
-
-from django.contrib import admin
 from .models import WithdrawalArchive, ReservedFunds
 
 # Реєстрація моделі WithdrawalArchive в адмін-панелі
@@ -20,6 +14,9 @@ class WithdrawalArchiveAdmin(admin.ModelAdmin):
         'commission_rate',
         'withdrawal_date',
         'created_at',
+        'archived_sold_order_ids',
+        'archived_internal_order_ids',
+        'archived_commission_breakdown_ids',
     )
     # Поля, за якими можна здійснювати пошук
     search_fields = (
@@ -29,6 +26,7 @@ class WithdrawalArchiveAdmin(admin.ModelAdmin):
     )
     # Поля, за якими можна фільтрувати список
     list_filter = (
+        'user',
         'withdraw_type',
         'payment_method',
         'withdrawal_date',
@@ -38,11 +36,6 @@ class WithdrawalArchiveAdmin(admin.ModelAdmin):
     list_display_links = (
         'user',
         'amount',
-    )
-    # Поля, які можна редагувати безпосередньо зі списку
-    list_editable = (
-        'withdraw_type',
-        'payment_method',
     )
     # Поля, які відображаються у детальному перегляді, згруповані за секціями
     fieldsets = (
@@ -74,6 +67,10 @@ class ReservedFundsAdmin(admin.ModelAdmin):
         'created_at',
         'archived_id',
         'archived_at',
+        'archived_id__archived_sold_order_ids',
+        'archived_id__archived_internal_order_ids',
+        'archived_id__archived_commission_breakdown_ids',
+
     )
     # Поля, за якими можна здійснювати пошук
     search_fields = (
