@@ -1,8 +1,294 @@
 {% extends 'users/base.html' %}
 {% load socialaccount %}
+{% load static %}
+
+{% block extra_head %}
+    <style>
+        /* Встановлення шрифту Inter для всього тіла документа (якщо не задано в Bootstrap) */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Перевизначення оверлею body з базового шаблону, якщо потрібно */
+            background: url('{% static 'images/background.jpg' %}') no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+            z-index: 1;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7); /* Напівпрозорий білий фон 70% */
+            z-index: -1;
+        }
+
+        /* Кастомні стилі для карток інструкцій, що імітують personal-cabinet-card */
+        .instruction-card {
+            background-color: rgba(255, 255, 255, 0.9); /* Трохи прозорий білий фон для карток */
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px; /* Відступ між картками */
+            overflow: hidden;
+            transition: transform 0.2s ease-in-out;
+        }
+        .instruction-card:hover {
+            transform: translateY(-5px);
+        }
+        .instruction-card .card-header {
+            background-color: #007bff; /* Основний синій колір для заголовків карток */
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+        }
+        .instruction-card .card-header svg {
+            margin-right: 10px;
+            /* Зменшено розмір SVG іконки в заголовку */
+            width: 1.5em; /* Відносно розміру шрифту заголовка */
+            height: 1.5em;
+        }
+        .step-title {
+            color: #007bff; /* Синій для заголовків кроків */
+        }
+        .step-icon {
+             width: 1.75rem; /* h-7 w-7 */
+             height: 1.75rem;
+             margin-right: 0.75rem; /* space-x-3 */
+        }
+        /* Стиль для іконки в секції "Покрокова інструкція" */
+        .instruction-section-icon {
+            width: 1.5rem; /* h-6 w-6 */
+            height: 1.5rem;
+            margin-right: 0.5rem; /* mr-2 */
+        }
+        .custom-bullet-list ul {
+            list-style: none; /* Прибираємо стандартні маркери */
+            padding-left: 0; /* Прибираємо відступ для стандартних маркерів */
+        }
+
+        .custom-bullet-list li {
+            position: relative;
+            padding-left: 25px; /* Відступ для кастомного маркера */
+            margin-bottom: 10px; /* Відступ між елементами списку */
+        }
+
+        .custom-bullet-list li::before {
+            content: "\2022"; /* Юнікод символ кулі */
+            color: #007bff; /* Колір маркера */
+            font-weight: bold;
+            display: inline-block;
+            width: 1em; /* Ширина маркера */
+            margin-left: -1.5em; /* Забезпечує вирівнювання маркера */
+            position: absolute;
+            left: 0;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
-<h1>Rules</h1>
+<div class="container-fluid mt-5 mb-5 px-4">
+    <div class="instruction-card">
+        <header class="card-header text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <h1 class="h3 font-weight-bold mb-0">Правила та Рекомендації користування сервісом</h1>
+        </header>
 
+        <main class="card-body">
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v3h8z" />
+                        </svg>
+                        1. Загальні положення
+                    </h2>
+                    <p class="text-secondary">Наш сервіс призначений для безпечного, зручного та швидкого продажу ігрового золота WoW через автоматизовану систему з інтеграцією в Telegram.</p>
+                    <p class="text-secondary">Користування сервісом означає повну згоду з цими правилами.</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-success d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.117C6.853 14.073 12 10 12 10s.867 0 2 0m-.01 0h.01" />
+                        </svg>
+                        2. Telegram-інтеграція
+                    </h2>
+                    <p class="text-secondary">Telegram-бот служить основним інтерфейсом взаємодії. Ви можете:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>Активувати/деактивувати замовлення;</li>
+                        <li>Отримувати сповіщення про нові замовлення;</li>
+                        <li>Слідкувати за статусом відправленого золота;</li>
+                        <li>Отримувати фінансову статистику.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i> Рекомендуємо увімкнути сповіщення від бота, щоб не пропустити важливі події.
+                    </div>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-purple d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V9m-1-4h.01M17 4h.01M17 8h.01m-2 4h.01m-2 4h.01m-2 4h.01M7 4h.01M7 8h.01M7 12h.01M7 16h.01M7 20h.01M13 8h.01M13 12h.01M13 16h.01M13 20h.01M17 12h.01M17 16h.01M17 20h.01" />
+                        </svg>
+                        3. Вимоги до продавців
+                    </h2>
+                    <p class="text-secondary font-weight-bold mb-2">Продавець повинен:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>Мати стабільне інтернет-з’єднання та базові знання гри WoW (новачкам буде призначено наставника);</li>
+                        <li>Оперативно реагувати на нові замовлення;</li>
+                        <li>Дотримуватись внутрішніх інструкцій щодо доставки золота;</li>
+                        <li>Дбайливо ставитись до довіри клієнтів та репутації сервісу.</li>
+                    </ul>
+
+                    <p class="text-secondary font-weight-bold mb-2">Заборонено:</p>
+                    <ul class="list-unstyled text-danger custom-bullet-list">
+                        <li>Спам, шахрайство, фальсифікація відправлень;</li>
+                        <li>Ігнорування замовлень без попередження;</li>
+                        <li>Виставлення золота, якого немає у наявності;</li>
+                        <li>Зловживання довірою клієнтів або команди.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-success d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        4. Виплати
+                    </h2>
+                    <p class="text-secondary">Виплати здійснюються двічі на місяць — <strong>15-го та останнього числа</strong>.</p>
+                    <p class="text-secondary font-weight-bold mb-2">Доступні способи:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li><strong>Банківські картки (Україна)</strong> — курс Payoneer + комісія 3%;</li>
+                        <li><strong>Payoneer</strong> — без комісій;</li>
+                        <li><strong>Криптовалюта (USDT BEP20 або Binance USDT)</strong> — комісія 3%.</li>
+                    </ul>
+                    <p class="text-secondary">Також доступні альтернативні витрати на інші послуги (наприклад, для купівлі бота).</p>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        5. Рекомендації щодо продажів
+                    </h2>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>Завжди старайтесь ставити **дорого + трейд** — це дає кращу ціну;</li>
+                        <li>Якщо потрібно швидко — обирайте **баланс + трейд** або **дешево + трейд**;</li>
+                        <li>Лише ті сервери, де погано продається — ставимо "**дешево + трейд**";</li>
+                        <li>Рекомендуємо виставляти замовлення частіше. Якщо ви знаходитесь поруч — вмикайте трейд, якщо відходите або залишаєте на ніч — активуйте тільки доставку поштою (mail) без трейду;</li>
+                        <li>**Мінімальна загальна вартість для виставлення товару — $2**;</li>
+                        <li>Додано вкладку "**Активне замовлення**", де видно поточне замовлення та можна відправити відео;</li>
+                        <li>Додано **внутрішній ринок** для купівлі золота між продавцями без ризиків.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-primary d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4.636 17.364l-.707.707M3 12H2m15.536-4.636l.707-.707M6.464 6.464L7.171 5.757M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        6. Нові напрямки розвитку
+                    </h2>
+                    <p class="text-secondary">Сервіс постійно розвивається, пропонуючи нові можливості для взаємодії та заробітку:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li><strong>Наставник</strong> — досвідчені гравці допомагають новачкам і отримують 5% прибутку;</li>
+                        <li><strong>Рекрутер</strong> — залучайте нових користувачів і отримуйте 5%;</li>
+                        <li><strong>Оренда персонажів</strong> — здавайте або беріть в оренду персонажів (10%).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 text-danger d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.514 11.838a1.867 1.867 0 001.326 3.197 1.867 1.867 0 001.326-3.197M12 18v.01M18.707 6.293l-1.414-1.414C15.658 4.237 13.633 4 12 4s-3.658.237-5.293 1.293l-1.414 1.414C4.237 7.502 4 9.527 4 12s.237 4.498 1.293 5.707l1.414 1.414C7.502 19.763 9.527 20 12 20s4.498-.237 5.707-1.293l1.414-1.414C19.763 16.498 20 14.473 20 12s-.237-4.498-1.293-5.707z" />
+                        </svg>
+                        7. Правила запису відео (Mail і Trade)
+                    </h2>
+
+                    <h3 class="h6 font-weight-bold mb-2 text-info">7.1 Mail (відправка поштою):</h3>
+                    <p class="text-secondary font-weight-bold mb-1">Підготовка:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>Ховаємо сумки, знімаємо речі з пошти;</li>
+                        <li>Видаляємо друзів та ігнор;</li>
+                        <li>Купуємо предмет на аукціоні для вкладення в лист;</li>
+                        <li>Копіюємо нік покупця з Telegram;</li>
+                        <li>Виходимо до меню вибору персонажа (Logout).</li>
+                    </ul>
+
+                    <p class="text-secondary font-weight-bold mb-1">Запис:</p>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>Починаємо з меню вибору персонажа (сервер);</li>
+                        <li>Входимо в гру → Social → Add Friend (ctrl+v);</li>
+                        <li>Показуємо, що покупця немає в ігнорі;</li>
+                        <li>Відкриваємо пошту → вставляємо нік → вкладаємо предмет + золото (до 5–10k в лист);</li>
+                        <li>Перевіряємо все і надсилаємо;</li>
+                        <li>Виходимо в меню → показуємо сервер і список серверів → завершуємо запис.</li>
+                    </ul>
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="fas fa-video me-2"></i> **Відео:** До 500 МБ, мінімальні налаштування за шаблоном. Це гарантія вашої оплати.
+                    </div>
+
+                    <h3 class="h6 font-weight-bold mb-2 text-info mt-4">7.2 Trade (передача трейдом):</h3>
+                    <ul class="list-unstyled text-secondary custom-bullet-list">
+                        <li>Додаємо в друзі;</li>
+                        <li>Знаходимо клієнта;</li>
+                        <li>Включаємо запис;</li>
+                        <li>Показуємо сумку до трейду;</li>
+                        <li>Передаємо золото через трейд;</li>
+                        <li>Показуємо сумку після трейду;</li>
+                        <li>Демонструємо друзів/ігнор;</li>
+                        <li>Вихід в меню → показ сервера → Change Realm → кінець відео.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="instruction-card">
+                <div class="card-body">
+                    <h2 class="h5 font-weight-bold mb-2 step-title d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="step-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.117C6.853 14.073 12 10 12 10s.867 0 2 0m-.01 0h.01" />
+                        </svg>
+                        8. Підтримка
+                    </h2>
+                    <p class="text-secondary">З усіма запитаннями звертайтесь у Telegram через бота або до адміністратора.</p>
+                    <div class="alert alert-success mt-3" role="alert">
+                        <i class="fas fa-sync-alt me-2"></i> Слідкуйте за оновленнями — сервіс постійно вдосконалюється.
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="bg-light text-secondary text-center p-3 rounded-b-lg d-flex flex-column align-items-center">
+            <p class="mb-3">Ця сторінка є частиною загальних правил та рекомендацій Wow Service Portal.</p>
+            <a href="{% url 'user_profile:profile_main_page' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-circle me-2"></i> До кабінету
+            </a>
+        </footer>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
