@@ -24422,3 +24422,107 @@ ModuleNotFoundError: No module named 'archive_payment'
 [1;32m2025-07-06 12:57:55,028 - INFO - [1;33mcrud[1;32m.[1;34mcreate_record_to_stock_history_table[1;32m:636 - New record to stock table created.[0m
 [1;32m2025-07-06 12:57:55,028 - INFO - [1;33mcrud[1;32m.[1;34mupdate_price_delivery[1;32m:241 - offer_dict__{'id': 218, 'sellers': 12, 'server_urls': 213, 'currency': 'USD', 'description': 'gold', 'price': 'minimal', 'stock': '256988', 'min_units_per_order': 17, 'active_rate': True, 'percent_offset': 0, 'duration': 3, 'face_to_face_trade': False, 'mail_delivery': True, 'auction_house': True, 'delivery_online_hrs': 1, 'delivery_offline_hrs': 6, 'double_minimal_mode_status': False, 'reserve_stock': 0, 'order_status': False}[0m
 [1;32m2025-07-06 12:57:55,031 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:65 - 0.51779[0m
+[1;32m2025-07-06 13:18:06,765 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,766 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.51778881[0m
+[1;32m2025-07-06 13:18:06,768 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,768 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.49277536[0m
+[1;32m2025-07-06 13:18:06,770 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,770 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.53706268[0m
+[1;32m2025-07-06 13:18:06,773 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,773 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.00132748[0m
+[1;32m2025-07-06 13:18:06,778 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,779 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.56780416[0m
+[1;32m2025-07-06 13:18:06,784 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,784 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.00242473[0m
+[1;32m2025-07-06 13:18:06,786 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,787 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.009679670000000001[0m
+[1;32m2025-07-06 13:18:06,791 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,791 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.0113652[0m
+[1;32m2025-07-06 13:18:06,794 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,794 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.0087703[0m
+[1;32m2025-07-06 13:18:06,796 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,796 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.010056200000000001[0m
+[1;32m2025-07-06 13:18:06,798 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,798 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.0030830799999999998[0m
+[1;32m2025-07-06 13:18:06,800 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,800 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.001617[0m
+[1;32m2025-07-06 13:18:06,802 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,802 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.57316259[0m
+[1;32m2025-07-06 13:18:06,805 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,805 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.53468877[0m
+[1;32m2025-07-06 13:18:06,807 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:163 - total_percent: 77.0,interest_rate: 92,rang_exchange: 15.0,[0m
+[1;32m2025-07-06 13:18:06,808 - INFO - [1;33mcrud[1;32m.[1;34mget_float_price[1;32m:167 - float_price_without_exchange: 0.5591663[0m
+[1;32m2025-07-06 13:18:06,816 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:06,817 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:06,818 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:06,819 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:06,820 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:06,821 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:06,822 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:06,822 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:12,038 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:81 - Received data for update_table_data: {'row_id': '218', 'field_name': 'stock', 'new_value': '1254'}[0m
+[1;32m2025-07-06 13:18:12,038 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:88 - Server-side validation for 'stock' field. Row ID: 218, Value: '1254'[0m
+[1;32m2025-07-06 13:18:12,039 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:109 - Server-side: Game Name for row 218: 'cataclysm'[0m
+[1;32m2025-07-06 13:18:12,040 - INFO - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:112 - Server-side: Applying Cataclysm specific validation for stock: 1254.0[0m
+[1;32m2025-07-06 13:18:12,040 - WARNING - [1;33mviews[1;32m.[1;34mupdate_table_data[1;32m:115 - Validation failed: Cataclysm stock 1254.0 is not an integer between 0 and 999.[0m
+[1;32m2025-07-06 13:18:24,309 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:24,311 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:24,312 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:24,313 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:24,313 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:24,315 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:24,315 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:24,316 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:24,317 - INFO - [1;33mviews[1;32m.[1;34mprofile_main_page[1;32m:110 - withdrawal_info__Запит #87 від Taras на 97.25$ (completed), is_button_disabled__False, next_payment_date_display__15.07.2025, expected_completion_date__None[0m
+[1;32m2025-07-06 13:18:24,321 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:24,322 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:24,323 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:24,324 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:24,324 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:24,326 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:24,326 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:24,326 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:31,121 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:31,124 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:31,125 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:31,126 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:31,127 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:31,128 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:31,129 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:31,129 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:33,944 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:33,946 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:33,949 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:33,950 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:33,952 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:33,954 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:33,956 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:33,957 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:41,098 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:41,100 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:41,102 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:41,103 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:41,103 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:41,105 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:41,106 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:41,106 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:45,091 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:561 - user_id__7, seller_id__12[0m
+[1;32m2025-07-06 13:18:45,092 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:45,093 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:45,094 - INFO - [1;33mcrud[1;32m.[1;34mget_sum_spend_internal_market[1;32m:707 - internal_market_spend__0[0m
+[1;32m2025-07-06 13:18:45,095 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__12, commission_earned__0[0m
+[1;32m2025-07-06 13:18:45,096 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:93 - reserved_funds__<QuerySet []> for user_id__7[0m
+[1;32m2025-07-06 13:18:45,096 - INFO - [1;33mcrud[1;32m.[1;34mget_reserved_funds_amount[1;32m:100 - No reserved funds found for user_id__7[0m
+[1;32m2025-07-06 13:18:45,097 - INFO - [1;33mcrud[1;32m.[1;34mget_balance[1;32m:583 - seller_total_balance_0[0m
+[1;32m2025-07-06 13:18:48,836 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:48,837 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:48,838 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 13:18:53,758 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:18:53,759 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:18:53,760 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 13:19:25,906 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:19:25,907 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:19:25,908 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
+[1;32m2025-07-06 13:19:36,767 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:685 - sold_orders_earned__0[0m
+[1;32m2025-07-06 13:19:36,768 - INFO - [1;33mcrud[1;32m.[1;34mcalculate_seller_owner_technical_earning_from_orders[1;32m:692 - internal_market_earned__0[0m
+[1;32m2025-07-06 13:19:36,769 - INFO - [1;33mcalculate_commissions_crud[1;32m.[1;34mget_breakdown_commissions[1;32m:94 - seller_id__2, commission_earned__0[0m
