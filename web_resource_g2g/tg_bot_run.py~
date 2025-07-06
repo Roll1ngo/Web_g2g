@@ -1,0 +1,93 @@
+import os
+import time
+
+import django
+from aiogram.fsm.storage.memory import MemoryStorage
+
+import asyncio
+from dotenv import load_dotenv
+from aiogram import Router, Bot, Dispatcher
+from aiogram.exceptions import TelegramNetworkError
+
+# Ініціалізація Django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "web_resource_g2g.settings")
+django.setup()
+from utils.logger_config import logger
+from models import SoldOrders, Sellers
+
+load_dotenv()
+BOT_TOKEN = os.getenv('TG_TOKEN')
+storage = MemoryStorage()
+router = Router()
+
+bot = Bot(token=BOT_TOKEN, timeout=60)
+dp = Dispatcher(storage=storage)
+dp.include_router(router)
+
+
+async def create_message_for_tg(sold_order_number):
+    logger.info(f"sold_order_number__{sold_order_number}")
+    data = (SoldOrders.objects.filter(sold_order_number=sold_order_number).
+            select_related('server').first())
+    logger.info(f"data__{data}")
+    seller = Sellers.objects.get(id=data.seller_id)
+    logger.info(seller)
+
+    tg_id_seller = seller.id_telegram
+    logger.info(f"seller_tg__{tg_id_seller}")
+
+    logger.info(f"data__{data}")
+    input(">>>")
+    tg_id_vlad = 190861163
+    tg_id_vitaliy = 190861163  # 822070279
+    earned_without_admins_commission = round(data.earned_without_admins_commission, 3)
+    message = str(f"Вітаю, {data['username']} для вас замовлення від {data['created_time']} \n"
+                  f"Сервер___________{data['server_name']}\n"
+                  f"Гра___________{data['game_name']}\n"
+                  f"Кількість___________{data['quantity']}\n"
+                  f"Ім'я персонажа___________{data['character_name']}\n"
+                  f"Спосіб доставки___________{data['trade_mode']}\n"
+                  f"Заробіток___________{earned_without_admins_commission}\n"
+                  )
+    logger.info(message)
+    await send_message_to_user(tg_id_seller, message)
+    time.sleep(3)
+    await send_message_to_user(tg_id_vlad, message)
+    time.sleep(3)
+    await send_message_to_user(tg_id_vitaliy, message)
+
+    # await g2g_sold_orders.change_send_message_status(order_number)
+    time.sleep(3)
+
+
+# Надсилання повідомлення користувачу
+async def send_message_to_user(user_id: int, text: str):
+    try:
+        await bot.send_message(chat_id=user_id, text=text)
+        logger.info("Повідомлення надіслано!")
+    except TelegramNetworkError as e:
+        logger.error(f"Помилка мережі: {e}")
+    except Exception as e:
+        logger.error(f"Помилка відправки повідомлення: {e}")
+    finally:
+        await bot.session.close()
+
+
+async def main():
+    try:
+        await dp.start_polling(bot)
+    except TelegramNetworkError as e:
+        logger.error(f"Помилка мережі: {e}. Перезапуск...")
+        await asyncio.sleep(5)  # Очікування перед перезапуском
+    except Exception as e:
+        logger.error(f"Бот зупинився з помилкою: {e}")
+    finally:
+        await bot.session.close()
+        await dp.storage.close()
+
+
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("Бот зупинено вручну.")

@@ -1,0 +1,69 @@
+import re
+
+def sort_and_reorder(data):
+    lines = data.strip().split('\n')
+    sorted_lines = sorted(lines, key=lambda line: re.split(r'\s{2,}', line)[0]) #сортування за назвою сервера
+
+    result = []
+    for line in sorted_lines:
+        parts = re.split(r'\s{2,}', line)
+        if len(parts) == 2:
+            server_name, user_name = parts
+            result.append(f"{server_name} {user_name}")
+    return '\n'.join(result)
+
+data = """
+Spineshatter [EU - Anniversary] - Alliance - Era        Taras
+Taras   Spineshatter [EU - Anniversary] - Alliance - Era
+Darkness_Druid  Lakeshire [DE] - Horde - Cataclysm
+Olena_Gonchar   Faerlina [US] - Horde - Cataclysm
+Volodimir_Kiprach   Mankrik [US] - Horde - Cataclysm
+Volodimir_Kiprach   Whitemane [US] - Alliance - Era
+Volodimir_Kiprach   Crusader Strike [US - Seasonal] - Alliance - SOD
+Darkness_Druid  Lakeshire [DE] - Alliance - Cataclysm
+Angel   Mirage Raceway [EU] - Horde - Cataclysm
+Oksana_Digtyar  Mandokir [ES] - Horde - Cataclysm
+Taras   Living Flame [EU - Seasonal] - Alliance - SOD
+Marrina_Besedina    Gehennas [EU] - Horde - Cataclysm
+Marrina_Besedina    Firemaw [EU] - Alliance - Cataclysm
+Taras   Wild Growth [US - Seasonal] - Alliance - SOD
+Taras   Whitemane [US] - Horde - Era
+Taras   Crusader Strike [US - Seasonal] - Alliance - SOD
+Olena_Lishtvan  Faerlina [US] - Horde - Cataclysm
+Olena_Lishtvan  Dreamscythe [US - Anniversary] - Horde - Era
+Olena_Lishtvan  Living Flame [EU - Seasonal] - Horde - SOD
+Olena_Lishtvan  Living Flame [EU - Seasonal] - Alliance - SOD
+Sasha_Korol Golemagg [EU] - Horde - Cataclysm
+Zaya    Thunderstrike [EU - Anniversary] - Alliance - Era
+Zaya    Firemaw [EU] - Alliance - Cataclysm
+Taras   Thunderstrike [EU - Anniversary] - Alliance - Era
+Bogdan_Yemets   Dreamscythe [US - Anniversary] - Horde - Era
+Bogdan_Yemets   Nightslayer [US - Anniversary] - Horde - Era
+Bogdan_Yemets   Mankrik [US] - Horde - Cataclysm
+Bogdan_Yemets   Auberdine [FR] - Alliance - Cataclysm
+Bogdan_Yemets   Venoxis [DE] - Horde - Era
+Taras   Lakeshire [DE] - Horde - Era
+Taras   Pyrewood Village [EU] - Alliance - Cataclysm
+Taras   Mirage Raceway [EU] - Horde - Cataclysm
+Taras   Firemaw [EU] - Alliance - Cataclysm
+Taras   Wild Growth [EU - Seasonal] - Alliance - SOD
+Taras   Mirage Raceway [EU] - Alliance - Cataclysm
+Darkness_Druid  Grobbulus [US] - Alliance - Cataclysm
+Vladislav   Venoxis [DE] - Alliance - Cataclysm
+Taras   Lakeshire [DE] - Alliance - Cataclysm
+Taras   Auberdine [FR] - Alliance - Cataclysm
+Valeriy_Bezzubenko  Thunderstrike [EU - Anniversary] - Alliance - Era
+Bogdan_Yemets   Lakeshire [DE] - Alliance - Cataclysm
+Bogdan_Yemets   Firemaw [EU] - Alliance - Cataclysm
+Bogdan_Yemets   Mandokir [ES] - Horde - Cataclysm
+Bogdan_Yemets   Everlook [DE] - Alliance - Cataclysm
+Bogdan_Yemets   Nightslayer [US - Anniversary] - Alliance - Era
+Natalia_Nekrsova    Thunderstrike [EU - Anniversary] - Horde - Era
+Darkness_Druid  Nightslayer [US - Anniversary] - Horde - Era
+Darkness_Druid  Thunderstrike [EU - Anniversary] - Horde - Era
+Darkness_Druid  Mandokir [ES] - Horde - Cataclysm
+Taras   Everlook [DE] - Alliance - Cataclysm
+"""
+
+result = sort_and_reorder(data)
+print(result)
