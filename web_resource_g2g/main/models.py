@@ -112,6 +112,7 @@ class SoldOrders(models.Model):
     sent_gold = models.IntegerField(null=True, db_default=0)
     price_unit = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     total_amount = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    g2g_remainder = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     comission_fee = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     earned_without_admins_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     owner_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
@@ -271,3 +272,10 @@ class TemporaryPassword(models.Model):
     def generate_password(cls, length=12):
         chars = string.ascii_letters + string.digits + "!@#$%^&*"
         return ''.join(secrets.choice(chars) for _ in range(length))
+
+class G2gRemainder(models.Model):
+    g2g_remainder = models.DecimalField(max_digits=10, decimal_places=3, default=0)
+    created_time = models.DateTimeField(default=timezone.now)
+    class Meta:
+        verbose_name = "Залишок на G2G"
+        verbose_name_plural = "Залишки на G2G"

@@ -9,7 +9,7 @@ from django.conf import settings
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
-                     TemporaryPassword)
+                     TemporaryPassword, G2gRemainder)
 from django.db.models import F, Sum,Q
 
 from main.tg_bot_run import send_messages_sync
@@ -849,3 +849,23 @@ def get_game_name_for_offer(row_id):
     offer = OffersForPlacement.objects.filter(id=row_id).first()
     game_name = ServerUrls.objects.filter(id=offer.server_urls_id).first().game_name
     return game_name
+
+def record_g2g_remainder_balance(seller_ids):
+    if not seller_ids:
+        # Якщо список seller_ids порожній, немає чого сумувати.
+        # Можливо, варто додати логування або повернути None.
+        logger.warning("Список seller_ids порожній, сумування неможливе.")
+        return
+    # Сумуємо g2g_remainder для відфільтрованих замовлень
+    total_g2g_remainder = SoldOrders.objects.filter(
+        seller_id__in=seller_ids,
+        paid_in_salary=False
+    ).aggregate(total_sum=Sum('g2g_remainder'))['total_sum']
+
+    total_g2g_remainder -= settings.PAYONEER_FIXED_OUTPUT_SUM
+
+    G2gRemainder.objects.create(
+        g2g_remainder=total_g2g_remainder,
+        created_time=timezone.now()
+    )
+    print(f"Загальний залишок g2g_remainder ({total_g2g_remainder}) успішно записано.")
