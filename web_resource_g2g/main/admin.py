@@ -17,7 +17,7 @@ from main import calculate_commissions_crud as commissions_crud
 from main import crud as main_crud
 from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
                          ServerUrls, ChangeStockHistory, OffersForPlacement,
-                         CommissionBreakdown, CommissionRates, VitaliyOrders, TemporaryPassword)
+                         CommissionBreakdown, CommissionRates, VitaliyOrders, TemporaryPassword, G2gRemainder)
 from main.utils.logger_config import logger
 from main.tg_bot_run import send_messages_sync
 from internal_market import crud as internal_market_crud
@@ -224,10 +224,10 @@ class SellersAdmin(ExportActionModelAdmin):
     resource_class = SellersResource # Припускаємо, що SellersResource визначено
     list_display = (
         'auth_user',
+        'balance',
         'get_user_email',
         'mentor',
         'recruiter',
-        'balance',
         'negative_balance_permission',
         'get_withdrawal_type_display',  # Нова колонка: Тип виведення
         'get_payment_method_display',   # Нова колонка: Метод виведення
@@ -255,6 +255,8 @@ class SellersAdmin(ExportActionModelAdmin):
         # Отримуємо ID виділених продавців
         seller_ids = queryset.values_list('id', flat=True)
         logger.info(f"seller_ids{seller_ids}")
+        #Занесемо залишок балансу на g2g до таблиці
+        main_crud.record_g2g_remainder_balance(seller_ids)
 
         # Запишемо значення балансу відповідно до продавців
         user_profile_crud.record_balance_before_withdrawal(seller_ids)
@@ -768,6 +770,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'trade_mode',
         'created_time',
         'total_amount',
+        'g2g_remainder',
         'owner_commission',
         'technical_commission',
         'earned_without_admins_commission',
@@ -810,6 +813,7 @@ class AddOrderAdmin(admin.ModelAdmin):
         'sold_order_number',
         'trade_mode',
         'total_amount',
+        'g2g_remainder',
         'created_time',
         'bought_by',
         'send_message',
@@ -933,3 +937,8 @@ class TemporaryPasswordAdmin(admin.ModelAdmin):
     list_filter = ('is_confirmed', 'created_at',)
     search_fields = ('user__username', 'user__email',)
     readonly_fields = ('created_at',) # Дата створення зазвичай не повинна редагуватися
+
+@admin.register(G2gRemainder)
+class G2gRemainderAdmin(admin.ModelAdmin):
+    list_display = ('created_time', 'g2g_remainder')
+    list_filter = ('created_time',)

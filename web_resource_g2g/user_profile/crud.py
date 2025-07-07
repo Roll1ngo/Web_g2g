@@ -17,7 +17,10 @@ def record_balance_before_withdrawal(seller_ids:list):
         user = Sellers.objects.get(id=seller_id).auth_user
         user_balance = main_crud.get_balance(user.id)
         logger.info(f"Balance for user {user.username} is {user_balance}")
-        user_withdrawal = WithdrawalRequest.objects.get(user=user)
+        try:
+            user_withdrawal = WithdrawalRequest.objects.get(user=user)
+        except WithdrawalRequest.DoesNotExist:
+            logger.info(f"No balance record for user {user.username}")
         user_withdrawal.amount = user_balance
         user_withdrawal.save()
         logger.info(f"Balance for user {user.username} record to Withdrawal Table.")
