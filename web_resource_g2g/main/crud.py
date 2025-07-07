@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.forms import model_to_dict
 from django.utils import timezone
+from django.conf import settings
 
 from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      SoldOrders, SellerServerInterestRate, ChangeStockHistory, CommissionBreakdown,
@@ -17,7 +18,6 @@ from main.utils.logger_config import logger
 from main import calculate_commissions_crud as commissions_crud
 from archive_payments import crud as archive_payments_crud
 from internal_market.models import InternalOrder
-import config
 
 owner_user_and_seller_id = 1
 technical_user_and_seller_id = 2
@@ -105,8 +105,8 @@ def get_main_data_from_table(auth_user_id: int):
             ).exclude(sellers=row['sellers']).values_list('price', flat=True).first()
 
             if current_strategy:
-                balance_strategy_for_all = config.joint_trade_strategy
-                f2f_delivery_status = config.f2f_for_joint_trade
+                balance_strategy_for_all = settings.JOINT_TRADE_STRATEGY
+                f2f_delivery_status = settings.F2F_FOR_JOINT_TRADE
                 change_all_strategy = OffersForPlacement.objects.filter(server_urls_id=row['server_urls'])
                 change_all_strategy.update(price=balance_strategy_for_all,
                                            face_to_face_trade=f2f_delivery_status)
@@ -619,7 +619,11 @@ def update_technical_balance():
 
 
 def change_offer_stock_when_create_order(server_id, seller_id, order_quantity):
-    offer = OffersForPlacement.objects.get(server_urls_id=server_id, sellers_id=seller_id)
+    try:
+        offer = OffersForPlacement.objects.get(server_urls_id=server_id, sellers_id=seller_id)
+    except OffersForPlacement.DoesNotExist:
+        logger.error(f"Немає офера з server_id {server_id} та seller_id {seller_id}")
+        return
     offer.stock -= order_quantity
     offer.save()
     logger.info("Stock updated successfully.")

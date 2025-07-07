@@ -811,7 +811,6 @@ class AddOrderAdmin(admin.ModelAdmin):
         'trade_mode',
         'total_amount',
         'created_time',
-        'sent_gold',
         'bought_by',
         'send_message',
         'send_message_to_buyer_status',
