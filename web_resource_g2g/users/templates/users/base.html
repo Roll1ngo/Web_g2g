@@ -138,10 +138,10 @@
                                 <a href="{% url 'main:my_services' %}" class="nav-link me-3">Мої послуги</a>
                                 <a href="{% url 'internal_market:main_page' %}" class="nav-link me-3">Внутрішній Ринок</a>
                                 <a href="{% url 'main:history_orders' %}" class="nav-link me-3">Історія замовлень</a>
-                                <a href="{% url 'user_profile:profile_main_page' %}" class="nav-link me-3">Profile {{user.username}}</a>
+                                <a href="{% url 'user_profile:profile_main_page' %}" class="nav-link me-3">Профіль {{user.username}}</a>
                                 <form action="{% url 'users:logout' %}" method="post">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-link nav-link">Log Out</button>
+                                    <button type="submit" class="btn btn-link nav-link">Вийти</button>
                                 </form>
                             </div>
                         </div>
