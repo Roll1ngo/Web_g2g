@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils import timezone
+from datetime import datetime
 
 from main import models as main_models
 
@@ -20,7 +20,7 @@ class InternalOrder(models.Model):
     owner_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     technical_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     trade_mode = models.CharField(max_length=255)
-    created_time = models.DateTimeField(default=timezone.now)
+    created_time = models.DateTimeField(default=datetime.now().replace(microsecond=0))
     send_message = models.BooleanField(default=False)
     path_to_video = models.CharField(max_length=255, blank=True, default='')
     download_video_status = models.BooleanField(default=False, null=True)
@@ -34,7 +34,7 @@ class InternalOrder(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.sold_order_number:
-            now = timezone.now()
+            now = datetime.now().replace(microsecond=0)
             self.sold_order_number = int(now.strftime('%d%m%H%M%S%f')[:-4])
         super().save(*args, **kwargs)
 

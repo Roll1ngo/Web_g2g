@@ -1,5 +1,6 @@
 import secrets
 import string
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -119,7 +120,7 @@ class SoldOrders(models.Model):
     technical_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     to_be_earned = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     trade_mode = models.CharField(max_length=255)
-    created_time = models.DateTimeField(default=timezone.now)
+    created_time = models.DateTimeField(default=datetime.now().replace(microsecond=0))
     send_message = models.BooleanField(default=False)
     path_to_video = models.CharField(max_length=255, blank=True)
     download_video_status = models.BooleanField(default=False, null=True)
