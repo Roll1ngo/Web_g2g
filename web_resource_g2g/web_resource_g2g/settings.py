@@ -99,7 +99,7 @@ WSGI_APPLICATION = "web_resource_g2g.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": Path("/home/roll1ng/Documents/Python_projects/Common_database_to_web_and_server/G2G.sqlite").resolve()
+        "NAME": Path(f"{os.getenv('DB_PATH')}").resolve()
     }
 }
 
@@ -205,3 +205,4 @@ PRIVAT_BANK_RATE_UPDATE_INTERVAL_MINUTES = 30
 JOINT_TRADE_STRATEGY = 'mean10_lot' # 'minimal' для швидкої продажі
 F2F_FOR_JOINT_TRADE = True
 VLAD_TG = 190861163
+PAYONEER_FIXED_OUTPUT_SUM = 4

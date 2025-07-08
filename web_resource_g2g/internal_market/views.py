@@ -34,11 +34,19 @@ def create_order_from_form(request):
     balance = main_crud.get_balance(user_id)
     permission_for_negative_balance = internal_market_crud.get_permission_for_negative_balance(user_id)
     total_amount = float(internal_order_data.get('total_amount', 0))
+    logger.info(f"internal_order_data__{internal_order_data}")
+
+    response = internal_market_crud.check_exist_offer_bull(internal_order_data.get('lot_id'))
+    if response is not None:
+        return JsonResponse({
+            'success': False,
+            'message': response})
 
     logger.info(f"user_id__{user_id}, balance__{balance},"
                 f" total_amount__{total_amount},"
                 f" permission_for_negative_balance__{permission_for_negative_balance},"
                 f"type_permission_for_negative_balance__{type(permission_for_negative_balance)}")
+
 
     # Check if balance is sufficient or negative balance is allowed
     if balance >= total_amount or permission_for_negative_balance:

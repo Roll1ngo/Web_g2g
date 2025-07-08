@@ -1,15 +1,10 @@
-import decimal
-import json
-from django.utils import timezone
-from internal_market.models import InternalOrder
 from main import models as main_models
-from django.db.models import F, Sum, DecimalField, Q
+from django.db.models import F
 
-from main.models import Sellers, ServerUrls, OffersForPlacement
 from main.utils.logger_config import logger
 from main import crud as main_crud
 from main import calculate_commissions_crud as commissions_crud
-from main.tg_bot_run import send_messages_sync
+from main.utils.tg_bot_run import send_messages_sync
 
 
 class InternalOrderProcessor:
