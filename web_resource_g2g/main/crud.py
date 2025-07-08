@@ -12,7 +12,7 @@ from .models import (OffersForPlacement, ServerUrls, Sellers, TopPrices,
                      TemporaryPassword, G2gRemainder)
 from django.db.models import F, Sum,Q
 
-from main.tg_bot_run import send_messages_sync
+from main.utils.tg_bot_run import send_messages_sync
 
 from main.utils.logger_config import logger
 from main import calculate_commissions_crud as commissions_crud

@@ -10,7 +10,6 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from import_export.admin import ExportActionModelAdmin
 from import_export import resources
 
 from main import calculate_commissions_crud as commissions_crud
@@ -19,7 +18,7 @@ from main.models import (Sellers, SoldOrders, SellerServerInterestRate,
                          ServerUrls, ChangeStockHistory, OffersForPlacement,
                          CommissionBreakdown, CommissionRates, VitaliyOrders, TemporaryPassword, G2gRemainder)
 from main.utils.logger_config import logger
-from main.tg_bot_run import send_messages_sync
+from main.utils.tg_bot_run import send_messages_sync
 from internal_market import crud as internal_market_crud
 from internal_market.models import InternalOrder
 from archive_payments import crud as archive_payments_crud
@@ -212,7 +211,8 @@ class SellersResource(resources.ModelResource):
 from django.contrib import admin
 from import_export.admin import ExportActionModelAdmin # Припускаємо, що це імпортовано
 from .models import Sellers # Припускаємо, що модель Sellers знаходиться тут
-from user_profile.models import WithdrawalRequest # Імпортуємо модель WithdrawalRequest
+
+
 # Припускаємо, що main_crud та logger імпортовані з відповідних модулів
 # from . import main_crud
 # import logging

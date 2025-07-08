@@ -9,7 +9,7 @@ from django.conf import settings
 
 from main import crud as main_crud
 from archive_payments import crud as archive_payments_crud
-from main.tg_bot_run import send_messages_sync
+from main.utils.tg_bot_run import send_messages_sync
 from main.utils.logger_config import logger
 from user_profile.forms import WithdrawalRequestForm
 from user_profile.models import WithdrawalRequest # Імпортуємо модель WithdrawalRequest

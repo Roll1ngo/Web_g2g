@@ -8,7 +8,7 @@ from main.utils.logger_config import logger
 
 load_dotenv()
 BOT_TOKEN = os.getenv('TG_TOKEN')
-admins_tgs = {'Vlad': 190861163, 'Vitaliy': 822070279}
+admins_tgs = {'Vlad': 190861163, 'Vitaliy': 190861163}
 
 
 async def send_messages_to_users(telegram_id, name, message):

@@ -1,15 +1,16 @@
 import decimal
-import json
+
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 from internal_market.models import InternalOrder
 from main import models as main_models
-from django.db.models import F, Sum, DecimalField, Q
+from django.db.models import F
 
 from main.models import Sellers, ServerUrls, OffersForPlacement
 from main.utils.logger_config import logger
 from main import crud as main_crud
 from main import calculate_commissions_crud as commissions_crud
-from main.tg_bot_run import send_messages_sync
+from main.utils.tg_bot_run import send_messages_sync
 
 
 def get_lots_for_sale(auth_user_id: int):
@@ -201,5 +202,28 @@ def create_order_message(order, order_source='exchange'):
 def get_permission_for_negative_balance(user_id):
     seller = Sellers.objects.get(auth_user_id=user_id)
     return seller.negative_balance_permission
+
+def check_exist_offer_bull(lot_id):
+    logger.info(f"lot_id__{lot_id}")
+    try:
+        offer = OffersForPlacement.objects.get(id=lot_id, active_rate=True)
+        if not offer :
+            logger.info(f"Товар вже знято з продажу і лот більше не існує")
+            return f"Товар вже знято з продажу і лот більше не існує"
+        elif offer and offer.order_status is True:
+            logger.info(f"По цьому лоту наразі виконується замовлення")
+            return f"По цьому лоту наразі виконується замовлення"
+        return None
+    except ObjectDoesNotExist:
+        # Якщо об'єкт з таким lot_id та active_rate=True не знайдено
+        logger.info(f"Товар вже знято з продажу")
+        return f"Товар вже знято з продажу"
+    except MultipleObjectsReturned:
+        # Ця помилка виникне, якщо за вашим фільтром знайдено більше одного об'єкта.
+        # Це свідчить про потенційну проблему з унікальністю даних або логікою.
+        logger.error(f"Знайдено декілька пропозицій для lot_id: {lot_id}. Очікувався один.")
+        return "Внутрішня помилка: знайдено кілька схожих пропозицій."
+
+
 
 
