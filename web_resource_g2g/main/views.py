@@ -1,35 +1,20 @@
 import os
+from collections import defaultdict
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render, get_object_or_404 # Added get_object_or_404
 import json
+
 from main import crud
 from main import calculate_commissions_crud as commissions_crud
 from .utils.logger_config import logger
-
-# IMPORTANT: Replace 'YourBetModel' with the actual name of your Django model
-# that contains 'id' and 'game_name'. For example, if your model is named 'Bet',
-# you would use: from main.models import Bet
-# from main.models import YourBetModel # Uncomment and replace with your actual model import
-
-# Placeholder for crud function to get game_name.
-# You MUST implement this in your crud.py to query your database.
-# Example implementation in crud.py:
-# def get_game_name_for_offer(offer_id):
-#     try:
-#         # Assuming 'Offer' is your model that has 'id' and 'game_name'
-#         # Replace 'Offer' with your actual model name
-#         offer_instance = Offer.objects.get(id=offer_id)
-#         return offer_instance.game_name
-#     except Offer.DoesNotExist:
-#         logger.error(f"Offer with ID {offer_id} not found.")
-#         return None
-#     except Exception as e:
-#         logger.error(f"Error fetching game_name for offer_id {offer_id}: {e}")
-#         return None
+from main.models import SoldOrders
+from internal_market.models import InternalOrder
 
 
 @login_required(login_url='users:login')
@@ -48,6 +33,10 @@ def start_page(request):
                                                                          'exist_username': bool_exist_username})
 
         all_bets = crud.get_main_data_from_table(user_id)
+
+        count_orders = crud.get_count_orders(user_id)
+        logger.info(f"count_orders__{count_orders}")
+
 
         servers = crud.query_servers()
         games = set(server.game_name for server in servers)
@@ -69,6 +58,7 @@ def start_page(request):
             'regions': regions,
             'servers_json': grouped_data,
             'double_add': double_add,
+            'count_orders': count_orders
         }
 
         return render(request, 'main/index.html', context)
@@ -241,9 +231,141 @@ def delete_server(request):
 
 @login_required(login_url='users:login')
 def my_services(request):
+    try:
+        max_progress_value = Decimal(str(settings.MAX_PROGRESS_VALUE))
+    except Exception as e:
+        logger.error(f"Error converting settings.MAX_PROGRESS_VALUE to Decimal: {e}")
+        max_progress_value = Decimal('100.00')
+
     user_id = request.user.id
     my_service_commission_list = commissions_crud.get_my_service_list(user_id)
+    logger.info(f"my_service_commission_list__{my_service_commission_list}")
+
+    # Define content types for your order models
+    sold_order_ct = ContentType.objects.get_for_model(SoldOrders)
+    internal_order_ct = ContentType.objects.get_for_model(InternalOrder)
+
     my_clients_provide_service = crud.get_clients_provide_service(user_id)
     logger.info(f"my_clients_provide_service__{my_clients_provide_service}")
-    return render(request, 'main/my_services.html', context={"my_services": my_service_commission_list,
-                                                             'my_clients_provide_service': my_clients_provide_service})
+
+    client_total_commissions = defaultdict(Decimal)
+
+    # Sum commissions for each client from the my_service_commission_list
+    for service in my_service_commission_list:
+        client_username = None
+        # Check the content type of the related order
+        if service.content_type == sold_order_ct:
+            # Assuming SoldOrder has a 'seller' field
+            if hasattr(service.order, 'seller') and service.order.seller and hasattr(service.order.seller, 'auth_user'):
+                client_username = service.order.seller.auth_user.username
+            else:
+                logger.warning(f"SoldOrder for CommissionBreakdown ID {service.id} missing 'seller' or 'auth_user'. Skipping.")
+                continue
+        elif service.content_type == internal_order_ct:
+            # InternalOrder has 'internal_seller' field
+            if hasattr(service.order, 'internal_seller') and service.order.internal_seller and hasattr(service.order.internal_seller, 'auth_user'):
+                client_username = service.order.internal_seller.auth_user.username
+            else:
+                logger.warning(f"InternalOrder for CommissionBreakdown ID {service.id} missing 'internal_seller' or 'auth_user'. Skipping.")
+                continue
+        else:
+            logger.warning(f"Skipping CommissionBreakdown ID {service.id}: Unexpected content type '{service.content_type}'.")
+            continue
+
+        if client_username:
+            client_total_commissions[client_username] += service.amount
+            logger.debug(
+                f"Commission for {client_username}: {service.amount}, Current total: {client_total_commissions[client_username]}")
+
+    logger.debug(f"client_total_commissions (after summing): {client_total_commissions}")
+    logger.debug(f"max_progress_value: {max_progress_value}")
+
+    enriched_clients_provide_service = {
+        'mentor': [],
+        'recruiter': [],
+        'renter_lvl': {}
+    }
+
+    # Process Mentors (no progress bar)
+    logger.debug(f"Processing Mentors. Raw data: {my_clients_provide_service.get('mentor', [])}")
+    for client_name in my_clients_provide_service.get('mentor', []):
+        amount = client_total_commissions.get(client_name, Decimal('0.0'))
+        enriched_clients_provide_service['mentor'].append({
+            'client_name': client_name,
+            'total_received_amount': amount,
+        })
+
+    # Process Recruiters (with progress bar)
+    logger.debug(f"Processing Recruiters. Raw data: {my_clients_provide_service.get('recruiter', [])}")
+    for client_name in my_clients_provide_service.get('recruiter', []):
+        amount = client_total_commissions.get(client_name, Decimal('0.0'))
+        if max_progress_value == Decimal('0'):
+            percentage = Decimal('0.0')
+            logger.warning(f"max_progress_value is 0. Setting percentage to {percentage} for recruiter {client_name}.")
+        else:
+            percentage = min((amount / max_progress_value) * 100, Decimal('100.0'))
+
+        logger.debug(f"Recruiter: {client_name}, Amount: {amount}, Calculated Percentage: {percentage}")
+
+        enriched_clients_provide_service['recruiter'].append({
+            'client_name': client_name,
+            'total_received_amount': amount,
+            'total_received_percentage': percentage
+        })
+
+    # Process Renters (by seller and then by level - no progress bar)
+    logger.debug(f"Processing Renters. Raw data: {my_clients_provide_service.get('renter_lvl', {})}")
+    for seller_name, levels in my_clients_provide_service.get('renter_lvl', {}).items():
+        enriched_levels = {}
+
+
+        # Revised processing for Renters:
+        lvl1_total_amount = Decimal('0.0')
+        lvl2_total_amount = Decimal('0.0')
+
+        # Filter commissions for the current seller_name and service type 'renter_lvl1'/'renter_lvl2'
+        for commission in my_service_commission_list:
+            commission_username = None
+            if commission.content_type == sold_order_ct:
+                if hasattr(commission.order, 'seller') and commission.order.seller and hasattr(commission.order.seller,
+                                                                                               'auth_user'):
+                    commission_username = commission.order.seller.auth_user.username
+            elif commission.content_type == internal_order_ct:
+                if hasattr(commission.order, 'internal_seller') and commission.order.internal_seller and hasattr(
+                        commission.order.internal_seller, 'auth_user'):
+                    commission_username = commission.order.internal_seller.auth_user.username
+
+            if commission_username == seller_name:  # Check if this commission belongs to the current seller
+                if commission.service_type == 'renter_lvl1':
+                    lvl1_total_amount += commission.amount
+                elif commission.service_type == 'renter_lvl2':
+                    lvl2_total_amount += commission.amount
+
+        if levels.get('renter_lvl1'):
+            logger.debug(
+                f"Renter Lvl1 ({seller_name}): Clients: {levels['renter_lvl1']}, Calculated Amount: {lvl1_total_amount}")
+
+            enriched_levels['renter_lvl1'] = {
+                'client_names': levels['renter_lvl1'],
+                'total_received_amount': lvl1_total_amount,
+            }
+
+        if levels.get('renter_lvl2'):
+            logger.debug(
+                f"Renter Lvl2 ({seller_name}): Clients: {levels['renter_lvl2']}, Calculated Amount: {lvl2_total_amount}")
+
+            enriched_levels['renter_lvl2'] = {
+                'client_names': levels['renter_lvl2'],
+                'total_received_amount': lvl2_total_amount,
+            }
+
+        enriched_clients_provide_service['renter_lvl'][seller_name] = enriched_levels
+
+    logger.debug(f"Final enriched_clients_provide_service: {enriched_clients_provide_service}")
+
+    return render(request, 'main/my_services.html', context={
+        "my_services": my_service_commission_list,
+        'my_clients_provide_service': enriched_clients_provide_service,
+        'max_progress_value': max_progress_value
+    })
+

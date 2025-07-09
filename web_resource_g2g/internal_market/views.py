@@ -1,6 +1,8 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.shortcuts import render
 
 from main.utils.logger_config import logger

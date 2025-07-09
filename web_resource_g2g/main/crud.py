@@ -869,3 +869,26 @@ def record_g2g_remainder_balance(seller_ids):
         created_time=timezone.now()
     )
     print(f"Загальний залишок g2g_remainder ({total_g2g_remainder}) успішно записано.")
+
+def get_count_orders(user_id):
+    try:
+        seller_id = Sellers.objects.get(auth_user_id=user_id)
+        sold_orders_history = (SoldOrders.objects.filter(seller_id=seller_id,
+                                                        status__in=['DELIVERED', 'COMPLETED'] )
+                               .select_related('server'))
+        sold_orders_count = sold_orders_history.count() if sold_orders_history else 0
+
+    except Sellers.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
+
+    try:
+        internal_orders = InternalOrder.objects.filter(
+            Q(internal_seller__auth_user_id=user_id,
+            status__in=['DELIVERED', 'COMPLETED'])
+        ).select_related('server')
+        internal_orders_count = internal_orders.count() if internal_orders else 0
+    except InternalOrder.DoesNotExist:
+        logger.error(f"Seller with auth_user_id {user_id} does not exist.")
+    internal_orders = get_internal_orders_for_history(user_id)
+    count_orders = sold_orders_count + internal_orders_count
+    return count_orders

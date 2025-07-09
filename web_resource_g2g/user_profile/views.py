@@ -1,9 +1,15 @@
 import calendar
 import datetime
+import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+from django.core.validators import validate_email
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.conf import settings
 
@@ -187,6 +193,74 @@ def withdraw_page(request):
         'form': form,
     }
     return render(request, 'user_profile/withdraw_page.html', context)
+
+
+def invite_friend(request):
+    if request.method == 'POST':
+
+        try:
+            data = json.loads(request.body)
+            friend_email = data.get('email')
+            ref_url = f"{settings.HOST}/login/?ref={request.user.username}"
+            inviter_user = request.user
+            logger.info(f"email__{friend_email},"
+                        f" ref_url__{ref_url},"
+                        f" inviter_user__{inviter_user}")
+
+
+            if not friend_email:
+                return JsonResponse({'message': 'Email не може бути порожнім.'}, status=400)
+
+            try:
+                validate_email(friend_email)
+            except ValidationError:
+                return JsonResponse({'message': 'Будь ласка, введіть дійсну адресу електронної пошти.'}, status=400)
+
+            if not inviter_user.is_authenticated:
+                return JsonResponse({'message': 'Ви повинні бути авторизованим, щоб запрошувати друзів.'}, status=401)
+
+            # Відправка повідомлення на електронну адресу
+
+            context = {
+                'inviter_name': inviter_user.username,
+                'inviter_email': inviter_user.email,
+                'registration_link': ref_url,
+                # Замініть на реальне посилання для реєстрації
+                'website_link': ref_url,  # Замініть на реальне посилання на ваш сайт
+                'year': timezone.now().year,
+            }
+            subject = 'Ласкаво просимо до Wow Service Portal!'
+            template_name = 'user_profile/invite_friend.html'  # Шлях до вашого HTML-шаблону
+            html_message = render_to_string(template_name, context)
+            plain_message = (
+                f"Привіт!\n\n"
+                f"Ваш друг, {context['inviter_name']} ({context['inviter_email']}), "
+                f"запрошує вас приєднатися до Wow Service Portal.\n\n"
+                f"Зареєструйтесь за посиланням: {context['registration_link']}\n\n"
+                f"З повагою,\n"
+                f"Команда Wow Service Portal\n"
+            )
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [friend_email]
+
+            try:
+                send_mail(subject, plain_message, from_email, recipient_list, html_message=html_message,
+                          fail_silently=False)
+                logger.info(f"Запрошення успішно відправлено на {friend_email} від {inviter_user.email}.")
+                return JsonResponse({'message': 'Запрошення успішно надіслано!'})
+            except Exception as e:
+                logger.error(f"Помилка при відправці запрошення на {friend_email} від {inviter_user.email}: {e}",
+                             exc_info=True)
+                return JsonResponse({'message': 'Помилка при надсиланні запрошення. Спробуйте ще раз.'}, status=500)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Недійсний JSON-запит.'}, status=400)
+        except Exception as e:
+            logger.error(f"Неочікувана помилка у invite_friend_api: {e}", exc_info=True)
+            return JsonResponse({'message': f'Внутрішня помилка сервера: {str(e)}'}, status=500)
+    return JsonResponse({'message': 'Дозволено лише POST-запити.'}, status=405)
+
+
 
 def deposit_page(request):
     return render(request, 'user_profile/deposit_page.html')

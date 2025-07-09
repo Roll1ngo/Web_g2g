@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запрошення до Wow Service Portal</title>
+    <style>
+        /* Загальні стилі для тіла листа */
+        body {
+            font-family: 'Inter', sans-serif; /* Використовуємо Inter або стандартний шрифт */
+            background-color: #f8f9fa; /* Світлий фон */
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            width: 100% !important;
+        }
+
+        /* Контейнер листа */
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* Заголовок листа */
+        .header {
+            background-color: #007bff; /* Основний синій колір */
+            color: #ffffff;
+            padding: 25px 30px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        /* Тіло листа */
+        .content {
+            padding: 30px;
+            color: #343a40;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .content p {
+            margin-bottom: 15px;
+        }
+
+        /* Кнопка */
+        .button-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #28a745; /* Зелений колір для кнопки */
+            color: #ffffff;
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 17px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3); /* Тінь для кнопки */
+        }
+
+        .button:hover {
+            background-color: #218838; /* Темніший зелений при наведенні */
+        }
+
+        /* Футер листа */
+        .footer {
+            background-color: #f1f1f1;
+            color: #6c757d;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 13px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Адаптивність для мобільних пристроїв */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+                margin: 0;
+                border-radius: 0;
+            }
+            .header, .content, .footer {
+                padding: 20px;
+            }
+            .button {
+                width: 90%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            Запрошення до Wow Service Portal!
+        </div>
+        <div class="content">
+            <p>Привіт!</p>
+            <p>Ваш друг, <strong>{{ inviter_name }}</strong> ({{ inviter_email }}), запрошує вас приєднатися до Wow Service Portal – платформи для швидких та безпечних угод!</p>
+            <p>Ми пропонуємо широкий спектр послуг та зручний внутрішній ринок. Приєднуйтесь до нашої спільноти та почніть заробляти вже сьогодні!</p>
+            <p>Щоб зареєструватися та почати, просто натисніть кнопку нижче:</p>
+            <div class="button-container">
+                <a href="{{ registration_link }}" class="button">Зареєструватися зараз</a>
+            </div>
+            <p>Якщо кнопка не працює, ви можете перейти за посиланням: <br><a href="{{ registration_link }}">{{ registration_link }}</a></p>
+            <p>Будемо раді бачити вас серед наших користувачів!</p>
+            <p>З повагою,<br>Команда Wow Service Portal</p>
+        </div>
+        <div class="footer">
+            &copy; {{ year }} Wow Service Portal. Всі права захищені.<br>
+            <a href="{{ website_link }}">{{ website_link }}</a>
+        </div>
+    </div>
+</body>
+</html>
