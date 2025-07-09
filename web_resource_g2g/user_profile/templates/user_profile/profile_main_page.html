@@ -223,6 +223,44 @@
             color: #888;
             margin-left: auto;
         }
+
+        /* Стилі для картки запрошення друга */
+        .invite-friend-card .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 1rem;
+        }
+        .invite-friend-card .btn-primary {
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .invite-friend-card .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .invite-friend-card .alert {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .invite-friend-card .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .invite-friend-card .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .invite-friend-card .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-color: #bee5eb;
+        }
     </style>
 {% endblock %}
 
@@ -245,7 +283,7 @@
     {# Основний ряд для всіх карток #}
     <div class="row justify-content-center">
         <div class="col-md-10">
-            {# Секція Огляду та Балансу #}
+            {# Секція Огляду та Балансу (існуючий код) #}
             <div class="personal-cabinet-card balance-section">
                 <div class="card-header">
                     <i class="fas fa-money-bill-wave"></i> Огляд Балансу
@@ -331,7 +369,29 @@
                 </div>
             </div>
 
-            {# Новий блок: Загальна Інформація та Підтримка #}
+            {# НОВА КАРТКА: Запросити Друга #}
+            <div class="personal-cabinet-card invite-friend-card">
+                <div class="card-header">
+                    <i class="fas fa-user-plus"></i> Запросити Друга
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Надішліть запрошення другові, і він зможе приєднатися до нашого сервісу.</p>
+                    <form id="inviteFriendForm">
+                        <div class="mb-3">
+                            <label for="friendEmail" class="form-label">Email друга:</label>
+                            <input type="email" class="form-control" id="friendEmail" placeholder="example@example.com" required>
+                            <div id="emailError" class="text-danger mt-1" style="display: none;">Будь ласка, введіть дійсну адресу електронної пошти.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span id="buttonText">Надіслати Запрошення</span>
+                            <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </button>
+                        <div id="responseMessage" class="alert mt-3" style="display: none;"></div>
+                    </form>
+                </div>
+            </div>
+
+            {# Новий блок: Загальна Інформація та Підтримка (існуючий код) #}
             <div class="personal-cabinet-card">
                 <div class="card-header">
                     <i class="fas fa-info-circle"></i> Загальна Інформація та Підтримка
@@ -427,7 +487,7 @@
                 </div>
             </div>
 
-            {# Секція Швидких Посилань #}
+            {# Секція Швидких Посилань (існуючий код) #}
             <div class="personal-cabinet-card">
                 <div class="card-header">
                     <i class="fas fa-bolt"></i> Швидкі Дії
@@ -470,7 +530,7 @@
                 </div>
             </div>
 
-            {# Новий блок: Довідка та Посібники #}
+            {# Новий блок: Довідка та Посібники (існуючий код) #}
             <div class="personal-cabinet-card">
                 <div class="card-header">
                     <i class="fas fa-book-open"></i> Довідка та Посібники
@@ -532,4 +592,95 @@
         </div> {# Закриття col-md-10, який містить усі картки #}
     </div> {# Закриття row justify-content-center, який містить col-md-10 з картками #}
 </div> {# Закриття container #}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inviteFriendForm = document.getElementById('inviteFriendForm');
+        const friendEmailInput = document.getElementById('friendEmail');
+        const emailError = document.getElementById('emailError');
+        const responseMessage = document.getElementById('responseMessage');
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Функція для валідації email
+        function isValidEmail(email) {
+            // Проста регулярний вираз для валідації email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Функція для відображення повідомлення
+        function showMessage(message, type) {
+            responseMessage.textContent = message;
+            responseMessage.className = `alert mt-3 alert-${type}`;
+            responseMessage.style.display = 'block';
+        }
+
+        // Обробник події відправки форми
+        inviteFriendForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Запобігаємо стандартній відправці форми
+
+            const email = friendEmailInput.value.trim();
+            emailError.style.display = 'none'; // Приховуємо попередні помилки
+            responseMessage.style.display = 'none'; // Приховуємо попередні повідомлення
+
+            if (!isValidEmail(email)) {
+                emailError.style.display = 'block';
+                return;
+            }
+
+            // Показуємо спінер і вимикаємо кнопку
+            buttonText.style.display = 'none';
+            loadingSpinner.style.display = 'inline-block';
+            inviteFriendForm.querySelector('button[type="submit"]').disabled = true;
+
+            try {
+                // Імітація надсилання на бекенд
+                // Замініть '/api/invite-friend/' на ваш реальний URL бекенду
+                const response = await fetch("{% url 'user_profile:invite_friend' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken') // Потрібна функція getCookie
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showMessage(data.message || 'Запрошення успішно надіслано!', 'success');
+                    friendEmailInput.value = ''; // Очищаємо поле вводу
+                } else {
+                    const errorData = await response.json();
+                    showMessage(errorData.message || 'Помилка при надсиланні запрошення. Спробуйте ще раз.', 'danger');
+                }
+            } catch (error) {
+                console.error('Помилка мережі або сервера:', error);
+                showMessage('Виникла помилка підключення. Будь ласка, перевірте ваше інтернет-з\'єднання.', 'danger');
+            } finally {
+                // Приховуємо спінер і вмикаємо кнопку
+                buttonText.style.display = 'inline';
+                loadingSpinner.style.display = 'none';
+                inviteFriendForm.querySelector('button[type="submit"]').disabled = false;
+            }
+        });
+
+        // Функція для отримання CSRF-токена (потрібна для Django POST запитів)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
 {% endblock %}

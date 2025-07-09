@@ -80,7 +80,8 @@ def get_seller_services_info(seller_id, server_id):
         return None  # Or raise an exception if appropriate
 
     mentor_recruiter_from_seller_info_dict = model_to_dict(mentor_recruiter_from_seller)
-    mentor_recruiter_from_seller_info_dict.update(renter_info)
+    if renter_info:
+        mentor_recruiter_from_seller_info_dict.update(renter_info)
 
     return mentor_recruiter_from_seller_info_dict
 
