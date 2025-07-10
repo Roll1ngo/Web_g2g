@@ -508,8 +508,8 @@
                 </div>
             </div>
 
-             {# НОВА КАРТКА: Запросити Друга #}
-            <div class="personal-cabinet-card invite-friend-card">
+            {# НОВА КАРТКА: Запросити Друга #}
+             <div class="personal-cabinet-card invite-friend-card" id="inviteFriendCard">
                 <div class="card-header">
                     <i class="fas fa-user-plus"></i> Запросити Друга
                 </div>
@@ -527,8 +527,21 @@
                         </button>
                         <div id="responseMessage" class="alert mt-3" style="display: none;"></div>
                     </form>
+
+                    <hr class="my-4"> {# Додаємо горизонтальну лінію для візуального відділення #}
+
+                    <div class="mb-3">
+                        <label for="referralLink" class="form-label">Ваше реферальне посилання:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="referralLink" value="{{ref_url}}" readonly>
+                            <button class="btn btn-outline-secondary" type="button" id="copyReferralLink">
+                                <i class="fas fa-copy me-2"></i> Скопіювати
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
 
 
             {# Новий блок: Довідка та Посібники (існуючий код) #}
@@ -683,5 +696,55 @@
             return cookieValue;
         }
     });
+</script>
+<script>
+document.getElementById('copyReferralLink').addEventListener('click', function() {
+    var referralLinkInput = document.getElementById('referralLink');
+    referralLinkInput.select();
+    referralLinkInput.setSelectionRange(0, 99999); // Для мобільних пристроїв
+
+    try {
+        navigator.clipboard.writeText(referralLinkInput.value)
+            .then(() => {
+                // Додаємо візуальний фідбек користувачеві
+                this.textContent = 'Скопійовано!';
+                this.classList.add('btn-success');
+                this.classList.remove('btn-outline-secondary');
+                const originalText = '<i class="fas fa-copy me-2"></i> Скопіювати';
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-secondary');
+                }, 2000); // Повернення оригінального стану через 2 секунди
+            })
+            .catch(err => {
+                console.error('Не вдалося скопіювати посилання: ', err);
+                // Запасний варіант для старих браузерів або якщо navigator.clipboard не доступний
+                document.execCommand('copy');
+                this.textContent = 'Скопійовано!';
+                 this.classList.add('btn-success');
+                this.classList.remove('btn-outline-secondary');
+                const originalText = '<i class="fas fa-copy me-2"></i> Скопіювати';
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+    } catch (err) {
+        console.error('Не вдалося скопіювати посилання (резервний варіант): ', err);
+        // Резервний варіант для випадків, коли navigator.clipboard не працює
+        document.execCommand('copy');
+        this.textContent = 'Скопійовано!';
+        this.classList.add('btn-success');
+        this.classList.remove('btn-outline-secondary');
+        const originalText = '<i class="fas fa-copy me-2"></i> Скопіювати';
+        setTimeout(() => {
+            this.innerHTML = originalText;
+            this.classList.remove('btn-success');
+            this.classList.add('btn-outline-secondary');
+        }, 2000);
+    }
+});
 </script>
 {% endblock %}

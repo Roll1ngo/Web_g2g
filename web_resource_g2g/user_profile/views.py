@@ -22,6 +22,8 @@ from user_profile.models import WithdrawalRequest # Імпортуємо мод�
 
 def profile_main_page(request):
     user_id = request.user.id
+    ref_url = f"{settings.HOST}/login/?ref={request.user.username}"
+
     # Припускаємо, що main_crud.check_exist_telegram_id існує
     telegram_status = main_crud.check_exist_telegram_id(user_id)
 
@@ -112,6 +114,7 @@ def profile_main_page(request):
         'is_button_disabled': is_button_disabled, # Нова змінна контексту для кнопки
         'next_payment_date_display': next_payment_date_display, # Нова змінна контексту для дати
         'expected_completion_date': expected_completion_date, # Нова змінна для термінового виводу
+        'ref_url': ref_url
     }
     logger.info(f"withdrawal_info__{withdrawal_request_obj}, is_button_disabled__{is_button_disabled}, next_payment_date_display__{next_payment_date_display}, expected_completion_date__{expected_completion_date}")
     return render(request, 'user_profile/profile_main_page.html', context)
@@ -123,6 +126,7 @@ def rules(request):
 @login_required
 def withdraw_page(request):
     user_id = request.user.id
+
     if request.method == 'POST':
         # Спробуємо отримати існуючий запит на виведення для поточного користувача
         try:
@@ -188,7 +192,6 @@ def withdraw_page(request):
             form = WithdrawalRequestForm(instance=existing_withdrawal_request)
         except WithdrawalRequest.DoesNotExist:
             form = WithdrawalRequestForm()
-
     context = {
         'form': form,
     }
