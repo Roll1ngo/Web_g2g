@@ -369,28 +369,6 @@
                 </div>
             </div>
 
-            {# НОВА КАРТКА: Запросити Друга #}
-            <div class="personal-cabinet-card invite-friend-card">
-                <div class="card-header">
-                    <i class="fas fa-user-plus"></i> Запросити Друга
-                </div>
-                <div class="card-body">
-                    <p class="card-text">Надішліть запрошення другові, і він зможе приєднатися до нашого сервісу.</p>
-                    <form id="inviteFriendForm">
-                        <div class="mb-3">
-                            <label for="friendEmail" class="form-label">Email друга:</label>
-                            <input type="email" class="form-control" id="friendEmail" placeholder="example@example.com" required>
-                            <div id="emailError" class="text-danger mt-1" style="display: none;">Будь ласка, введіть дійсну адресу електронної пошти.</div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">
-                            <span id="buttonText">Надіслати Запрошення</span>
-                            <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                        </button>
-                        <div id="responseMessage" class="alert mt-3" style="display: none;"></div>
-                    </form>
-                </div>
-            </div>
-
             {# Новий блок: Загальна Інформація та Підтримка (існуючий код) #}
             <div class="personal-cabinet-card">
                 <div class="card-header">
@@ -529,6 +507,29 @@
                     </div>
                 </div>
             </div>
+
+             {# НОВА КАРТКА: Запросити Друга #}
+            <div class="personal-cabinet-card invite-friend-card">
+                <div class="card-header">
+                    <i class="fas fa-user-plus"></i> Запросити Друга
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Надішліть запрошення другові, і він зможе приєднатися до нашого сервісу. Отримуйте додаткові 100$ за кожного друга.</p>
+                    <form id="inviteFriendForm">
+                        <div class="mb-3">
+                            <label for="friendEmail" class="form-label">Email друга:</label>
+                            <input type="email" class="form-control" id="friendEmail" placeholder="example@example.com" required>
+                            <div id="emailError" class="text-danger mt-1" style="display: none;">Будь ласка, введіть дійсну адресу електронної пошти.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <span id="buttonText">Надіслати Запрошення</span>
+                            <span id="loadingSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                        </button>
+                        <div id="responseMessage" class="alert mt-3" style="display: none;"></div>
+                    </form>
+                </div>
+            </div>
+
 
             {# Новий блок: Довідка та Посібники (існуючий код) #}
             <div class="personal-cabinet-card">
