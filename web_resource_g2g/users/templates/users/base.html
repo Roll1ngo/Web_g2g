@@ -90,6 +90,15 @@
     animation: pulse-blink 2s infinite ease-in-out; /* 2s тривалість, нескінченно */
   }
 
+  @keyframes blink {
+      0%, 100% { opacity: 1; } /* Повний блиск */
+      50% { opacity: 0; }    /* Повна прозорість */
+  }
+
+  .blinking-link {
+      animation: blink 3s infinite; /* Назва анімації, тривалість, безкінечне повторення */
+  }
+
   </style>
 
 
@@ -137,7 +146,7 @@
                                 <a href="{% url 'main:show_order_info'%}" class="nav-link me-3">Активне замовлення</a>
                                 <a href="{% url 'main:my_services' %}" class="nav-link me-3">Мої послуги</a>
                                 <a href="{% url 'internal_market:main_page' %}" class="nav-link me-3">Внутрішній Ринок</a>
-                                <a href="{% url 'main:history_orders' %}" class="nav-link me-3">Історія замовлень</a>
+                                <a href="{% url 'user_profile:profile_main_page' %}#inviteFriendCard" class="nav-link me-3 blinking-link" style="color: red;">Приведи друга та заробляйте разом! </a>
                                 <a href="{% url 'user_profile:profile_main_page' %}" class="nav-link me-3">Профіль {{user.username}}</a>
                                 <form action="{% url 'users:logout' %}" method="post">
                                     {% csrf_token %}
