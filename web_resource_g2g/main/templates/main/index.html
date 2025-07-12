@@ -120,7 +120,7 @@
         <span style="margin-left: 10px; color: black;">
           Для можливості продавати на 3 серверах одночасно, виконайте 5 замовлень ({{ count_orders }}/5)
         </span>
-      {% elif bets_list|length >= 3 and bets_list|length < 5 %} {# Для 3-4 серверів #}
+      {% elif bets_list|length >= 3 and bets_list|length < 5 and count_orders < 10 %} {# Для 3-4 серверів #}
         <button class="save-button" disabled>Додати сервер</button>
         <span style="margin-left: 10px; color: black;">
           Для можливості продавати на 5 і більше серверах одночасно, виконайте 10 замовлень ({{ count_orders }}/10)
