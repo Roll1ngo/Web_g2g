@@ -5,6 +5,7 @@ from decimal import Decimal
 from django import forms
 from django.contrib import admin, messages
 from django.contrib.admin import SimpleListFilter
+from django.contrib.auth.admin import UserAdmin, User
 
 from django.templatetags.static import static
 from django.urls import reverse
@@ -23,6 +24,20 @@ from internal_market import crud as internal_market_crud
 from internal_market.models import InternalOrder
 from archive_payments import crud as archive_payments_crud
 from user_profile import crud as user_profile_crud
+
+
+class CustomUserAdmin(UserAdmin):
+    # Включаємо 'date_joined' до списку фільтрів
+    list_filter = UserAdmin.list_filter + ('date_joined',)
+
+    # Ви можете також додати 'date_joined' до списку відображуваних полів, якщо його ще немає
+    list_display = UserAdmin.list_display + ('date_joined',)
+# Скасовуємо реєстрацію стандартного UserAdmin (якщо він уже зареєстрований)
+try:
+    admin.site.unregister(User)
+except admin.exceptions.NotRegistered:
+    pass
+admin.site.register(User, CustomUserAdmin)
 
 
 class SellerExistingUserFilter(admin.SimpleListFilter):
