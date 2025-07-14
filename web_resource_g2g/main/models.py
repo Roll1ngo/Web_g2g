@@ -120,7 +120,7 @@ class SoldOrders(models.Model):
     technical_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     to_be_earned = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     trade_mode = models.CharField(max_length=255)
-    created_time = models.DateTimeField(default=datetime.now().replace(microsecond=0))
+    created_time = models.DateTimeField(auto_now_add=True)
     send_message = models.BooleanField(default=False)
     path_to_video = models.CharField(max_length=255, blank=True)
     download_video_status = models.BooleanField(default=False, null=True)
@@ -177,7 +177,7 @@ class ChangeStockHistory(models.Model):
     server = models.ForeignKey(ServerUrls, on_delete=models.CASCADE)
     stock = models.IntegerField()
     active_rate_record = models.BooleanField(default=False)
-    created_time = models.DateTimeField(default=timezone.now)  # Час виплати
+    created_time = models.DateTimeField(auto_now_add=True)  # Час виплати
     description = models.TextField(blank=True, null=True)
 
     class Meta:

@@ -20,7 +20,7 @@ class InternalOrder(models.Model):
     owner_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     technical_commission = models.DecimalField(max_digits=10, decimal_places=3, default=0)
     trade_mode = models.CharField(max_length=255)
-    created_time = models.DateTimeField(default=datetime.now().replace(microsecond=0))
+    created_time = models.DateTimeField(auto_now_add=True)
     send_message = models.BooleanField(default=False)
     path_to_video = models.CharField(max_length=255, blank=True, default='')
     download_video_status = models.BooleanField(default=False, null=True)

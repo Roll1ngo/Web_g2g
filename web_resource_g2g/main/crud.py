@@ -638,7 +638,6 @@ def create_record_to_stock_history_table(row_id, description, active_rate=None):
         stock=offer.stock,
         active_rate_record=offer.active_rate if active_rate is None else active_rate,
         description=description,
-        created_time=timezone.now()
     )
     stock_row.save()
     logger.info("New record to stock table created.")
