@@ -816,7 +816,6 @@ class AddOrderAdmin(admin.ModelAdmin):
         'quantity',
         'trade_mode',
         'total_amount',
-        'created_time'
     )
     # Всі поля доступні для редагування
     fields = (
@@ -829,7 +828,6 @@ class AddOrderAdmin(admin.ModelAdmin):
         'trade_mode',
         'total_amount',
         'g2g_remainder',
-        'created_time',
         'bought_by',
         'send_message',
         'send_message_to_buyer_status',
