@@ -1,4 +1,5 @@
 import asyncio
+import json
 import os
 from aiogram import Bot
 from aiogram.exceptions import TelegramNetworkError
@@ -9,7 +10,6 @@ from main.utils.logger_config import logger
 load_dotenv()
 BOT_TOKEN = os.getenv('TG_TOKEN')
 admins_tgs = {'Vlad': 190861163, 'Vitaliy': 190861163}
-
 
 async def send_messages_to_users(telegram_id, name, message):
     bot = Bot(token=BOT_TOKEN)
@@ -38,6 +38,10 @@ def send_messages_sync(telegram_id, name, message):
     response = asyncio.run(send_messages_to_users(telegram_id, name, message))
     return True if response else False
 
+def get_tg_chat_links():
+    with open('tg_id_tg_chat_dict.json', 'r') as f:
+        tg_id_tg_chat_dict = json.load(f)
+    return tg_id_tg_chat_dict
 
 # 🔹 Використання:
 if __name__ == "__main__":
