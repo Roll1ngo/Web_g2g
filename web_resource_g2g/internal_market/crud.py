@@ -10,7 +10,9 @@ from main.models import Sellers, ServerUrls, OffersForPlacement
 from main.utils.logger_config import logger
 from main import crud as main_crud
 from main import calculate_commissions_crud as commissions_crud
-from main.utils.tg_bot_run import send_messages_sync
+from main.utils.tg_bot_run import send_messages_sync, get_tg_chat_links
+
+tg_links = get_tg_chat_links()
 
 
 def get_lots_for_sale(auth_user_id: int):
@@ -23,12 +25,16 @@ def get_lots_for_sale(auth_user_id: int):
             region=F('server_urls__region'),
             server_name=F('server_urls__server_name'),
             negative_balance_permission=F('sellers__negative_balance_permission'),
+            seller_name=F('sellers__auth_user__username'),
+            id_telegram = F('sellers__id_telegram'),
         ).exclude(sellers__auth_user__id=auth_user_id)
         .filter(active_rate=True, order_status=False)
         .order_by('server_name')
         .values(
             'id',
             'sellers',
+            'seller_name',
+            'id_telegram',
             'negative_balance_permission',
             'server_urls',
             'currency',

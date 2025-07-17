@@ -25,9 +25,12 @@ def main_page(request):
                                                                             'temp_password': password,
                                                                             'exist_username': bool_exist_username})
     lots_for_sale = internal_market_crud.get_lots_for_sale(request.user.id)
+    negative_balance_permission = internal_market_crud.get_permission_for_negative_balance(user_id)
+    logger.info(f"negative_balance_permission__{negative_balance_permission}")
     logger.info(f"lots_for_sale__{lots_for_sale}")
     return render(request, 'internal_market/internal_market_main.html',
-                  context={"lots_for_sale": lots_for_sale})
+                  context={"lots_for_sale": lots_for_sale,
+                           'negative_balance_permission': negative_balance_permission})
 
 
 def create_order_from_form(request):
