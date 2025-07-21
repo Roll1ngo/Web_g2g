@@ -164,27 +164,58 @@ def upload_video(request, sold_order_number):
     user = request.user.id
 
     if request.method == 'POST':
-        if 'video' in request.FILES:
-            video_file = request.FILES['video']
+        try:
+            total_chunks = int(request.POST.get('total_chunks'))
+            chunk = request.FILES.get('video_chunk')
+            chunk_number = int(request.POST.get('chunk_number'))
+            temp_filename = request.POST.get('filename')
             sent_gold = int(request.POST.get('sent_gold'))
 
-            try:
-                # Збереження файлу
-                filename, sold_order = crud.create_video_filename(request, sold_order_number)
-                filepath = os.path.join(settings.MEDIA_ROOT, 'videos', filename)  # Шлях до папки videos
-                with open(filepath, 'wb+') as destination:
-                    for chunk in video_file.chunks():
-                        destination.write(chunk)
-                logger.info(f"filepath__{filepath}")
-                response = crud.update_sold_order_when_video_download(user, sold_order, filepath, sent_gold)
+            logger.info(f"chunk__{chunk}")
+            logger.info(f"chunk_number__{chunk_number}")
+            logger.info(f"total_chunks__{total_chunks}")
+            logger.info(f"filename__{temp_filename}")
+            logger.info(f"sent_gold__{sent_gold}")
+
+            temp_dir = os.path.join(settings.MEDIA_ROOT, 'videos', f'tmp_{sold_order_number}')
+            os.makedirs(temp_dir, exist_ok=True)
+
+            chunk_path = os.path.join(temp_dir, f"{temp_filename}.part{chunk_number}")
+            with open(chunk_path, 'wb+') as destination:
+                for data in chunk.chunks():
+                    destination.write(data)
+
+            # Якщо це останній chunk
+            if chunk_number + 1 == total_chunks:
+                server_filename, sold_order = crud.create_video_filename(request, sold_order_number)
+                final_path = os.path.join(settings.MEDIA_ROOT, 'videos', server_filename)
+
+                with open(final_path, 'wb+') as final_file:
+                    for i in range(total_chunks):
+                        part_path = os.path.join(temp_dir, f"{temp_filename}.part{i}")
+                        with open(part_path, 'rb') as part_file:
+                            final_file.write(part_file.read())
+
+                # Очистка тимчасових файлів
+                for i in range(total_chunks):
+                    os.remove(os.path.join(temp_dir, f"{temp_filename}.part{i}"))
+                os.rmdir(temp_dir)
+
+                # Оновлення замовлення
+                response = crud.update_sold_order_when_video_download(user, sold_order, final_path, sent_gold)
                 logger.info(f"response__{response}")
 
-                return redirect('main:start_page')
-            except Exception as e:
-                messages.success(request, 'Error saving video')
+                return JsonResponse({'status': 'complete'})  # повідомити фронт що все ок
 
-        else:
-            messages.error(request, 'Будь ласка, виберіть файл.')
+            return JsonResponse({'status': f'chunk {chunk_number + 1}/{total_chunks} received'})
+
+        except Exception as e:
+            logger.error(f"Error uploading video chunk: {e}")
+            return JsonResponse({'error': 'Помилка при збереженні відео'}, status=500)
+
+    return JsonResponse({'error': 'Неправильний метод'}, status=400)
+
+
 
 
 @login_required(login_url='users:login')
