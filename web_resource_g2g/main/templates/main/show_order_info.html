@@ -52,6 +52,13 @@
     </div>
 </div>
 
+<!-- Overlay для індикатора -->
+<div id="uploadOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; color: white; font-size: 1.5rem;">
+
+    <div id="uploadProgress">Завантаження відео...</div>
+    <div class="spinner-border mt-3" role="status" style="width: 3rem; height: 3rem;"></div>
+</div>
+
 <script>
     const uploadButton = document.getElementById('uploadButton');
     const uploadForm = document.getElementById('uploadForm');
@@ -60,6 +67,8 @@
     const cancelUpload = document.getElementById('cancelUpload');
     const sent_goldInput = document.getElementById('sent_gold');
     const quantity = document.getElementById('quantity_gold');
+    const overlay = document.getElementById('uploadOverlay');
+    const progressText = document.getElementById('uploadProgress');
 
     uploadButton.addEventListener('click', () => {
         uploadForm.style.display = 'block';
@@ -75,29 +84,25 @@
 
     submitButton.addEventListener('click', () => {
         const file = videoFile.files[0];
-        const sent_gold = sent_goldInput.value;
+        const sent_gold = sent_goldInput.value.trim();
         const quantity_gold = parseInt(quantity.textContent, 10);
-
-        if (sent_gold > quantity_gold) {
-            alert("Відправлене золото не може перевищувати замовлене");
-            return;
-        }
-
-        if (!sent_gold) {
-            alert("Будь ласка, введіть кількість відправленого золота.");
-            return;
-        }
-
-        if (isNaN(sent_gold)) {
-            alert("Кількість відправленого золота має містити тільки цифри.");
-            return;
-        }
 
         if (!file) {
             alert("Будь ласка, оберіть файл.");
             return;
         }
 
+        if (!sent_gold || isNaN(sent_gold)) {
+            alert("Будь ласка, введіть коректну кількість золота.");
+            return;
+        }
+
+        if (parseInt(sent_gold) > quantity_gold) {
+            alert("Відправлене золото не може перевищувати замовлене.");
+            return;
+        }
+
+        // Починаємо завантаження
         uploadFileInChunks(file, sent_gold);
     });
 
@@ -105,6 +110,8 @@
         const chunkSize = 90 * 1024 * 1024;
         const totalChunks = Math.ceil(file.size / chunkSize);
         let currentChunk = 0;
+
+        overlay.style.display = 'flex';  // Показати overlay
 
         const uploadNextChunk = () => {
             const start = currentChunk * chunkSize;
@@ -122,21 +129,25 @@
             xhr.open('POST', `{% url 'main:upload_video' sold_order_number=sold_order_number %}`, true);
             xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
 
-            xhr.onload = function() {
+            xhr.onload = function () {
                 if (xhr.status === 200) {
                     currentChunk++;
+                    progressText.textContent = `Завантажено: ${(currentChunk / totalChunks * 100).toFixed(1)}%`;
                     if (currentChunk < totalChunks) {
                         uploadNextChunk();
                     } else {
+                        overlay.style.display = 'none';
                         alert('Відео успішно завантажено!');
                         window.location.href = '{% url 'main:start_page' %}';
                     }
                 } else {
+                    overlay.style.display = 'none';
                     alert('Помилка при завантаженні частини: ' + xhr.responseText);
                 }
             };
 
-            xhr.onerror = function() {
+            xhr.onerror = function () {
+                overlay.style.display = 'none';
                 alert('Помилка з\'єднання з сервером.');
             };
 
@@ -145,6 +156,18 @@
 
         uploadNextChunk();
     }
+
+    // Блокуємо всі посилання під час завантаження
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function (e) {
+            if (overlay.style.display === 'flex') {
+                e.preventDefault();
+                alert("Зачекайте завершення завантаження відео.");
+            }
+        });
+    });
 </script>
+
+
 
 {% endblock %}
