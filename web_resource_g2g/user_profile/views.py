@@ -26,6 +26,7 @@ def profile_main_page(request):
 
     # Припускаємо, що main_crud.check_exist_telegram_id існує
     telegram_status = main_crud.check_exist_telegram_id(user_id)
+    logger.info(f"Telegram status for user {user_id}: {telegram_status}")
 
     withdrawal_request_obj = None
     withdrawal_account_info = "Не вказано" # Значення за замовчуванням

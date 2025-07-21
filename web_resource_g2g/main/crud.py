@@ -808,7 +808,8 @@ def order_status_set_status(seller_id, server_id, status, reset_reserve=None):
     offer.save()
 
 def check_exist_telegram_id(user_id):
-    seller = Sellers.objects.filter(auth_user_id=user_id).first()
+    seller = Sellers.objects.filter(auth_user=user_id).first()
+    logger.info(f"seller.id_telegram__{seller.id_telegram}")
     return True if seller.id_telegram else False
 
 def get_email_password(user_id):
