@@ -672,7 +672,7 @@ class OffersForPlacementForm(forms.ModelForm):
         self.fields['duration'].initial = 3
         self.fields['auction_house'].initial = False
         self.fields['percent_offset'].initial = 0
-        self.fields['delivery_online_hrs'].initial = 18
+        self.fields['delivery_online_hrs'].initial = 1
         self.fields['delivery_offline_hrs'].initial = 6
         self.fields['double_minimal_mode_status'].initial = False
         self.fields['reserve_stock'].initial = 0
