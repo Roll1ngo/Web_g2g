@@ -452,6 +452,7 @@ def get_orders_with_balance(user_id, sold_orders, internal_orders):
 
     # Сортуємо за часом створення (від найстарішого до найновішого)
     all_orders.sort(key=lambda x: x.created_time, reverse=False)
+    logger.info(f"all_orders__{all_orders}")
 
     total_earned = 0  # Початковий баланс
     orders_with_balance = []
@@ -484,21 +485,16 @@ def get_orders_with_balance(user_id, sold_orders, internal_orders):
             else:
                 if order.internal_seller.auth_user_id == user_id and not order.paid_in_salary:
                     total_earned += decimal.Decimal(order.earned_without_admins_commission)
-                    orders_with_balance.append({
-                        'order': order,
-                        'current_balance': total_earned,
-                        'type': 'internal_order'
-                    })
                 elif (order.internal_buyer and order.internal_buyer.auth_user_id == user_id
                       and not order.paid_in_salary):
                     order.total_amount = decimal.Decimal(-order.total_amount)
                     order.earned_without_admins_commission = float(order.total_amount)
                     total_earned += decimal.Decimal(order.total_amount)
-                    orders_with_balance.append({
-                        'order': order,
-                        'current_balance': total_earned,
-                        'type': 'internal_order'
-                    })
+                orders_with_balance.append({
+                    'order': order,
+                    'current_balance': total_earned,
+                    'type': 'internal_order'
+                })
 
     # Реверсуємо список, щоб найновіше замовлення було першим
     orders_with_balance.reverse()
