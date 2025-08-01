@@ -9,6 +9,7 @@ from main.utils.logger_config import logger
 from internal_market import crud as internal_market_crud
 from main import crud as main_crud
 from django.http import JsonResponse
+from django.conf import settings
 
 
 @login_required(login_url='users:login')
@@ -30,7 +31,9 @@ def main_page(request):
     logger.info(f"lots_for_sale__{lots_for_sale}")
     return render(request, 'internal_market/internal_market_main.html',
                   context={"lots_for_sale": lots_for_sale,
-                           'negative_balance_permission': negative_balance_permission})
+                           'negative_balance_permission': negative_balance_permission,
+                           'min_purchase_cost': settings.MIN_PURCHASE_COST,  # Передаємо значення з settings
+                           })
 
 
 def create_order_from_form(request):
