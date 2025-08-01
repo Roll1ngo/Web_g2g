@@ -90,7 +90,6 @@ def get_reserved_funds_amount(user_id):
     reserved_funds = ReservedFunds.objects.filter(user=User.objects.get(id=user_id),
                                                   reserve_type='withdrawal',
                                                   status__in=['pending', 'paid'])
-    logger.info(f"reserved_funds__{reserved_funds} for user_id__{user_id}")
     if reserved_funds:
         amount = reserved_funds.aggregate(total_amount=models.Sum('amount'))['total_amount']
         logger.info(f"reserved_funds__{amount} for user_id__{user_id}")
