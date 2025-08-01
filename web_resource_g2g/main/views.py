@@ -227,7 +227,6 @@ def show_history_orders(request):
     sold_orders = crud.get_sold_orders_for_history(user_id)
     internal_orders = crud.get_internal_orders_for_history(user_id)
     orders_with_balance = crud.get_orders_with_balance(user_id, sold_orders, internal_orders)
-    logger.info(f"orders_with_balance__{orders_with_balance}")
 
     # Фільтрація за статусом виплати
     if payment_status:
