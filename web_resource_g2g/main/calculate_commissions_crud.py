@@ -98,8 +98,10 @@ def get_breakdown_commissions(seller_id):
 
 def calculate_owner_technical_commissions(seller_id, server_id,
                                           total_amount,
+                                          order_quantity,
                                           exist_exchange_commission=True,
-                                          internal_order=False):
+                                          internal_order=False,
+                                          ):
     logger.info(f"seller_id__{seller_id}, server_id__{server_id}, total_amount__{total_amount}")
     global_commissions_rates = get_global_commissions_rates()
     internal_exchange_percent = Decimal(global_commissions_rates['internal_exchange_percent'])
@@ -133,9 +135,9 @@ def calculate_owner_technical_commissions(seller_id, server_id,
             technical_commission / Decimal(100))
     owner_commission = to_be_earned_without_exchange_commission * (
             owner_commission / Decimal(100))
-
+    unit_price = earned_without_service_commission / order_quantity if order_quantity else 0
     return (round(to_be_earned_without_exchange_commission, 3), round(earned_without_service_commission,3),
-            round(technical_commission, 3), round(owner_commission, 3), seller_interest_rate)
+            round(technical_commission, 3), round(owner_commission, 3), seller_interest_rate, round(unit_price, 3))
 
 
 def calculate_and_record_mentor_renter_recruiter_commissions(seller_id, server_id,

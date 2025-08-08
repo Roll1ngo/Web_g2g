@@ -899,10 +899,14 @@ class AddOrderAdmin(admin.ModelAdmin):
         order_quantity = obj.quantity
         total_amount = Decimal(obj.total_amount)  # Перетворюємо в Decimal
 
-        (to_be_earned_without_exchange_commission, earned_without_service_commission, technical_commission,
-         owner_commission, seller_rate) = commissions_crud.calculate_owner_technical_commissions(seller_id,
-                                                                                                 server_id,
-                                                                                                 total_amount)
+        (to_be_earned_without_exchange_commission,
+         earned_without_service_commission, technical_commission,
+         owner_commission,
+         seller_rate,
+         unit_price) = commissions_crud.calculate_owner_technical_commissions(seller_id,
+                                                                              server_id,
+                                                                              total_amount,
+                                                                              order_quantity=order_quantity)
 
         # Заповнюємо приховані поля значеннями за замовчанням
         if not change:  # Перевіряємо, що це створення нового об'єкта
@@ -922,7 +926,7 @@ class AddOrderAdmin(admin.ModelAdmin):
             obj.earned_without_admins_commission = earned_without_service_commission
             obj.technical_commission = technical_commission
             obj.owner_commission = owner_commission
-            obj.price_unit = earned_without_service_commission / order_quantity if order_quantity else 0
+            obj.price_unit = unit_price
 
         # Вивід результатів перед збереженням
         logger.warning(f"Загальна вартість: {obj.total_amount}")
