@@ -142,16 +142,17 @@ def create_order(user_id, internal_order_data):
     main_crud.change_offer_stock_when_create_order(server_id, internal_seller_id, quantity)
 
     (to_be_earned_without_exchange_commission, earned_without_service_commission, technical_commission,
-     owner_commission, seller_rate) = commissions_crud.calculate_owner_technical_commissions(internal_seller_id,
+     owner_commission, seller_rate, unit_price) = commissions_crud.calculate_owner_technical_commissions(internal_seller_id,
                                                                                              server_id.id,
                                                                                              total_amount,
                                                                                              exist_exchange_commission=
                                                                                              False,
-                                                                                             internal_order=True)
+                                                                                             internal_order=True,
+                                                                                             order_quantity=quantity)
     logger.info(f"to_be_earned_without_exchange_commission__{to_be_earned_without_exchange_commission},"
                 f"earned_without_service_commission__{earned_without_service_commission},"
                 f"technical_commission__{technical_commission}, owner_commission_{owner_commission},"
-                f"seller_rate__{seller_rate}")
+                f"seller_rate__{seller_rate}, unit_price__{unit_price}")
 
     new_internal_order = InternalOrder.objects.create(server=server_id,
                                                       internal_seller=internal_seller_id,
@@ -159,7 +160,7 @@ def create_order(user_id, internal_order_data):
                                                       trade_mode=internal_order_data['delivery_method'],
                                                       character_name=internal_order_data['character_name'],
                                                       quantity=quantity,
-                                                      price_unit=internal_order_data['unit_price'],
+                                                      price_unit=unit_price,
                                                       total_amount=internal_order_data['total_amount'],
                                                       earned_without_admins_commission=
                                                       earned_without_service_commission,
