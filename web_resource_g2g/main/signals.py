@@ -16,6 +16,7 @@ from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.signals import social_account_added, pre_social_login # Залишаємо імпорти сигналів
 
 from main.utils.logger_config import logger
+from user_profile.models import WithdrawalRequest
 
 User = get_user_model()
 
@@ -32,6 +33,17 @@ def create_seller_for_user(sender, instance, created, **kwargs):
         else:
             Sellers.objects.create(auth_user=instance)
             logger.info(f"Created Seller for {instance.email} without ref")
+
+        # --- Додаємо створення запису WithdrawalRequest ---
+        try:
+            WithdrawalRequest.objects.create(
+                user=instance,
+                withdraw_type='do_not_withdraw',
+                status='not_applicable'
+            )
+            logger.info(f"Created initial WithdrawalRequest for new user: {instance.email}")
+        except Exception as e:
+            logger.error(f"Failed to create WithdrawalRequest for user {instance.email}: {e}", exc_info=True)
 
 
 # signals.py
