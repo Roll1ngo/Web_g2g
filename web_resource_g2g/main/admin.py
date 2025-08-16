@@ -294,7 +294,7 @@ class SellersAdmin(ExportActionModelAdmin):
             logger.info(f"Оновлено баланс для продавця {user_id}: {new_balance}")
         main_crud.update_technical_balance() # Розкоментуйте, якщо main_crud доступний
         main_crud.update_owner_balance() # Розкоментуйте, якщо main_crud доступний
-        self.message_user(request, f"Баланс оновлено для {queryset.count()} замовлень.")
+        self.message_user(request, f"Баланс оновлено для {queryset.count()} продавців.")
 
     # Перевизначаємо метод get_actions для зміни порядку дій
     def get_actions(self, request):
