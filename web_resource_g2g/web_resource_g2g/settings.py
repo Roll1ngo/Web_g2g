@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 from dotenv import load_dotenv
 
@@ -97,10 +98,9 @@ WSGI_APPLICATION = "web_resource_g2g.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": Path(f"{os.getenv('DB_PATH')}").resolve()
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+    )
 }
 
 
